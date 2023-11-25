@@ -18,37 +18,45 @@ Begin VB.Form Form1
    ScaleHeight     =   6135
    ScaleWidth      =   13575
    StartUpPosition =   3  'Windows-Standard
+   Begin VB.CommandButton Command5 
+      Caption         =   "Command5"
+      Height          =   375
+      Left            =   9000
+      TabIndex        =   8
+      Top             =   120
+      Width           =   1575
+   End
    Begin VB.CommandButton Command4 
       Caption         =   "Command4"
       Height          =   375
-      Left            =   9960
+      Left            =   7440
       TabIndex        =   7
-      Top             =   0
+      Top             =   120
       Width           =   1575
    End
    Begin VB.CommandButton Command3 
       Caption         =   "Command3"
       Height          =   375
-      Left            =   7680
+      Left            =   5880
       TabIndex        =   6
-      Top             =   0
-      Width           =   1815
+      Top             =   120
+      Width           =   1575
    End
    Begin VB.CommandButton Command2 
       Caption         =   "Command2"
-      Height          =   495
-      Left            =   3960
+      Height          =   375
+      Left            =   3000
       TabIndex        =   3
-      Top             =   0
-      Width           =   1935
+      Top             =   120
+      Width           =   1575
    End
    Begin VB.CommandButton Command1 
       Caption         =   "Command1"
-      Height          =   495
-      Left            =   1800
+      Height          =   375
+      Left            =   1440
       TabIndex        =   2
-      Top             =   0
-      Width           =   2055
+      Top             =   120
+      Width           =   1575
    End
    Begin VB.ListBox LBConstants 
       BeginProperty Font 
@@ -70,7 +78,7 @@ Begin VB.Form Form1
       AutoSize        =   -1  'True
       Caption         =   "Label2"
       Height          =   195
-      Left            =   6120
+      Left            =   4680
       TabIndex        =   5
       Top             =   240
       Width           =   495
@@ -79,7 +87,7 @@ Begin VB.Form Form1
       AutoSize        =   -1  'True
       Caption         =   "Label2"
       Height          =   195
-      Left            =   6120
+      Left            =   4680
       TabIndex        =   4
       Top             =   0
       Width           =   495
@@ -162,7 +170,9 @@ End Sub
 Private Sub Command3_Click()
     'MsgBox MMath.Dedekind(8)
     
-    MsgBox PFZ(6442450938@)
+    'MsgBox PFZ(6442450938@)
+    Dim n As Long: n = 2147483644
+    MsgBox "n = " & PFZ(n) & " = " & n
     
 End Sub
 
@@ -173,6 +183,10 @@ Private Sub Command4_Click()
     MsgBox m '11
     m = MaxArr(15, 12, 22, 45, 100, 72, 11, 83, 46, 25, 35)
     MsgBox m '100
+End Sub
+
+Private Sub Command5_Click()
+    MsgBox "Fibonacci(15) = " & MMath.Fibonacci(15)
 End Sub
 
 Private Sub Form_Load()

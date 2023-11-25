@@ -8,7 +8,7 @@ Startup="Form1"
 HelpFile=""
 Title="PMath"
 ExeName32="Math.exe"
-Command32="ReadPrimesFromFile = 1:"
+Command32=""
 Name="PMath"
 HelpContextID="0"
 CompatibleMode="0"
@@ -18,6 +18,7 @@ RevisionVer=23
 AutoIncrementVer=0
 ServerSupportFiles=0
 VersionLegalCopyright="MBO-Ing.com"
+CondComp="ReadPrimesFromFile = 1"
 CompilationType=0
 OptimizationType=0
 FavorPentiumPro(tm)=0

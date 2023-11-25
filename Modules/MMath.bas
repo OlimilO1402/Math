@@ -43,6 +43,8 @@ Public Primes()  As Long 'contains all primes up to 100000    'As Variant 'As De
 
 Public PrimesX() As Long 'a distinct selection of primes
 
+Public Fibonacci() As Long
+
 'Public Dedekind(1 To 9)
 
 'NTSYSAPI SIZE_T RtlCompareMemory(
@@ -135,6 +137,11 @@ ElecPermittvy = Constant_Parse(1, "8, 8, 5, 4, 1, 8, 7, 8, 1, 7, 6, 2, 0, 3, 8, 
     
     InitPrimeX
     'InitDedekind
+    InitFibonacci
+End Sub
+
+Private Sub InitFibonacci()
+    Fibonacci = FibonacciA
 End Sub
 
 Private Sub InitFactorials()
@@ -233,16 +240,17 @@ Public Function LeastCommonMultiple(ByVal x As Long, ByVal y As Long) As Long
     
 End Function
 
-Public Function PFZ(ByVal n) As String
+Public Function PFZ(ByVal n As Long) As String
     Dim s As String
-    Dim i: i = CDec(2)
+    Dim i As Long: i = 2 'CDec(2)
     Do
         While n Mod i = 0
             n = n / i
             If s <> vbNullString Then s = s & "*" 'first time wo *
             s = s & CStr(i)
         Wend
-        If i = 2 Then i = i + CDec(1) Else i = i + CDec(2)
+        'If i = 2 Then i = i + CDec(1) Else i = i + 2 'CDec(2)
+        If i = 2 Then i = i + 1 Else i = i + 2 'CDec(2)
         If i > Int(Sqr(n)) Then i = n '//ohne diese Zeile:Kaffeepause!
     Loop Until n = 1
     If InStr(s, "*") = 0 Then s = "Primzahl"
@@ -586,3 +594,23 @@ End Function
 '    Dedekind(i) = CDec("56130437228687557907788"): i = i + 1
 '    'Dedekind(i) = CDec("286386577668298411128469151667598498812366"): i = i + 1
 'End Sub
+
+' v ############################## v '    Fibonacci functions    ' v ############################## v '
+Function FibonacciA(Optional ByVal n As Long = -1) As Long()
+    If n <= 0 Then n = 46
+    'Calculates the Fibonacci-series for a given number n
+    ReDim fib(0 To n) As Long: fib(1) = 1
+    Dim i As Long
+    For i = 2 To n
+        fib(i) = fib(i - 1) + fib(i - 2)
+    Next
+    FibonacciA = fib
+End Function
+
+Private Function FibonacciR(ByVal n As Long) As Long
+    'Calculates the Fibonacci number to any given number (may be slow for values higher than 20)
+    If n > 46 Then Exit Function
+    If n > 1 Then FibonacciR = FibonacciR(n - 1) + FibonacciR(n - 2) Else FibonacciR = n
+End Function
+' ^ ############################## ^ '    Fibonacci functions    ' ^ ############################## ^ '
+
