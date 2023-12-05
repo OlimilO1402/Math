@@ -1,5 +1,13 @@
 Attribute VB_Name = "MMath"
 Option Explicit
+
+Public INDef  As Double
+Public posINF As Double
+Public negINF As Double
+Public NaN    As Double
+
+Private Declare Sub RtlMoveMemory Lib "kernel32" (ByRef pDst As Any, ByRef pSrc As Any, ByVal bLength As Long)
+
 'Wertebereich Currency (Int64)
 '    Dim bigDec1: bigDec1 = CDec("9223372036854775807")   ' No overflow.
 '    Dim bigDec2: bigDec2 = CDec("9223372036854775808")   ' No Overflow.
@@ -138,6 +146,14 @@ ElecPermittvy = Constant_Parse(1, "8, 8, 5, 4, 1, 8, 7, 8, 1, 7, 6, 2, 0, 3, 8, 
     InitPrimeX
     'InitDedekind
     InitFibonacci
+    InitINF
+End Sub
+
+Public Sub InitINF()
+    GetINDef INDef
+    posINF = GetINF
+    negINF = GetINF(-1)
+    GetNaN NaN
 End Sub
 
 Private Sub InitFibonacci()
@@ -160,12 +176,6 @@ Private Sub InitFactorials()
     Next
     m_Factorials(171) = GetINFE
 End Sub
-
-Private Function GetINFE(Optional ByVal sign As Long = 1) As Double
-    On Error Resume Next
-    GetINFE = Sgn(sign) / 0
-    On Error GoTo 0
-End Function
 
 Public Function Fact(ByVal n As Long) As Variant 'As Decimal
     If n > 170 Then n = 171
@@ -207,6 +217,16 @@ End Function
 
 ' v ############################## v '    ggT and kgV-functions    ' v ############################## v '
 
+'function ggT(a,b:integer):integer;
+'   var c:integer;
+'Begin
+'    repeat
+'      c:=a mod b;
+'      a:=b;
+'      b:=c;
+'    until c=0;
+'    result:=a
+'end;
 Function ggT(ByVal x As Long, ByVal y As Long) As Long
     'ggT = größter gemeinsamer Teiler
    Do While x <> y
@@ -220,24 +240,20 @@ Function ggT(ByVal x As Long, ByVal y As Long) As Long
 End Function
 
 Public Function GreatestCommonDivisor(ByVal x As Long, ByVal y As Long) As Long
-    'ggT = größter gemeinsamer Teiler
-   Do While x <> y
-      If x > y Then
-         x = x - y
-      Else
-         y = y - x
-      End If
-   Loop 'Wend
-   GreatestCommonDivisor = x
+   GreatestCommonDivisor = ggT(x, y)
 End Function
 
+'function kgV(a,b:integer):integer;
+'Begin
+'  result:=a*b div ggT(a,b);
+'end;
 Public Function kgV(ByVal x As Long, ByVal y As Long) As Long
-    kgV = (x * y) / ggT(x, y)
+    kgV = (x * y) \ ggT(x, y)
 End Function
 
 Public Function LeastCommonMultiple(ByVal x As Long, ByVal y As Long) As Long
     'kgV = kleinstes gemeinsames Vielfaches
-    
+    LeastCommonMultiple = kgV(x, y)
 End Function
 
 Public Function PFZ(ByVal n As Long) As String
@@ -257,22 +273,17 @@ Public Function PFZ(ByVal n As Long) As String
     PFZ = s
 End Function
 
-'function ggT(a,b:integer):integer;
-'   var c:integer;
-'Begin
-'    repeat
-'      c:=a mod b;
-'      a:=b;
-'      b:=c;
-'    until c=0;
-'    result:=a
-'end;
-'
-'function kgV(a,b:integer):integer;
-'Begin
-'  result:=a*b div ggT(a,b);
-'end;
-'
+'Bruch = Zähler / Nenner   'fraction = numerator / denominator
+Public Function CancelFraction(numerator_inout As Long, denominator_inout As Long) As Boolean
+    Dim t As Long: t = ggT(numerator_inout, ByVal denominator_inout)
+    numerator_inout = numerator_inout \ t
+    denominator_inout = denominator_inout \ t
+    If denominator_inout < 0 Then
+        numerator_inout = -numerator_inout
+        denominator_inout = -denominator_inout
+    End If
+End Function
+    
 'procedure kuerze(var z,n:integer);
 '  var t:integer;
 'Begin
@@ -292,7 +303,9 @@ End Function
 ' ^ ############################## ^ '    ggT and kgV-functions    ' ^ ############################## ^ '
 
 ' v ############################## v '    Linear interpolation    ' v ############################## v '
-
+'x1 ' y1
+'x2 ' LinIPol
+'x3 ' y3
 Private Function LinIPol(ByVal y1 As Double, _
                          ByVal y3 As Double, _
                          ByVal x1 As Double, _
@@ -613,4 +626,157 @@ Private Function FibonacciR(ByVal n As Long) As Long
     If n > 1 Then FibonacciR = FibonacciR(n - 1) + FibonacciR(n - 2) Else FibonacciR = n
 End Function
 ' ^ ############################## ^ '    Fibonacci functions    ' ^ ############################## ^ '
+
+' v ############################## v '    Logarithm functions    ' v ############################## v '
+
+'    Dim num As Double, e As Double: e = Exp(1) ' e = 2,71828182845905
+'    Debug.Print e
+'    Dim s As String
+'    num = e * e: s = s & "LN(" & num & ")     = " & MMath.LN(num) & vbCrLf      ' = 2
+'    num = 1000:  s = s & "Log10(" & num & ")  = " & MMath.Log10(num) & vbCrLf   ' = 3
+'    num = 10000: s = s & "Log10(" & num & ")  = " & MMath.LogN(num) & vbCrLf    ' = 4
+'    num = 32:    s = s & "Log(" & num & ", 2) = " & MMath.LogN(num, 2) & vbCrLf ' = 5
+'    MsgBox s
+'number          |  base        | xl-function     | result | description
+'    7.389056099 |  2,718281828 | LN(Zahl)        =   2    | LN aka ln  := Logarithm to base  e
+' 1000           | 10           | Log10(Zahl)     =   3    | Log10      := Logarithm to base 10, with the excelfunction LOG10
+'10000           | 10           | Log(Zahl)       =   4    | Log aka lg := Logarithm to base 10, with the excelfunction Log, base not explicitely given
+'   32           |  2           | Log(Zahl;Basis) =   5    | Log        := Logarithm to base  2, if the base 2 was explicitely given
+
+'Logarithmus naturalis, logarithm to base e
+Public Function LN(ByVal d As Double) As Double
+    LN = VBA.Math.Log(d)
+End Function
+
+'Logarithm to the base 10
+Public Function Log10(ByVal d As Double) As Double
+    If d = 0 Then Exit Function
+    Log10 = VBA.Math.Log(d) / VBA.Math.Log(10)
+End Function
+
+'Logarithm to a given base
+Public Function LogN(ByVal x As Double, _
+                     Optional ByVal base As Double = 10#) As Double
+                     'base must not be 1 or 0
+    If base <= 1 Then Exit Function
+    LogN = VBA.Math.Log(x) / VBA.Math.Log(base)
+End Function
+
+' ^ ############################## ^ '    Logarithm functions    ' ^ ############################## ^ '
+
+' v ############################## v ' IEEE754-INFINITY functions ' v ############################## v '
+' v ############################## v '      Create functions      ' v ############################## v '
+'either with error handling:
+Public Function GetINFE(Optional ByVal sign As Long = 1) As Double
+Try: On Error Resume Next
+    GetINFE = Sgn(sign) / 0
+Catch: On Error GoTo 0
+End Function
+
+' or without error handling:
+Public Function GetINF(Optional ByVal sign As Long = 1) As Double
+    Dim L(1 To 2) As Long
+    If Sgn(sign) > 0 Then
+        L(2) = &H7FF00000
+    ElseIf Sgn(sign) < 0 Then
+        L(2) = &HFFF00000
+    End If
+    Call RtlMoveMemory(GetINF, L(1), 8)
+End Function
+
+Public Sub GetNaN(ByRef Value As Double)
+    Dim L(1 To 2) As Long
+    L(1) = 1
+    L(2) = &H7FF00000
+    Call RtlMoveMemory(Value, L(1), 8)
+End Sub
+
+Public Sub GetINDef(ByRef Value As Double)
+Try: On Error Resume Next
+    Value = 0# / 0#
+Catch: On Error GoTo 0
+End Sub
+' ^ ############################## ^ '    Create functions    ' ^ ############################## ^ '
+
+' v ############################## v '     Bool functions     ' v ############################## v '
+Public Function IsINDef(ByRef Value As Double) As Boolean
+Try: On Error Resume Next
+    IsINDef = (CStr(Value) = CStr(INDef))
+Catch: On Error GoTo 0
+End Function
+
+Public Function IsNaN(ByRef Value As Double) As Boolean
+    Dim b(0 To 7) As Byte
+    Dim i As Long
+    
+    RtlMoveMemory b(0), Value, 8
+    
+    If (b(7) = &H7F) Or (b(7) = &HFF) Then
+        If (b(6) >= &HF0) Then
+            For i = 0 To 5
+                If b(i) <> 0 Then
+                    IsNaN = True
+                    Exit Function
+                End If
+            Next
+        End If
+    End If
+End Function
+
+Public Function IsPosINF(ByVal Value As Double) As Boolean
+    IsPosINF = (Value = posINF)
+End Function
+
+Public Function IsNegINF(ByVal Value As Double) As Boolean
+    IsNegINF = (Value = negINF)
+End Function
+' ^ ############################## ^ '     Bool functions     ' ^ ############################## ^ '
+
+' v ############################## v '    Output functions    ' v ############################## v '
+Public Function INDefToString() As String
+    On Error Resume Next
+    INDefToString = CStr(INDef)
+    On Error GoTo 0
+End Function
+
+Public Function NaNToString() As String
+    On Error Resume Next
+    If App.LogMode = 0 Then
+        NaNToString = "1.#QNAN"
+    Else
+        NaNToString = CStr(NaN)
+    End If
+    On Error GoTo 0
+End Function
+
+Public Function PosINFToString() As String
+    PosINFToString = CStr(posINF)
+End Function
+
+Public Function NegINFToString() As String
+    NegINFToString = CStr(negINF)
+End Function
+' ^ ############################## ^ '    Output functions    ' ^ ############################## ^ '
+
+' v ############################## v '     Input function     ' v ############################## v '
+Public Function Double_TryParse(s As String, Value_out As Double) As Boolean
+Try: On Error GoTo Catch
+    If Len(s) = 0 Then Exit Function
+    s = Replace(s, ",", ".")
+    If StrComp(s, "1.#QNAN") = 0 Then
+        GetNaN Value_out
+    ElseIf StrComp(s, "1.#INF") = 0 Then
+        Value_out = GetINF
+    ElseIf StrComp(s, "-1.#INF") = 0 Then
+        Value_out = GetINF(-1)
+    ElseIf StrComp(s, "-1.#IND") = 0 Then
+        GetINDef Value_out
+    Else
+        Value_out = Val(s)
+    End If
+    Double_TryParse = True
+Catch:
+End Function
+' ^ ############################## ^ '       Input function       ' ^ ############################## ^ '
+' ^ ############################## ^ ' IEEE754-INFINITY functions ' ^ ############################## ^ '
 

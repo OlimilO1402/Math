@@ -227,7 +227,14 @@ Sub Constants_ToListBox(aLB As ListBox)
         .AddItem "ElectricPermittivity = " & MMath.ElecPermittvy ' Dielectrizitäts-Konstante  eps_0
         Dim n1 As Long: n1 = 1234
         Dim n2 As Long: n2 = 56
+        .AddItem "Primefactors(" & n1 & ") = " & PFZ(n1)
         .AddItem "GreatestCommonDivisor(" & n1 & ", " & n2 & ") = " & MMath.GreatestCommonDivisor(n1, n2)
+        .AddItem "LeastCommonMultiple(" & n1 & ", " & n2 & ") = " & MMath.LeastCommonMultiple(n1, n2)
+        n2 = 3456
+        Dim nn As Long: nn = n1
+        Dim za As Long: za = n2
+        MMath.CancelFraction nn, za
+        .AddItem "CancelFraction(" & n1 & ", " & n2 & ") = " & nn & " / " & za
         Dim i As Long, s As String
         For i = 0 To 5
             .AddItem CStr(i) & "! = " & MMath.Fact(i)
