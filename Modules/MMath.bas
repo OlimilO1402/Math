@@ -163,7 +163,7 @@ End Sub
 Private Sub InitFactorials()
     ReDim m_Factorials(0 To 171)
     Dim i As Long, f: f = CDec(1)
-    m_Factorials(0) = CDec(0)
+    m_Factorials(0) = f
     m_Factorials(1) = f
     For i = 2 To 27
         f = f * CDec(i)
@@ -658,11 +658,22 @@ End Function
 Public Function LogN(ByVal x As Double, _
                      Optional ByVal base As Double = 10#) As Double
                      'base must not be 1 or 0
-    If base <= 1 Then Exit Function
+    If base = 1 Or base = 0 Then Exit Function
     LogN = VBA.Math.Log(x) / VBA.Math.Log(base)
 End Function
 
 ' ^ ############################## ^ '    Logarithm functions    ' ^ ############################## ^ '
+
+' v ############################## v '    Rounding functions     ' v ############################## v '
+Public Function Floor(ByVal A As Double) As Double
+    Floor = CDbl(Int(A))
+End Function
+
+Public Function Ceiling(ByVal A As Double) As Double
+    Ceiling = CDbl(Int(A))
+    If A <> 0 Then If Abs(Ceiling / A) <> 1 Then Ceiling = Ceiling + 1
+End Function
+' ^ ############################## ^ '    Rounding functions     ' ^ ############################## ^ '
 
 ' v ############################## v ' IEEE754-INFINITY functions ' v ############################## v '
 ' v ############################## v '      Create functions      ' v ############################## v '
