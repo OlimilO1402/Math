@@ -1,0 +1,25 @@
+Hinweis zum Inhalt von Komplex.zip
+----------------------------------
+
+Das vorliegende VB-Projekt stellt eine kleine Demonstration der geometrischen Transformationen auf der komplexen Zahlenebene dar. 
+Zweidimensionale Transformation von geometrischen Figuren, also von Punkten, sind am einfachsten über Vektoren zu bewerkstelligen. 
+Auch im Raum sehen diese Transformationen im Prinzip ähnlich aus, es muß halt eine zusätzliche Dimension berücksichtigt werden. 
+Allerdings werden 3D-Transformationen programmiertechnisch meist über Matrizen gelöst, die weitaus schneller sein können.
+
+Das Beispiel ist nicht sehr automatisiert (30 Minuten Programmierzeit incl. Quelltextkommentare), Punkte können hinzugefügt und 
+entfernt werden und es kann eine Transformation eingestellt werden.
+
+WICHTIG:
+Das Beispiel zeigt zwar den programmatischen Umgang mit komplexen Zahlen und Transformationen, erklägt jedoch keine Mathematik. 
+Wer sich mit diesem Thema auseinandersetzen möchte, dem sei wärmstens irgendein Universitätsmathebuch als Lektüre empfohlen, besser 
+kann man sich diese Materie nicht aneignen, auch wenn sie eigentlich recht simpel ist, wenn man erst einmal durchgeblickt hat.
+
+----------------------------------------------
+Gruß, Konrad Rudolph -
+
+COPYRIGHT:
+Der Code kann für eigene Zwecke nach freiem Willen zerhackstückt und weiterverwendet werden. 
+Allein das Publikationsrecht ist ohne ausdrückliche Genehmigung des Autors ausgeschlossen. 
+Ausgenommen davon ist natürlich ActiveVB.
+
+Kontakt: konrad@madrat.net

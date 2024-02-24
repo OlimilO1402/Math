@@ -6,6 +6,24 @@ Public posINF As Double
 Public negINF As Double
 Public NaN    As Double
 
+'Complex number in cartesian coordinates
+Public Type Complex
+    Re As Double
+    Im As Double
+End Type
+
+'Complex number in polar coordinates
+Public Type ComplexP
+    r   As Double
+    phi As Double
+End Type
+
+'Complex number in Eulerform
+'Public Type ComplexE
+'    r     As Double
+'    eiphi As Double
+'End Type
+
 Private Declare Sub RtlMoveMemory Lib "kernel32" (ByRef pDst As Any, ByRef pSrc As Any, ByVal bLength As Long)
 
 'Wertebereich Currency (Int64)
@@ -665,13 +683,13 @@ End Function
 ' ^ ############################## ^ '    Logarithm functions    ' ^ ############################## ^ '
 
 ' v ############################## v '    Rounding functions     ' v ############################## v '
-Public Function Floor(ByVal A As Double) As Double
-    Floor = CDbl(Int(A))
+Public Function Floor(ByVal a As Double) As Double
+    Floor = CDbl(Int(a))
 End Function
 
-Public Function Ceiling(ByVal A As Double) As Double
-    Ceiling = CDbl(Int(A))
-    If A <> 0 Then If Abs(Ceiling / A) <> 1 Then Ceiling = Ceiling + 1
+Public Function Ceiling(ByVal a As Double) As Double
+    Ceiling = CDbl(Int(a))
+    If a <> 0 Then If Abs(Ceiling / a) <> 1 Then Ceiling = Ceiling + 1
 End Function
 ' ^ ############################## ^ '    Rounding functions     ' ^ ############################## ^ '
 
@@ -790,4 +808,377 @@ Catch:
 End Function
 ' ^ ############################## ^ '       Input function       ' ^ ############################## ^ '
 ' ^ ############################## ^ ' IEEE754-INFINITY functions ' ^ ############################## ^ '
+
+' v ############################## v '     solving quadratic & cubic formula     ' v ############################## v '
+Public Function Quadratic(ByVal a As Double, ByVal b As Double, ByVal c As Double, ByRef x1_out As Double, ByRef x2_out As Double) As Boolean
+Try: On Error GoTo Catch
+    
+    'maybe the midnight-formula:
+    'Dim w As Double: w = VBA.Sqr(b ^ 2 - 4 * a * c)
+    'x1_out = (-b + w) / (2 * a)
+    'x2_out = (-b - w) / (2 * a)
+    
+    'or maybe the pq-formula
+    Dim p    As Double:   p = b / a
+    Dim q    As Double:   q = c / a
+    Dim p_2  As Double: p_2 = p / 2
+    Dim p2_4 As Double: p2_4 = p_2 * p_2
+    Dim W As Double: W = VBA.Sqr(p2_4 - q)
+    
+    x1_out = -p_2 + W
+    x2_out = -p_2 - W
+    
+    Quadratic = True
+    Exit Function
+Catch:
+End Function
+
+Public Function Quadratic_ToStr(ByVal a As Double, ByVal b As Double, ByVal c As Double) As String
+    Quadratic_ToStr = a & "x²" & GetOp(b) & "x" & GetOp(c) & " = 0"
+End Function
+Public Function Cubic_ToStr(ByVal a As Double, ByVal b As Double, ByVal c As Double, ByVal d As Double) As String
+    Cubic_ToStr = a & "x³" & GetOp(b) & "x²" & GetOp(c) & "x" & GetOp(d) & " = 0"
+End Function
+Private Function GetOp(ByVal v As Double) As String
+    Select Case v
+    Case -1:     GetOp = " - ": Exit Function
+    Case 0:      Exit Function
+    Case 1:      GetOp = " + ": Exit Function
+    Case Else:   If v < 0 Then GetOp = " - " & Abs(v) Else GetOp = " + " & v
+    End Select
+End Function
+
+'https://www.youtube.com/watch?v=xhjNRQxqJTM '&t=116s
+'https://www.youtube.com/watch?v=q14F6fZf5kc '&t=1658s
+'https://www.youtube.com/watch?v=N-KXStupwsc '&t=4s
+Public Function Cubic(ByVal a As Double, ByVal b As Double, ByVal c As Double, ByVal d As Double, ByRef x1_out As Double, ByRef x2_out As Double, ByRef i2_out As Double, ByRef x3_out As Double, ByRef i3_out As Double) As Boolean
+Try: On Error GoTo Catch
+    'Scipione del Ferro (1465-1526), Nicolo Tartaglia (1500-1557), Gerolamo Cardano (1501-1576)
+    'Rafael Bombelli (1526-1572)
+    If a = 0 Then
+        Cubic = Quadratic(b, c, d, x1_out, x2_out)
+        Exit Function
+    End If
+    Dim a2 As Double: a2 = a * a
+    Dim a3 As Double: a3 = a * a2
+    Dim b2 As Double: b2 = b * b
+    Dim b3 As Double: b3 = b * b2
+    'Dim bc As Double: bc = b * c
+    Dim b3_27a3 As Double: b3_27a3 = b3 / (27 * a3)
+    'Dim bc_6a2  As Double:  bc_6a2 = bc / (6 * a2)
+    Dim cb_3a2  As Double:  cb_3a2 = c * b / (3 * a2)
+    Dim b2_3a2  As Double:  b2_3a2 = b2 / (3 * a2)
+    'Dim b2_9a2  As Double:  b2_9a2 = b2 / (9 * a2)
+    Dim d_a  As Double: d_a = d / a
+    'Dim d_2a As Double: d_2a = d / (2 * a)
+    Dim c_a  As Double: c_a = c / a
+    'Dim c_3a As Double: c_3a = c / (3 * a)
+    Dim b_3a As Double: b_3a = b / (3 * a)
+    
+    'Dim w As Double: w = VBA.Sqr((-b3_27a3 + bc_6a2 - d_2a) ^ 2 + (-b2_9a2 + c_3a) ^ 3)
+
+    'x1_out = (-b3_27a3 + bc_6a2 - d_2a + w) ^ (1 / 3) + _
+    '        (-b3_27a3 + bc_6a2 - d_2a - w) ^ (1 / 3) - b_3a
+             
+    'x2_out
+
+'Discriminant D: q²/4 + p³/27 > = < 0
+'1: q²/4 + p³/27 > 0
+'   1 real
+'   2 complex
+'2: q²/4 + p³/27 = 0
+'   2 real = 3 real overall, with 2 repeated: where a local minimum or local maximum touches the x-axis
+'3:  q²/4 + p³/27 < 0
+'   3 real all distinct
+'
+
+    Dim p   As Double:   p = -b2_3a2 + c_a
+    Dim q   As Double:   q = 2 * b3_27a3 - cb_3a2 + d_a
+    Dim DD  As Double:  DD = (q ^ 2) / 4 + (p ^ 3) / 27
+    Dim q_2 As Double: q_2 = q / 2
+    Dim p_3 As Double: p_3 = p / 3
+    
+    Select Case DD
+    Case Is < 0
+        
+    Case Is = 0
+    Case Is > 0
+    End Select
+    
+    'Dim b_3a As Double: b_3a = b / (3 * a)
+    Dim W As Double
+    W = (q_2 ^ 2 + p_3 ^ 3) ^ (1 / 2)
+
+    x1_out = -b_3a + (-q_2 + W) ^ (1 / 3) _
+                   + (-q_2 - W) ^ (1 / 3)
+    
+    Cubic = True
+    Exit Function
+Catch:
+End Function
+
+Public Function SqrH(ByVal n As Double) As Double
+    'SquareRoot due to Heron algorithm
+    Dim s As Long:   s = Sgn(n): n = Abs(n)
+    Dim r As Double: r = n
+    Dim i As Long
+    SqrH = 1
+    Do
+        i = i + 1
+        SqrH = (SqrH + r) / 2
+        r = n / SqrH
+        If (SqrH - r) < 0.0000000000001 Then Exit Do
+        If i = 20 Then Exit Do
+    Loop
+    Debug.Print i
+End Function
+
+Public Function CubRt(ByVal v As Double, ByRef i_out As Double) As Double
+    'CubRt(1) = 1, -1/2+- SquRt(3) / 2 i
+    If v = 0 Then Exit Function
+    If v > 0 Then
+        'Root = VBA.Sqr(v)
+        Exit Function
+    End If
+    v = Abs(v)
+    Root = VBA.Sqr(v)
+    
+End Function
+
+'/// This Program will find the cube root of any number n.
+'#include<iostream>
+'#include<math.h>
+'using namespace std;
+'double nrAlgorithm(double m,double n)
+'{
+'    if(n==0)
+'        return 0;
+'    double g=1,x=1;
+'    int i=0;
+'    While (True)
+'    {
+'        x=((m-1)*pow(x,m)+n)/(m*pow(x,m-1));
+'        if(x==g)
+'        {
+'            break;
+'        }
+'            g=x;
+'        i++;
+'    }
+'    return g;
+'
+'}
+'int main()
+'{
+'    int t,n;
+'    cin>>t;
+'    while(t--)
+'    {
+'        cin>>n;
+'        cout<<nrAlgorithm(3,n)<<endl;
+'    }
+'}
+
+Public Function PascalTriangle(ByVal nrows As Integer) As Variant()
+    If nrows > 1030 Then
+        MsgBox nrows & ": overflow!" & vbCrLf & "The triangle will be computed with the maximum of only 1030 rows."
+        'Exit Function
+    End If
+    nrows = Min(nrows, 1030)
+'We make an 1d-array with variants for every rows each row is a variant wchich is an array of arising size
+    ReDim p(1 To nrows)
+    Dim r() 'As Long
+    'create the first row which contains one array with only one element with the number one
+    ReDim r(1 To 1): r(1) = 1
+    p(1) = r
+    'create the second row which contains one array with two element each with the number one
+    ReDim r(1 To 2): r(1) = 1: r(2) = 1
+    p(2) = r
+    Dim i As Long, j As Long
+    For i = 3 To nrows
+        ReDim r(1 To i)
+        r(1) = 1: r(i) = 1
+        For j = 2 To i - 1
+            r(j) = p(i - 1)(j - 1) + p(i - 1)(j)
+        Next
+        p(i) = r
+    Next
+    PascalTriangle = p
+End Function
+
+Public Function PascalTriangle_ToStr(p() As Variant) As String
+    Dim nrows As Long: nrows = UBound(p)
+    ReDim sa(1 To nrows) As String
+    sa(1) = "1"
+    sa(2) = "1 1"
+    '': s = "1" & vbCrLf & "1  1" & vbCrLf
+    Dim i As Long, j As Long
+    If nrows < 3 Then
+        PascalTriangle_ToStr = Join(sa, vbCrLf)
+        Exit Function
+    End If
+    Dim s As String
+    For i = 3 To nrows
+        s = ""
+        For j = 1 To i
+            s = s & CStr(p(i)(j)) & IIf(j < nrows, " ", "")
+        Next
+        sa(i) = s
+    Next
+    PascalTriangle_ToStr = Join(sa, vbCrLf)
+End Function
+'
+'                        1
+'                      1   1
+'                    1   2   1
+'                  1   3   3   1
+'                1   4   6   4   1
+'              1   5  10  10   5   1
+'            1   6  15  20  15   6   1
+'          1   7  21  25  25  21   7   1
+'        1   8  28  46  50  46  28   8   1
+'      1   9  36  74  96  96  74  36   9   1
+'    1  10  45 120 170 192 170 120  45  10   1
+'  1  11  55 165 330 362 462 330 165  55  11   1
+'1  12  66 220 495 792 924 792 495 220  66  12   1
+
+
+' v ############################## v '    Complex numbers    ' v ############################## v '
+'Many thanks to Loay
+'https://www.youtube.com/watch?v=kIjgFYLymJw
+'x²+1=0 => x²=-1; x_1,2 = +-sqrt(-1); sqrt(-1) = i; i² = -1; (-i)² = -1
+'Many thanks to MathePeter
+'https://www.youtube.com/watch?v=zB2VwWzpYx4
+Public Function Real_ToComplex(ByVal v As Double) As Complex
+    Real_ToComplex.Re = v
+    'Real_ToComplex.Im = 0
+End Function
+
+Public Function Real_ToComplexP(ByVal v As Double) As ComplexP
+    With Real_ToComplexP: .Re = v: .phi = CDbl(Pi2): End With
+End Function
+
+Public Function Complex(ByVal Re As Double, ByVal Im As Double) As Complex
+    With Complex: .Re = Re: .Im = Im: End With
+End Function
+
+Public Function Complex_ToStr(z As Complex) As String
+    'With z: Complex_ToStr = .Re & " + i*" & .Im: End With
+    With z: Complex_ToStr = .Re & " + " & .Im & "*i": End With
+End Function
+
+'Verschiebung, Translations:
+Public Function Complex_Add(z1 As Complex, z2 As Complex) As Complex
+    With Complex_Add:       .Re = z1.Re + z2.Re: .Im = z1.Im + z2.Im:    End With
+End Function
+
+Public Function Complex_Subt(z1 As Complex, z2 As Complex) As Complex
+    With Complex_Subt:      .Re = z1.Re - z2.Re: .Im = z1.Im - z2.Im:    End With
+End Function
+
+'Streckung/Stauchung oder Drehung, Rotation
+Public Function Complex_Mul(z1 As Complex, z2 As Complex) As Complex
+    With Complex_Mul
+        .Re = z1.Re * z2.Re - (z1.Im * z2.Im)
+        .Im = z1.Im * z2.Re + z1.Re * z2.Im
+    End With
+End Function
+
+Public Function Complex_Div(z1 As Complex, z2 As Complex) As Complex
+    Dim d As Double: d = Complex_Abs2(z2)
+    Dim z2_ As Complex: z2_ = Complex_Conj(z2)
+    Complex_Div = Complex_Mul(z1, z2_)
+    With Complex_Div
+        .Re = .Re / d
+        .Im = .Im / d
+    End With
+End Function
+
+'Spiegelung
+'complex conjugation
+Public Function Complex_Neg(z As Complex) As Complex
+    'mirroring at center (0,0)
+    With Complex_Conj:      .Re = -z.Re:         .Im = -z.Im:    End With
+End Function
+
+Public Function Complex_Conj(z As Complex) As Complex
+    'mirroring at x-axis
+    With Complex_Conj:      .Re = z.Re:          .Im = -z.Im:    End With
+End Function
+
+Public Function Complex_NegConj(z As Complex) As Complex
+    'mirroring at y-axis
+    With Complex_Conj:      .Re = -z.Re:         .Im = z.Im:    End With
+End Function
+
+Public Function Complex_Abs(z As Complex) As Double
+    Complex_Abs = VBA.Math.Sqr(Complex_Abs2(z))
+End Function
+
+Public Function Complex_Abs2(z As Complex) As Double
+    With z: Complex_Abs2 = .Re * .Re + .Im * .Im:    End With
+End Function
+
+Public Function Complex_ToComplexP(c As Complex) As ComplexP
+    With Complex_ToComplexP
+        .r = VBA.Math.Sqr(Abs(c.Re * c.Re + c.Im * c.Im))
+        .phi = Atan2(c.Im, c.Re)
+    End With
+End Function
+
+'polar form
+Public Function ComplexP(ByVal r As Double, ByVal phi As Double) As ComplexP
+    With ComplexP: .r = r: .phi = phi: End With
+End Function
+
+Public Function ComplexP_ToStr(p As ComplexP) As String
+    With p
+        'ComplexP_ToStr = .r & " + "e^(i*phi
+        ComplexP_ToStr = .r & " +(cos(" & .phi & ")+i*sin(" & .phi & "))"
+    End With
+End Function
+
+'euler-form
+Public Function ComplexP_ToStrE(p As ComplexP) As String
+    With p
+        ComplexP_ToStrE = .r & " * e^(i*" & .phi & ")"
+    End With
+End Function
+
+Public Function ComplexP_Add(p1 As ComplexP, p2 As ComplexP) As ComplexP
+    'Dim z1 As Complex: z1 = ComplexP_ToComplex(p1)
+    'Dim z2 As Complex: z2 = ComplexP_ToComplex(p2)
+    'Dim z3 As Complex: z2 = Complex_Add(z1, z2)
+    'ComplexP_Add = Complex_ToComplexP(z3)
+    ComplexP_Add = Complex_ToComplexP(Complex_Add(ComplexP_ToComplex(p1), ComplexP_ToComplex(p2)))
+End Function
+
+Public Function ComplexP_Mul(p1 As ComplexP, p2 As ComplexP) As ComplexP
+    With ComplexP_Mul
+        .r = p1.r * p2.r
+        .phi = p1.phi + p2.phi
+    End With
+End Function
+
+Public Function ComplexP_ToComplex(p As ComplexP) As Complex
+    With ComplexP_ToComplex
+        .Re = p.r * VBA.Math.Cos(p.phi)
+        .Im = p.r * VBA.Math.Sin(p.phi)
+    End With
+End Function
+
+' ^ ############################## ^ '    Complex numbers    ' ^ ############################## ^ '
+
+
+Public Function CalcPi()
+    Dim sqr3: sqr3 = CDec("1,7320508075688772935274463415") '058723669428052538103806280558069794519330169088000370811461867572485756")
+    Dim sum: sum = CDec(0)
+    Dim n As Long
+    For n = 1 To 40
+        sum = sum + -Fact(2 * n - 2) / (2 ^ (4 * n - 2) * Fact(n - 1) ^ 2 * (2 * n - 3) * (2 * n + 1))
+    Next
+    Dim Pi
+    Pi = 3 * sqr3 / 4 + 24 * sum
+    CalcPi = Pi
+End Function
 
