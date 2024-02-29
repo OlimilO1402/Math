@@ -501,7 +501,7 @@ Sub ReadPrimesBin()
     Dim FNr As Integer: FNr = FreeFile
     Open FNm For Binary Access Read As FNr
     Dim n As Long: n = LOF(FNr) / 4
-    Debug.Print n
+    'Debug.Print n
     'ReDim Primes(0 To 9591)
     ReDim Primes(0 To n - 1)
     Get FNr, , Primes
@@ -930,7 +930,7 @@ Public Function SqrH(ByVal n As Double) As Double
         If (SqrH - r) < 0.0000000000001 Then Exit Do
         If i = 20 Then Exit Do
     Loop
-    Debug.Print i
+    'Debug.Print i
 End Function
 
 Public Function CubRt(ByVal v As Double, ByRef i_out As Double) As Double
@@ -941,7 +941,7 @@ Public Function CubRt(ByVal v As Double, ByRef i_out As Double) As Double
         Exit Function
     End If
     v = Abs(v)
-    Root = VBA.Sqr(v)
+    CubRt = VBA.Sqr(v)
     
 End Function
 
@@ -1049,13 +1049,15 @@ End Function
 'x²+1=0 => x²=-1; x_1,2 = +-sqrt(-1); sqrt(-1) = i; i² = -1; (-i)² = -1
 'Many thanks to MathePeter
 'https://www.youtube.com/watch?v=zB2VwWzpYx4
+'https://www.youtube.com/watch?v=G_FRNyHpzrk
+'https://www.youtube.com/watch?v=Z-mKZECwOgg
 Public Function Real_ToComplex(ByVal v As Double) As Complex
     Real_ToComplex.Re = v
     'Real_ToComplex.Im = 0
 End Function
 
 Public Function Real_ToComplexP(ByVal v As Double) As ComplexP
-    With Real_ToComplexP: .Re = v: .phi = CDbl(Pi2): End With
+    With Real_ToComplexP: .r = v: .phi = CDbl(Pi2): End With
 End Function
 
 Public Function Complex(ByVal Re As Double, ByVal Im As Double) As Complex
@@ -1098,7 +1100,7 @@ End Function
 'complex conjugation
 Public Function Complex_Neg(z As Complex) As Complex
     'mirroring at center (0,0)
-    With Complex_Conj:      .Re = -z.Re:         .Im = -z.Im:    End With
+    With Complex_Neg:       .Re = -z.Re:         .Im = -z.Im:    End With
 End Function
 
 Public Function Complex_Conj(z As Complex) As Complex
@@ -1108,7 +1110,7 @@ End Function
 
 Public Function Complex_NegConj(z As Complex) As Complex
     'mirroring at y-axis
-    With Complex_Conj:      .Re = -z.Re:         .Im = z.Im:    End With
+    With Complex_NegConj:   .Re = -z.Re:         .Im = z.Im:    End With
 End Function
 
 Public Function Complex_Abs(z As Complex) As Double
@@ -1123,6 +1125,8 @@ Public Function Complex_ToComplexP(c As Complex) As ComplexP
     With Complex_ToComplexP
         .r = VBA.Math.Sqr(Abs(c.Re * c.Re + c.Im * c.Im))
         .phi = Atan2(c.Im, c.Re)
+        'oder:
+        '.phi = Sgn(c.Im) * Arccos(c.Re / .r)
     End With
 End Function
 
@@ -1134,14 +1138,14 @@ End Function
 Public Function ComplexP_ToStr(p As ComplexP) As String
     With p
         'ComplexP_ToStr = .r & " + "e^(i*phi
-        ComplexP_ToStr = .r & " +(cos(" & .phi & ")+i*sin(" & .phi & "))"
+        ComplexP_ToStr = .r & " +(cos(" & .phi & ")+sin(" & .phi & ")*i)"
     End With
 End Function
 
 'euler-form
 Public Function ComplexP_ToStrE(p As ComplexP) As String
     With p
-        ComplexP_ToStrE = .r & " * e^(i*" & .phi & ")"
+        ComplexP_ToStrE = .r & " * e^(" & .phi & "*i)"
     End With
 End Function
 
@@ -1158,6 +1162,51 @@ Public Function ComplexP_Mul(p1 As ComplexP, p2 As ComplexP) As ComplexP
         .r = p1.r * p2.r
         .phi = p1.phi + p2.phi
     End With
+End Function
+
+Public Function ComplexP_Powi(p As ComplexP, ByVal expon As Long) As ComplexP
+    'bei Ganzzahligen Exponenten spricht man vom Satz von Moivre, Potenzgesetze
+    Dim ppi2 As Double: ppi2 = 8 * VBA.Math.Atn(1)
+    With ComplexP_Powi
+        .r = p.r ^ expon
+        .phi = ModDbl(expon * p.phi, ppi2)
+        'if .phi<0
+    End With
+End Function
+
+'n = p / q € Q : rationale Zahlen
+'Exponent n = p / q
+'p € Z, q € N>=2
+'k=0,1,...,q-1
+'Z = ganze negative und positive Zahlen inkl 0
+'N = ganze nur positive Zahlen
+Public Function ComplexP_Pow(p As ComplexP, ByVal expon_p As Long, ByVal expon_q As Long) As ComplexP
+    If expon_q < 2 Then
+        '
+        Exit Function 'q € N,
+    End If
+    If Not MMath.CancelFraction(expon_p, expon_q) Then
+        '
+        Exit Function
+    End If
+    If ggT(expon_p, expon_q) <> 1 Then
+        '
+        Exit Function
+    End If
+    Dim ppi2 As Double: ppi2 = 8 * VBA.Math.Atn(1)
+    With ComplexP_Pow
+        .r = p.r ^ (expon_p / expon_q)
+        .phi = ModDbl(expon_q * p.phi, ppi2)
+        'if .phi<0
+    End With
+End Function
+
+Public Function ModDbl(v As Double, d As Double) As Double
+    'berechnet das Überbleibsel bei der division
+    Dim s As Long: s = Sgn(v)
+    v = Abs(v)
+    Dim i As Long: i = Int(v / d)
+    ModDbl = s * (v - i * d)
 End Function
 
 Public Function ComplexP_ToComplex(p As ComplexP) As Complex

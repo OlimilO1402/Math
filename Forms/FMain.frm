@@ -367,7 +367,10 @@ Sub TestComplex()
     AddItem "TestComplexNumbers"
     AddItem "=================="
     Dim z1 As Complex: z1 = MMath.Complex(1, 0.5)
+    AddItem "In cartes. coords.:"
+    AddItem "z1 = " & Complex_ToStr(z1)
     Dim z2 As Complex: z2 = MMath.Complex(2, 3)
+    AddItem "z2 = " & Complex_ToStr(z2)
     Dim z As Complex
     z = MMath.Complex_Add(z1, z2)
     AddItem "z = z1 + z2; z = " & MMath.Complex_ToStr(z1) & " + (" & MMath.Complex_ToStr(z2) & ") = " & MMath.Complex_ToStr(z)
@@ -379,6 +382,19 @@ Sub TestComplex()
     z2 = MMath.Complex(1, 3)
     z = MMath.Complex_Div(z1, z2)
     AddItem "z = z1 / z2; z = " & MMath.Complex_ToStr(z1) & " / (" & MMath.Complex_ToStr(z2) & ") = " & MMath.Complex_ToStr(z)
+    
+    
+    z1 = MMath.Complex(Sqr(2) / 2, -Sqr(2) / 2)
+    AddItem "z1 = " & MMath.Complex_ToStr(z1)
+    AddItem "In polar coordinates: "
+    Dim zp1 As ComplexP: zp1 = MMath.Complex_ToComplexP(z1)
+    AddItem "zp1 = " & MMath.ComplexP_ToStr(zp1)
+    AddItem "Or in euler form: "
+    AddItem "zp1 = " & MMath.ComplexP_ToStrE(zp1)
+    
+    Dim ex As Long: ex = 2020
+    Dim zp As ComplexP: zp = MMath.ComplexP_Powi(zp1, ex)
+    AddItem "zp = zp1 ^ 2020; zp = (" & MMath.ComplexP_ToStrE(zp1) & ") ^ (" & ex & ") = " & MMath.ComplexP_ToStrE(zp)
     
     AddItem ""
 End Sub
