@@ -12,7 +12,7 @@ Public Type Complex
     Im As Double
 End Type
 
-'Complex number in polar coordinates
+'Complex number in polar coordinates or euler form
 Public Type ComplexP
     r   As Double
     phi As Double
@@ -195,9 +195,9 @@ Private Sub InitFactorials()
     m_Factorials(171) = GetINFE
 End Sub
 
-Public Function Fact(ByVal n As Long) As Variant 'As Decimal
-    If n > 170 Then n = 171
-    Fact = m_Factorials(n)
+Public Function Fact(ByVal N As Long) As Variant 'As Decimal
+    If N > 170 Then N = 171
+    Fact = m_Factorials(N)
 End Function
 
 Public Function Atan2(ByVal y As Double, ByVal x As Double) As Double
@@ -222,8 +222,8 @@ Public Function Atan2(ByVal y As Double, ByVal x As Double) As Double
     End If
 End Function
 
-Public Function Square(ByVal n As Double) As Double
-   Square = n * n
+Public Function Square(ByVal N As Double) As Double
+   Square = N * N
 End Function
 
 Private Function Constant_Parse(ByVal nDigsVkst As Byte, ByVal sc As String) As String
@@ -274,19 +274,19 @@ Public Function LeastCommonMultiple(ByVal x As Long, ByVal y As Long) As Long
     LeastCommonMultiple = kgV(x, y)
 End Function
 
-Public Function PFZ(ByVal n As Long) As String
+Public Function PFZ(ByVal N As Long) As String
     Dim s As String
     Dim i As Long: i = 2 'CDec(2)
     Do
-        While n Mod i = 0
-            n = n / i
+        While N Mod i = 0
+            N = N / i
             If s <> vbNullString Then s = s & "*" 'first time wo *
             s = s & CStr(i)
         Wend
         'If i = 2 Then i = i + CDec(1) Else i = i + 2 'CDec(2)
         If i = 2 Then i = i + 1 Else i = i + 2 'CDec(2)
-        If i > Int(Sqr(n)) Then i = n '//ohne diese Zeile:Kaffeepause!
-    Loop Until n = 1
+        If i > Int(Sqr(N)) Then i = N '//ohne diese Zeile:Kaffeepause!
+    Loop Until N = 1
     If InStr(s, "*") = 0 Then s = "Primzahl"
     PFZ = s
 End Function
@@ -300,6 +300,7 @@ Public Function CancelFraction(numerator_inout As Long, denominator_inout As Lon
         numerator_inout = -numerator_inout
         denominator_inout = -denominator_inout
     End If
+    CancelFraction = True
 End Function
     
 'procedure kuerze(var z,n:integer);
@@ -434,9 +435,9 @@ Public Function IsPrimeX(ByVal number As Long) As Boolean
         IsPrimeX = (number = 2)
         Exit Function
     End If
-    Dim n As Long: n = CLng(VBA.Math.Sqr(CDbl(number)))
+    Dim N As Long: N = CLng(VBA.Math.Sqr(CDbl(number)))
     Dim i As Long: i = 3
-    Do While (i <= n)
+    Do While (i <= N)
         If ((number Mod i) = 0) Then
             IsPrimeX = False
             Exit Function
@@ -500,10 +501,10 @@ Sub ReadPrimesBin()
     Dim FNm As String:  FNm = App.Path & "\" & "Primes100000.Int32"
     Dim FNr As Integer: FNr = FreeFile
     Open FNm For Binary Access Read As FNr
-    Dim n As Long: n = LOF(FNr) / 4
+    Dim N As Long: N = LOF(FNr) / 4
     'Debug.Print n
     'ReDim Primes(0 To 9591)
-    ReDim Primes(0 To n - 1)
+    ReDim Primes(0 To N - 1)
     Get FNr, , Primes
     Close FNr
 End Sub
@@ -627,21 +628,21 @@ End Function
 'End Sub
 
 ' v ############################## v '    Fibonacci functions    ' v ############################## v '
-Function FibonacciA(Optional ByVal n As Long = -1) As Long()
-    If n <= 0 Then n = 46
+Function FibonacciA(Optional ByVal N As Long = -1) As Long()
+    If N <= 0 Then N = 46
     'Calculates the Fibonacci-series for a given number n
-    ReDim fib(0 To n) As Long: fib(1) = 1
+    ReDim fib(0 To N) As Long: fib(1) = 1
     Dim i As Long
-    For i = 2 To n
+    For i = 2 To N
         fib(i) = fib(i - 1) + fib(i - 2)
     Next
     FibonacciA = fib
 End Function
 
-Private Function FibonacciR(ByVal n As Long) As Long
+Private Function FibonacciR(ByVal N As Long) As Long
     'Calculates the Fibonacci number to any given number (may be slow for values higher than 20)
-    If n > 46 Then Exit Function
-    If n > 1 Then FibonacciR = FibonacciR(n - 1) + FibonacciR(n - 2) Else FibonacciR = n
+    If N > 46 Then Exit Function
+    If N > 1 Then FibonacciR = FibonacciR(N - 1) + FibonacciR(N - 2) Else FibonacciR = N
 End Function
 ' ^ ############################## ^ '    Fibonacci functions    ' ^ ############################## ^ '
 
@@ -917,16 +918,16 @@ Try: On Error GoTo Catch
 Catch:
 End Function
 
-Public Function SqrH(ByVal n As Double) As Double
+Public Function SqrH(ByVal N As Double) As Double
     'SquareRoot due to Heron algorithm
-    Dim s As Long:   s = Sgn(n): n = Abs(n)
-    Dim r As Double: r = n
+    Dim s As Long:   s = Sgn(N): N = Abs(N)
+    Dim r As Double: r = N
     Dim i As Long
     SqrH = 1
     Do
         i = i + 1
         SqrH = (SqrH + r) / 2
-        r = n / SqrH
+        r = N / SqrH
         If (SqrH - r) < 0.0000000000001 Then Exit Do
         If i = 20 Then Exit Do
     Loop
@@ -1164,6 +1165,8 @@ Public Function ComplexP_Mul(p1 As ComplexP, p2 As ComplexP) As ComplexP
     End With
 End Function
 
+'r*e^(phi+2pi*k); k € Z (ganze Zahl)
+'z^n = r^n * e^(i*(n*phi+2pi*k*n)); k gnd n sind ganze zahlen
 Public Function ComplexP_Powi(p As ComplexP, ByVal expon As Long) As ComplexP
     'bei Ganzzahligen Exponenten spricht man vom Satz von Moivre, Potenzgesetze
     Dim ppi2 As Double: ppi2 = 8 * VBA.Math.Atn(1)
@@ -1180,9 +1183,13 @@ End Function
 'k=0,1,...,q-1
 'Z = ganze negative und positive Zahlen inkl 0
 'N = ganze nur positive Zahlen
-Public Function ComplexP_Pow(p As ComplexP, ByVal expon_p As Long, ByVal expon_q As Long) As ComplexP
+Public Function ComplexP_Pow(p As ComplexP, ByVal expon_p As Long, ByVal expon_q As Long) As ComplexP()
+    Dim ccp() As ComplexP
     If expon_q < 2 Then
-        '
+        If expon_q = 1 Then
+            ReDim ccp(0 To 0): ccp(0) = ComplexP_Powi(p, expon_p)
+            ComplexP_Pow = ccp()
+        End If
         Exit Function 'q € N,
     End If
     If Not MMath.CancelFraction(expon_p, expon_q) Then
@@ -1193,12 +1200,45 @@ Public Function ComplexP_Pow(p As ComplexP, ByVal expon_p As Long, ByVal expon_q
         '
         Exit Function
     End If
-    Dim ppi2 As Double: ppi2 = 8 * VBA.Math.Atn(1)
-    With ComplexP_Pow
-        .r = p.r ^ (expon_p / expon_q)
-        .phi = ModDbl(expon_q * p.phi, ppi2)
-        'if .phi<0
-    End With
+    Dim ppi2 As Double: ppi2 = Pi2 ' 8 * VBA.Math.Atn(1)
+    Dim pq   As Double:   pq = expon_p / expon_q
+    Dim r    As Double:    r = p.r ^ pq
+    'Dim phi As Double:   phi = ModDbl(expon_q * p.phi, ppi2)
+    Dim phi As Double:   phi = p.phi * pq
+    Dim dp  As Double:    dp = ppi2 / expon_q
+    ReDim ccp(0 To expon_q - 1)
+    ccp(0) = ComplexP(r, phi)
+    Dim i As Long
+    For i = 1 To expon_q - 1
+        phi = phi + dp
+        ccp(i) = ComplexP(r, phi)
+    Next
+    ComplexP_Pow = ccp
+End Function
+
+Public Function ComplexP_NthRoot(p As ComplexP, ByVal N As Long) As ComplexP()
+    'berechnet die n-te Wurzel einer komplexem zahl p
+    'computes the nth-root of the complex number p
+    Dim ccp() As ComplexP
+    If N = 0 Then Exit Function 'q € N w/o 0
+    If N = 1 Then
+        ReDim ccp(0 To 0): ccp(0) = p
+        ComplexP_NthRoot = ccp()
+        Exit Function
+    End If
+    Dim N_1  As Double:  N_1 = 1 / N
+    Dim r    As Double:    r = p.r ^ N_1
+    Dim phi  As Double:  phi = p.phi * N_1
+    Dim ppi2 As Double: ppi2 = Pi2
+    Dim dp   As Double:   dp = ppi2 / N
+    ReDim ccp(0 To N - 1)
+    ccp(0) = ComplexP(r, phi)
+    Dim i As Long
+    For i = 1 To N - 1
+        phi = phi + dp
+        ccp(i) = ComplexP(r, phi)
+    Next
+    ComplexP_NthRoot = ccp
 End Function
 
 Public Function ModDbl(v As Double, d As Double) As Double
@@ -1222,9 +1262,9 @@ End Function
 Public Function CalcPi()
     Dim sqr3: sqr3 = CDec("1,7320508075688772935274463415") '058723669428052538103806280558069794519330169088000370811461867572485756")
     Dim sum: sum = CDec(0)
-    Dim n As Long
-    For n = 1 To 40
-        sum = sum + -Fact(2 * n - 2) / (2 ^ (4 * n - 2) * Fact(n - 1) ^ 2 * (2 * n - 3) * (2 * n + 1))
+    Dim N As Long
+    For N = 1 To 40
+        sum = sum + -Fact(2 * N - 2) / (2 ^ (4 * N - 2) * Fact(N - 1) ^ 2 * (2 * N - 3) * (2 * N + 1))
     Next
     Dim Pi
     Pi = 3 * sqr3 / 4 + 24 * sum

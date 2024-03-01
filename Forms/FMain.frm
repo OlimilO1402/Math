@@ -1,5 +1,5 @@
 VERSION 5.00
-Begin VB.Form Form1 
+Begin VB.Form FMain 
    Caption         =   "Form1"
    ClientHeight    =   6255
    ClientLeft      =   120
@@ -113,7 +113,7 @@ Begin VB.Form Form1
       Width           =   855
    End
 End
-Attribute VB_Name = "Form1"
+Attribute VB_Name = "FMain"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
@@ -124,13 +124,17 @@ Private Sub Command1_Click()
     Dim n As Long: n = 100000
     Dim t As Single: t = Timer
     Dim i As Long, b As Boolean
+    Dim p As Long
     Dim c As Long
     For i = 0 To n
         b = IsPrime(i)
-        If b Then c = c + 1
+        If b Then
+            p = i
+            c = c + 1
+        End If
     Next
     t = Timer - t
-    MsgBox "time: " & t & "    " & c
+    MsgBox "Testing numbers from 0 to n=" & Format(n, ) & " if it's a prime. Found " & c & " primes." & vbCrLf & "This took about " & t & " seconds. the last prime was " & p
 End Sub
 
 Private Sub Command2_Click()
@@ -395,6 +399,30 @@ Sub TestComplex()
     Dim ex As Long: ex = 2020
     Dim zp As ComplexP: zp = MMath.ComplexP_Powi(zp1, ex)
     AddItem "zp = zp1 ^ 2020; zp = (" & MMath.ComplexP_ToStrE(zp1) & ") ^ (" & ex & ") = " & MMath.ComplexP_ToStrE(zp)
+    
+    Dim r   As Double: r = 2
+    Dim phi As Double ': phi=0
+    Dim p   As Long: p = 4
+    Dim q   As Long: q = 3
+    Dim i As Long
+    zp = MMath.ComplexP(r, phi)
+    
+    Dim zzp() As ComplexP
+    zzp = MMath.ComplexP_Pow(zp, p, q)
+    
+    For i = 0 To q - 1
+        AddItem ComplexP_ToStrE(zzp(i))
+    Next
+    
+    phi = Pihalf
+    zp = MMath.ComplexP(r, phi)
+    
+    Dim n As Long: n = 5
+    zzp = ComplexP_NthRoot(zp, n)
+    
+    For i = 0 To n - 1
+        AddItem ComplexP_ToStrE(zzp(i))
+    Next
     
     AddItem ""
 End Sub
