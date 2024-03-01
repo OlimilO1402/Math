@@ -28,60 +28,60 @@ Begin VB.Form FMain
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      Height          =   5655
+      Height          =   5775
       Left            =   0
       MultiLine       =   -1  'True
       ScrollBars      =   3  'Beides
-      TabIndex        =   8
+      TabIndex        =   7
       Top             =   480
       Width           =   14535
    End
-   Begin VB.CommandButton Command5 
-      Caption         =   "Command5"
+   Begin VB.CommandButton BtnFibonacci 
+      Caption         =   "Fibonacci"
       Height          =   375
-      Left            =   9000
-      TabIndex        =   7
-      Top             =   120
-      Width           =   1575
-   End
-   Begin VB.CommandButton Command4 
-      Caption         =   "Command4"
-      Height          =   375
-      Left            =   7440
+      Left            =   7200
       TabIndex        =   6
-      Top             =   120
+      Top             =   0
       Width           =   1575
    End
-   Begin VB.CommandButton Command3 
-      Caption         =   "Command3"
+   Begin VB.CommandButton BtnFindMinMax 
+      Caption         =   "Find Min, Max"
       Height          =   375
-      Left            =   5880
+      Left            =   5640
       TabIndex        =   5
-      Top             =   120
+      Top             =   0
       Width           =   1575
    End
-   Begin VB.CommandButton Command2 
-      Caption         =   "Command2"
+   Begin VB.CommandButton BtnPrimeFactors 
+      Caption         =   "Get Prime Factors"
       Height          =   375
-      Left            =   3000
-      TabIndex        =   2
-      Top             =   120
+      Left            =   4080
+      TabIndex        =   4
+      Top             =   0
       Width           =   1575
    End
-   Begin VB.CommandButton Command1 
-      Caption         =   "Command1"
+   Begin VB.CommandButton BtnTestPrimes2 
+      Caption         =   "Test Primes 2"
       Height          =   375
-      Left            =   1440
+      Left            =   1560
       TabIndex        =   1
-      Top             =   120
+      Top             =   0
+      Width           =   1575
+   End
+   Begin VB.CommandButton BtnTestPrimes 
+      Caption         =   "Testing Primes"
+      Height          =   375
+      Left            =   0
+      TabIndex        =   0
+      Top             =   0
       Width           =   1575
    End
    Begin VB.Label Label3 
       AutoSize        =   -1  'True
-      Caption         =   "Label2"
+      Caption         =   "Label3"
       Height          =   195
-      Left            =   4680
-      TabIndex        =   4
+      Left            =   3240
+      TabIndex        =   3
       Top             =   240
       Width           =   495
    End
@@ -89,28 +89,10 @@ Begin VB.Form FMain
       AutoSize        =   -1  'True
       Caption         =   "Label2"
       Height          =   195
-      Left            =   4680
-      TabIndex        =   3
+      Left            =   3240
+      TabIndex        =   2
       Top             =   0
       Width           =   495
-   End
-   Begin VB.Label Label1 
-      AutoSize        =   -1  'True
-      Caption         =   "Constants"
-      BeginProperty Font 
-         Name            =   "Segoe UI"
-         Size            =   9.75
-         Charset         =   0
-         Weight          =   400
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      Height          =   255
-      Left            =   120
-      TabIndex        =   0
-      Top             =   120
-      Width           =   855
    End
 End
 Attribute VB_Name = "FMain"
@@ -120,13 +102,13 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
 
-Private Sub Command1_Click()
-    Dim n As Long: n = 100000
+Private Sub BtnTestPrimes_Click()
+    Dim N As Long: N = 100000
     Dim t As Single: t = Timer
     Dim i As Long, b As Boolean
     Dim p As Long
     Dim c As Long
-    For i = 0 To n
+    For i = 0 To N
         b = IsPrime(i)
         If b Then
             p = i
@@ -134,10 +116,11 @@ Private Sub Command1_Click()
         End If
     Next
     t = Timer - t
-    MsgBox "Testing numbers from 0 to n=" & Format(n, ) & " if it's a prime. Found " & c & " primes." & vbCrLf & "This took about " & t & " seconds. the last prime was " & p
+    MsgBox "Testing numbers from 0 to " & Format(N, "#,##0") & " whether it's a prime." & vbCrLf & _
+           "Found " & c & " primes. This took about " & t & " seconds." & vbCrLf & "The last prime was " & Format(p, "#,##0")
 End Sub
 
-Private Sub Command2_Click()
+Private Sub BtnTestPrimes2_Click()
     Dim dt As Single
     
     Dim p As Long
@@ -173,26 +156,30 @@ Private Sub Command2_Click()
     
 End Sub
 
-Private Sub Command3_Click()
+Private Sub BtnPrimeFactors_Click()
     'MsgBox MMath.Dedekind(8)
     
     'MsgBox PFZ(6442450938@)
-    Dim n As Long: n = 2147483644
-    MsgBox "n = " & PFZ(n) & " = " & n
+    Dim N As Long: N = 2147483644
+    MsgBox "The prime factors of " & Format(N, "#,##0") & " are " & PFZ(N)
     
 End Sub
 
-Private Sub Command4_Click()
+Private Sub BtnFindMinMax_Click()
     Dim m 'As Long
     
     m = MinArr(15, 12, 22, 45, 100, 72, 11, 83, 46, 25, 35)
-    MsgBox m '11
+    MsgBox "The Minimum out of (15, 12, 22, 45, 100, 72, 11, 83, 46, 25, 35) is " & m '11
     m = MaxArr(15, 12, 22, 45, 100, 72, 11, 83, 46, 25, 35)
-    MsgBox m '100
+    MsgBox "The Maximum out of (15, 12, 22, 45, 100, 72, 11, 83, 46, 25, 35) is " & m '100
+End Sub
+
+Private Sub BtnFibonacci_Click()
+    MsgBox "Fibonacci(15) = " & MMath.Fibonacci(15)
 End Sub
 
 Private Sub Command5_Click()
-    MsgBox "Fibonacci(15) = " & MMath.Fibonacci(15)
+
 End Sub
 
 Private Sub Form_Load()
@@ -301,8 +288,8 @@ Sub TestPrimes()
     'Dim n As Long: n = 5
     'Dim n As Long: n = 96211
     'Dim n As Long: n = 99991
-    Dim n As Long: n = 99991
-    AddItem "IsPrimeA(" & n & ") = " & MMath.IsPrime(n)
+    Dim N As Long: N = 99991
+    AddItem "IsPrimeA(" & N & ") = " & MMath.IsPrime(N)
     AddItem ""
 End Sub
 
@@ -417,10 +404,10 @@ Sub TestComplex()
     phi = Pihalf
     zp = MMath.ComplexP(r, phi)
     
-    Dim n As Long: n = 5
-    zzp = ComplexP_NthRoot(zp, n)
+    Dim N As Long: N = 5
+    zzp = ComplexP_NthRoot(zp, N)
     
-    For i = 0 To n - 1
+    For i = 0 To N - 1
         AddItem ComplexP_ToStrE(zzp(i))
     Next
     

@@ -407,7 +407,7 @@ End Function
 '    IsPrimeN = True
 'End Function
 
-Function IsPrime(ByVal Value As Long) As Boolean
+Function IsPrime(ByVal value As Long) As Boolean
 '    If Value < 200 Then
 '        Select Case Value
 '        Case 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, _
@@ -415,15 +415,15 @@ Function IsPrime(ByVal Value As Long) As Boolean
 '            IsPrime = True:        Exit Function
 '        End Select
 '    End If
-    If (Value And 1) = 0 Then Exit Function
+    If (value And 1) = 0 Then Exit Function
     Dim div As Long: div = 3
     Dim squ As Long: squ = 9
-    Do While squ < Value
-        If Value Mod div = 0 Then Exit Function
+    Do While squ < value
+        If value Mod div = 0 Then Exit Function
         div = div + 2
         squ = div * div
     Loop
-    If squ <> Value Then
+    If squ <> value Then
         IsPrime = True
     End If
     InitPrimeX
@@ -714,32 +714,32 @@ Public Function GetINF(Optional ByVal sign As Long = 1) As Double
     Call RtlMoveMemory(GetINF, L(1), 8)
 End Function
 
-Public Sub GetNaN(ByRef Value As Double)
+Public Sub GetNaN(ByRef value As Double)
     Dim L(1 To 2) As Long
     L(1) = 1
     L(2) = &H7FF00000
-    Call RtlMoveMemory(Value, L(1), 8)
+    Call RtlMoveMemory(value, L(1), 8)
 End Sub
 
-Public Sub GetINDef(ByRef Value As Double)
+Public Sub GetINDef(ByRef value As Double)
 Try: On Error Resume Next
-    Value = 0# / 0#
+    value = 0# / 0#
 Catch: On Error GoTo 0
 End Sub
 ' ^ ############################## ^ '    Create functions    ' ^ ############################## ^ '
 
 ' v ############################## v '     Bool functions     ' v ############################## v '
-Public Function IsINDef(ByRef Value As Double) As Boolean
+Public Function IsINDef(ByRef value As Double) As Boolean
 Try: On Error Resume Next
-    IsINDef = (CStr(Value) = CStr(INDef))
+    IsINDef = (CStr(value) = CStr(INDef))
 Catch: On Error GoTo 0
 End Function
 
-Public Function IsNaN(ByRef Value As Double) As Boolean
+Public Function IsNaN(ByRef value As Double) As Boolean
     Dim b(0 To 7) As Byte
     Dim i As Long
     
-    RtlMoveMemory b(0), Value, 8
+    RtlMoveMemory b(0), value, 8
     
     If (b(7) = &H7F) Or (b(7) = &HFF) Then
         If (b(6) >= &HF0) Then
@@ -753,12 +753,12 @@ Public Function IsNaN(ByRef Value As Double) As Boolean
     End If
 End Function
 
-Public Function IsPosINF(ByVal Value As Double) As Boolean
-    IsPosINF = (Value = posINF)
+Public Function IsPosINF(ByVal value As Double) As Boolean
+    IsPosINF = (value = posINF)
 End Function
 
-Public Function IsNegINF(ByVal Value As Double) As Boolean
-    IsNegINF = (Value = negINF)
+Public Function IsNegINF(ByVal value As Double) As Boolean
+    IsNegINF = (value = negINF)
 End Function
 ' ^ ############################## ^ '     Bool functions     ' ^ ############################## ^ '
 
@@ -1239,6 +1239,10 @@ Public Function ComplexP_NthRoot(p As ComplexP, ByVal N As Long) As ComplexP()
         ccp(i) = ComplexP(r, phi)
     Next
     ComplexP_NthRoot = ccp
+End Function
+
+Public Function ModF(ByVal value As Double, ByVal div As Double) As Double
+   ModF = value - (Int(value / div) * div)
 End Function
 
 Public Function ModDbl(v As Double, d As Double) As Double
