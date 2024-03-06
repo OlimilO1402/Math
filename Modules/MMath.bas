@@ -1,5 +1,5 @@
 Attribute VB_Name = "MMath"
-Option Explicit
+Option Explicit ' OM: 2024-03-04 lines 1264
 
 Public INDef  As Double
 Public posINF As Double
@@ -18,20 +18,21 @@ Public Type ComplexP
     phi As Double
 End Type
 
-'Complex number in Eulerform
-'Public Type ComplexE
-'    r     As Double
-'    eiphi As Double
-'End Type
-
 Private Declare Sub RtlMoveMemory Lib "kernel32" (ByRef pDst As Any, ByRef pSrc As Any, ByVal bLength As Long)
 
-'Wertebereich Currency (Int64)
-'    Dim bigDec1: bigDec1 = CDec("9223372036854775807")   ' No overflow.
-'    Dim bigDec2: bigDec2 = CDec("9223372036854775808")   ' No Overflow.
-'    Dim bigDec3: bigDec3 = CDec("9223372036854775809")   ' No overflow.
+'value range Byte (unsigned int8)
+'0-255
 
-'Wertebereich Decimal
+'value range Integer (signed int16)
+'-32768 - 32767
+
+
+'value range Currency (Int64)
+'    Dim Cur1: bigDec1 = CDec("9223372036854775807")   ' No overflow.
+'    Dim Cur2: bigDec2 = CDec("9223372036854775808")   ' No Overflow.
+'    Dim Cur3: bigDec3 = CDec("9223372036854775809")   ' No overflow.
+
+'value range Decimal
 '    Dim bigDec1: bigDec1 = CDec("79228162514264337593543950335")
 '    Dim bigDec2: bigDec2 = CDec("-79228162514264337593543950335")
 '    Dim bigDec3: bigDec3 = CDec("7,9228162514264337593543950335")
@@ -40,38 +41,35 @@ Private Declare Sub RtlMoveMemory Lib "kernel32" (ByRef pDst As Any, ByRef pSrc 
 '    Dim bigDec6: bigDec6 = CDec("-0,0000000000000000000000000001")
 
 
-'Mathematische Konstanten
+'Mathematical constants
 'https://de.wikipedia.org/wiki/Mathematische_Konstante
 'https://de.wikipedia.org/wiki/Liste_besonderer_Zahlen
-Public Pi          ' As Variant As Decimal
-Public Pihalf      ' As Variant As Decimal
-Public Pi2         ' As Variant As Decimal
-Public Euler       ' As Variant As Decimal
-Public SquareRoot2 ' As Variant As Decimal
-Public SquareRoot3 ' As Variant As Decimal
-Public GoldenRatio ' As Variant As Decimal
+Public Pi          ' As Decimal
+Public Pihalf      ' As Decimal
+Public Pi2         ' As Decimal
+Public Euler       ' As Decimal
+Public SquareRoot2 ' As Decimal
+Public SquareRoot3 ' As Decimal
+Public GoldenRatio ' As Decimal
 
-'Physikalische Konstanten
-Public SpeedOfLight   'Lichtgeschwindigkeit im Vakuum      c   = 299792458 m/s
-Public ElemCharge     'Elementarladung (des Protons)       e   = 1,602176634 * 10^-19 C (Coulomb)
-Public MassElektron   'Ruhemasse des Elektrons             m_e = 9,109*10^-31 kg
-Public MassProton     'Ruhemasse des Protons               m_p = 1,6726215813 · 10^-27 kg
-Public PlanckQuantum  'Plancksches Wirkungsquantum         h   = 6,62607015 * 10^(-37) m² * kg / s
-Public Avogadro       'Avogadro-Konstante                  N_A = 6,022 * 10^23
-Public Gravitation    'Newtonsche Gravitationskonstante    G   = 6,6743 * 10^-11 m³ / (kg * s²)
-Public BoltzmannConst 'Boltzmann-Konstante                 k_B = 1,38064852 × 10-23 m2 kg s-2 K-1
-Public MagnPermittvy  'magnetische Feldkonstante           mue_0 = µ0 ˜ 1.2566370621219 * 10 ^(-6) N/A²
-Public ElecPermittvy  'elektrische Feldkonstante           eps_0 = 8.8541878128(13)e-12 (A s)/(V m)
-Public QuantumAlpha   'FineStructureConstant
+'Physical constants
+Public SpeedOfLight   ' Lichtgeschwindigkeit im Vakuum      c   = 299792458 m/s
+Public ElemCharge     ' Elementarladung (des Protons)       e   = 1,602176634 * 10^-19 C (Coulomb)
+Public MassElektron   ' Ruhemasse des Elektrons             m_e = 9,109*10^-31 kg
+Public MassProton     ' Ruhemasse des Protons               m_p = 1,6726215813 · 10^-27 kg
+Public PlanckQuantum  ' Plancksches Wirkungsquantum         h   = 6,62607015 * 10^(-37) m² * kg / s
+Public Avogadro       ' Avogadro-Konstante                  N_A = 6,022 * 10^23
+Public Gravitation    ' Newtonsche Gravitationskonstante    G   = 6,6743 * 10^-11 m³ / (kg * s²)
+Public BoltzmannConst ' Boltzmann-Konstante                 k_B = 1,38064852 × 10-23 m2 kg s-2 K-1
+Public MagnPermittvy  ' magnetische Feldkonstante           mue_0 = µ0 ˜ 1.2566370621219 * 10 ^(-6) N/A²
+Public ElecPermittvy  ' elektrische Feldkonstante           eps_0 = 8.8541878128(13)e-12 (A s)/(V m)
+Public QuantumAlpha   ' FineStructureConstant
 
-Private m_Factorials() 'As Variant 'As Decimal
-Public Primes()  As Long 'contains all primes up to 100000    'As Variant 'As Decimal
-
-Public PrimesX() As Long 'a distinct selection of primes
+Private m_Factorials()   ' As Decimal
+Public Primes()  As Long ' contains all primes up to 100000
+Public PrimesX() As Long ' a distinct selection of primes
 
 Public Fibonacci() As Long
-
-'Public Dedekind(1 To 9)
 
 'NTSYSAPI SIZE_T RtlCompareMemory(
 '  [in] const VOID *Source1,
@@ -80,9 +78,6 @@ Public Fibonacci() As Long
 ');
 'Private Declare Function RtlCompareMemory Lib "ntdll" (pSrc1 As Long, pSrc2 As Long, ByVal Length As Long) As Long
 
-
-'Boltzmann-Konstante kB
-'magnetische und elektrische Feldkonstante   µ0, e0
 
 Public Sub Init()
         'Pi = CDec("3,1415926535897932384626433832795") '0288419716939937510582097494459230781640628620899862803482534211706798214")
@@ -1261,7 +1256,6 @@ Public Function ComplexP_ToComplex(p As ComplexP) As Complex
 End Function
 
 ' ^ ############################## ^ '    Complex numbers    ' ^ ############################## ^ '
-
 
 Public Function CalcPi()
     Dim sqr3: sqr3 = CDec("1,7320508075688772935274463415") '058723669428052538103806280558069794519330169088000370811461867572485756")

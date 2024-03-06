@@ -193,8 +193,41 @@ Private Sub Form_Load()
     'Debug.Print MMath.Pi
     'Debug.Print MMath.Euler
     Tests
+    
     'Constants_ToTextBox LBConstants
     
+'value range Boolean
+'True = -1 bis False = 0
+'    Dim MinBol As Boolean: MinBol = True  ' = - 1
+'    Dim MaxBol As Boolean: MaxBol = False ' = 0
+'
+'
+'
+'
+'
+'    Dim MinByt As Byte: MinByt = CByte("0")
+'    Dim MaxByt As Byte: MaxByt = CByte("0")
+'
+''value range Currency (signed Int64)
+''Currency (skalierte Ganzzahl)
+''8 Bytes -922.337.203.685.477,5808 bis 922.337.203.685.477,5807
+'
+'    Dim c As Currency
+'
+'    c = -1234567890123.46    'mit Double nur max 2 Stellen nach dem Komma in der IDE
+'    MsgBox c
+'    c = -1234567890123.4567@ 'mit Currency@ gehen alle 4 Nachkommastellen
+'    MsgBox c
+'
+'    Dim MinCur As Currency: MinCur = CCur("-922337203685477,5808")   ' No overflow.
+'    MsgBox MinCur
+'    MinCur = -922337203685477.5807@
+'    MsgBox MinCur
+'
+'    Dim MaxCur As Currency: MaxCur = CCur("922337203685477,5807")   ' No Overflow.
+'    MsgBox MaxCur
+'    MaxCur = 922337203685477.5807@
+'    MsgBox MaxCur
 End Sub
 
 Private Sub Form_Resize()

@@ -1,4 +1,4 @@
-Attribute VB_Name = "MCubeRoot"
+Attribute VB_Name = "MCubeRoot2"
 Option Explicit
 Type TLong
     Value As Long
@@ -14,51 +14,6 @@ Type TDouble
     Value As Double
 End Type
 
-'// estimate bits of precision (32-bit float case)
-'inline int bits_of_precision(float a, float b)
-Public Function bits_of_precisionS(ByVal a As Single, ByVal b As Single) As Long
-    
-    Dim kd As Single: kd = 1# / VBA.Math.Log(2#)
-    
-    If a = b Then
-        bits_of_precisionS = 23
-        Exit Function
-    End If
-    
-    Dim kdmin As Single: kdmin = 2 ^ -23
-    
-    Dim d As Single: d = Abs(a - b)
-    If (d < kdmin) Then
-        bits_of_precisionS = 23
-        Exit Function
-    End If
-    
-    bits_of_precisionS = Int(-Log(d) * kd)
-    
-End Function
-
-''// estiamte bits of precision (64-bit double case)
-'inline int bits_of_precision(double a, double b)
-Function bits_of_precisionD(ByVal a As Double, ByVal b As Double) As Long
-    Dim kd As Double: kd = 1# / VBA.Math.Log(2#)
-    
-    If a = b Then
-        bits_of_precisionD = 52
-        Exit Function
-    End If
-    
-    Dim kdmin As Double: kdmin = 2# ^ -52#
-    
-    Dim d As Double: d = Abs(a - b)
-    If d < kdmin Then
-        bits_of_precisionD = 52
-        Exit Function
-    End If
-    
-    bits_of_precisionD = Int(-Log(d) * kd)
-    
-End Function
-
 '// cube root via x^(1/3)
 Function pow_cbrtf(ByVal x As Single) As Single
     pow_cbrtf = x ^ (1! / 3!)
@@ -72,10 +27,12 @@ End Function
 '// cube root approximation using bit hack for 32-bit float
 '__forceinline float cbrt_5f(float f)
 Function cbrt_5f(ByVal f As Single) As Single
+    
     Dim t As TSingle: t.Value = f
     Dim p As TLong:    LSet p = t: p.Value = p.Value \ 3 + 709921077
     LSet t = p
     cbrt_5f = t.Value
+    
 End Function
 '      8 ->   1,96252  correct is   2
 '     12 ->   2,258374 correct is   2,2894284851066637356160844238794
@@ -94,10 +51,12 @@ End Function
 '    return t;
 '}
 Function cbrt_5d(ByVal d As Double) As Double
+    
     Dim t As TDouble: t.Value = d
     Dim p As TLong2:   LSet p = t: p.Value1 = p.Value1 \ 3 + 715094163
     LSet t = p
     cbrt_5d = t.Value
+    
 End Function
 '      8 ->   1,96693706512451 correct is   2
 '     12 ->   2,26720809936523 correct is   2,2894284851066637356160844238794
@@ -118,8 +77,9 @@ End Function
 '    return t;
 '}
 Function quint_5d(ByVal d As Double) As Double
+    
     quint_5d = VBA.Math.Sqr(VBA.Math.Sqr(d))
-    Exit Function
+    
 End Function
 
 '
@@ -178,8 +138,13 @@ End Function
 '    return cbrta_halleyd(a, d);
 '}
 Function halley_cbrt1d(ByVal d As Double) As Double
-    Dim a As Double: a = cbrt_5d(d)
-    halley_cbrt1d = cbrta_halleyd(a, d)
+    Dim a As Double ': a = cbrt_5d(d)
+    Dim t As TDouble: t.Value = d
+    Dim p As TLong2:   LSet p = t: p.Value1 = p.Value1 \ 3 + 715094163
+    LSet t = p
+    a = t.Value
+    Dim a3 As Double: a3 = a * a * a
+    halley_cbrt1d = a * (a3 + d + d) / (a3 + a3 + d)
 End Function
 
 '
@@ -190,8 +155,14 @@ End Function
 '    return cbrta_halleyf(a, d);
 '}
 Function halley_cbrt1f(ByVal f As Single) As Single
-    Dim a As Single: a = cbrt_5f(f)
-    halley_cbrt1f = cbrta_halleyf(a, f)
+    Dim a3 As Single
+    Dim a As Single
+    Dim t As TSingle: t.Value = f
+    Dim p As TLong:    LSet p = t: p.Value = p.Value \ 3 + 709921077
+    LSet t = p
+    a = t.Value
+    a3 = a * a * a
+    halley_cbrt1f = a * (a3 + f + f) / (a3 + a3 + f)
 End Function
 
 '
@@ -203,9 +174,20 @@ End Function
 '    return cbrta_halleyd(a, d);
 '}
 Function halley_cbrt2d(ByVal d As Double) As Double
-    Dim a As Double: a = cbrt_5d(d)
-    a = cbrta_halleyd(a, d)
-    halley_cbrt2d = cbrta_halleyd(a, d)
+    
+    Dim a3 As Double
+    Dim a As Double
+    Dim t As TDouble: t.Value = d
+    Dim p As TLong2:   LSet p = t: p.Value1 = p.Value1 \ 3 + 715094163
+    LSet t = p
+    a = t.Value
+    
+    a3 = a * a * a
+    a = a * (a3 + d + d) / (a3 + a3 + d)
+    
+    a3 = a * a * a
+    halley_cbrt2d = a * (a3 + d + d) / (a3 + a3 + d)
+    
 End Function
 
 '
@@ -219,10 +201,23 @@ End Function
 '}
 
 Function halley_cbrt3d(ByVal d As Double) As Double
-    Dim a As Double: a = cbrt_5d(d)
-    a = cbrta_halleyd(a, d)
-    a = cbrta_halleyd(a, d)
-    halley_cbrt3d = cbrta_halleyd(a, d)
+    
+    Dim a3 As Double
+    Dim a As Double
+    Dim t As TDouble: t.Value = d
+    Dim p As TLong2:   LSet p = t: p.Value1 = p.Value1 \ 3 + 715094163
+    LSet t = p
+    a = t.Value
+    
+    a3 = a * a * a
+    a = a * (a3 + d + d) / (a3 + a3 + d)
+    
+    a3 = a * a * a
+    a = a * (a3 + d + d) / (a3 + a3 + d)
+    
+    a3 = a * a * a
+    halley_cbrt3d = a * (a3 + d + d) / (a3 + a3 + d)
+    
 End Function
 
 '
@@ -234,10 +229,23 @@ End Function
 '    a = cbrta_halleyf(a, d);
 '    return cbrta_halleyf(a, d);
 '}
-Function halley_cbrt2f(ByVal d As Single) As Single
-    Dim a As Single: a = cbrt_5f(d)
-    a = cbrta_halleyf(a, d)
-    halley_cbrt2f = cbrta_halleyf(a, d)
+Function halley_cbrt2f(ByVal f As Single) As Single
+    
+    Dim a3 As Single
+    Dim a As Single
+    Dim t As TSingle: t.Value = f
+    Dim p As TLong:    LSet p = t: p.Value = p.Value \ 3 + 709921077
+    LSet t = p
+    a = t.Value
+    
+    a3 = a * a * a
+    a = a * (a3 + f + f) / (a3 + a3 + f)
+    
+'    a3 = a * a * a
+'    a = a * (a3 + f + f) / (a3 + a3 + f)
+    
+    a3 = a * a * a
+    halley_cbrt2f = a * (a3 + f + f) / (a3 + a3 + f)
 End Function
 
 '
@@ -248,8 +256,14 @@ End Function
 '    return cbrta_newtond(a, d);
 '}
 Function newton_cbrt1d(ByVal d As Double) As Double
-    Dim a As Double: a = cbrt_5d(d)
-    newton_cbrt1d = cbrta_newtond(a, d)
+    
+    Dim a As Double
+    Dim t As TDouble: t.Value = d
+    Dim p As TLong2:   LSet p = t: p.Value1 = p.Value1 \ 3 + 715094163
+    LSet t = p
+    a = t.Value
+    newton_cbrt1d = (1# / 3#) * (d / (a * a) + 2 * a)
+    
 End Function
 
 '
@@ -261,9 +275,15 @@ End Function
 '    return cbrta_newtond(a, d);
 '}
 Function newton_cbrt2d(d As Double) As Double
-    Dim a As Double: a = cbrt_5d(d)
-    a = cbrta_newtond(a, d)
-    newton_cbrt2d = cbrta_newtond(a, d)
+    
+    Dim a As Double
+    Dim t As TDouble: t.Value = d
+    Dim p As TLong2:   LSet p = t: p.Value1 = p.Value1 \ 3 + 715094163
+    LSet t = p
+    a = t.Value
+    a = (1# / 3#) * (d / (a * a) + 2 * a)
+    newton_cbrt2d = (1# / 3#) * (d / (a * a) + 2 * a)
+    
 End Function
 
 '
@@ -276,10 +296,16 @@ End Function
 '    return cbrta_newtond(a, d);
 '}
 Function newton_cbrt3d(ByVal d As Double) As Double
-    Dim a As Double: a = cbrt_5d(d)
-    a = cbrta_newtond(a, d)
-    a = cbrta_newtond(a, d)
-    newton_cbrt3d = cbrta_newtond(a, d)
+    
+    Dim a As Double
+    Dim t As TDouble: t.Value = d
+    Dim p As TLong2:   LSet p = t: p.Value1 = p.Value1 \ 3 + 715094163
+    LSet t = p
+    a = t.Value
+    a = (1# / 3#) * (d / (a * a) + 2 * a)
+    a = (1# / 3#) * (d / (a * a) + 2 * a)
+    newton_cbrt3d = (1# / 3#) * (d / (a * a) + 2 * a)
+    
 End Function
 
 '
@@ -293,11 +319,17 @@ End Function
 '    return cbrta_newtond(a, d);
 '}
 Function newton_cbrt4d(ByVal d As Double) As Double
-    Dim a As Double: a = cbrt_5d(d)
-    a = cbrta_newtond(a, d)
-    a = cbrta_newtond(a, d)
-    a = cbrta_newtond(a, d)
-    newton_cbrt4d = cbrta_newtond(a, d)
+    
+    Dim a As Double
+    Dim t As TDouble: t.Value = d
+    Dim p As TLong2:   LSet p = t: p.Value1 = p.Value1 \ 3 + 715094163
+    LSet t = p
+    a = t.Value
+    a = (1# / 3#) * (d / (a * a) + 2 * a)
+    a = (1# / 3#) * (d / (a * a) + 2 * a)
+    a = (1# / 3#) * (d / (a * a) + 2 * a)
+    newton_cbrt4d = (1# / 3#) * (d / (a * a) + 2 * a)
+        
 End Function
 
 '
