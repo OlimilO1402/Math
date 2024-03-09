@@ -360,5 +360,3 @@ Function newton_cbrt4f(ByVal d As Single) As Single
     a = cbrta_newtonf(a, d)
     newton_cbrt4f = cbrta_newtonf(a, d)
 End Function
-
-

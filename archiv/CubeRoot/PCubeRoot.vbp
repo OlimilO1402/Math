@@ -4,6 +4,7 @@ Reference=*\G{00020430-0000-0000-C000-000000000046}#2.0#0#C:\WINDOWS\SysWow64\st
 Module=MCubeRoot; MCubeRoot.bas
 Module=MFunction; MFunction.bas
 Module=MCubeRoot2; MCubeRoot2.bas
+Module=MRootTests; MRootTests.bas
 IconForm="Form1"
 Startup="Form1"
 HelpFile=""

@@ -138,11 +138,9 @@ End Function
 '    return cbrta_halleyd(a, d);
 '}
 Function halley_cbrt1d(ByVal d As Double) As Double
-    Dim a As Double ': a = cbrt_5d(d)
     Dim t As TDouble: t.Value = d
     Dim p As TLong2:   LSet p = t: p.Value1 = p.Value1 \ 3 + 715094163
-    LSet t = p
-    a = t.Value
+    Dim a As Double:   LSet t = p: a = t.Value
     Dim a3 As Double: a3 = a * a * a
     halley_cbrt1d = a * (a3 + d + d) / (a3 + a3 + d)
 End Function
@@ -156,11 +154,9 @@ End Function
 '}
 Function halley_cbrt1f(ByVal f As Single) As Single
     Dim a3 As Single
-    Dim a As Single
     Dim t As TSingle: t.Value = f
     Dim p As TLong:    LSet p = t: p.Value = p.Value \ 3 + 709921077
-    LSet t = p
-    a = t.Value
+    Dim a As Single:   LSet t = p: a = t.Value
     a3 = a * a * a
     halley_cbrt1f = a * (a3 + f + f) / (a3 + a3 + f)
 End Function
@@ -176,15 +172,11 @@ End Function
 Function halley_cbrt2d(ByVal d As Double) As Double
     
     Dim a3 As Double
-    Dim a As Double
     Dim t As TDouble: t.Value = d
     Dim p As TLong2:   LSet p = t: p.Value1 = p.Value1 \ 3 + 715094163
-    LSet t = p
-    a = t.Value
-    
+    Dim a As Double:   LSet t = p: a = t.Value
     a3 = a * a * a
     a = a * (a3 + d + d) / (a3 + a3 + d)
-    
     a3 = a * a * a
     halley_cbrt2d = a * (a3 + d + d) / (a3 + a3 + d)
     
@@ -203,18 +195,13 @@ End Function
 Function halley_cbrt3d(ByVal d As Double) As Double
     
     Dim a3 As Double
-    Dim a As Double
     Dim t As TDouble: t.Value = d
     Dim p As TLong2:   LSet p = t: p.Value1 = p.Value1 \ 3 + 715094163
-    LSet t = p
-    a = t.Value
-    
+    Dim a As Double:   LSet t = p: a = t.Value
     a3 = a * a * a
     a = a * (a3 + d + d) / (a3 + a3 + d)
-    
     a3 = a * a * a
     a = a * (a3 + d + d) / (a3 + a3 + d)
-    
     a3 = a * a * a
     halley_cbrt3d = a * (a3 + d + d) / (a3 + a3 + d)
     
@@ -232,20 +219,14 @@ End Function
 Function halley_cbrt2f(ByVal f As Single) As Single
     
     Dim a3 As Single
-    Dim a As Single
     Dim t As TSingle: t.Value = f
     Dim p As TLong:    LSet p = t: p.Value = p.Value \ 3 + 709921077
-    LSet t = p
-    a = t.Value
-    
+    Dim a As Single:   LSet t = p: a = t.Value
     a3 = a * a * a
     a = a * (a3 + f + f) / (a3 + a3 + f)
-    
-'    a3 = a * a * a
-'    a = a * (a3 + f + f) / (a3 + a3 + f)
-    
     a3 = a * a * a
     halley_cbrt2f = a * (a3 + f + f) / (a3 + a3 + f)
+    
 End Function
 
 '
@@ -257,11 +238,9 @@ End Function
 '}
 Function newton_cbrt1d(ByVal d As Double) As Double
     
-    Dim a As Double
     Dim t As TDouble: t.Value = d
     Dim p As TLong2:   LSet p = t: p.Value1 = p.Value1 \ 3 + 715094163
-    LSet t = p
-    a = t.Value
+    Dim a As Double:   LSet t = p: a = t.Value
     newton_cbrt1d = (1# / 3#) * (d / (a * a) + 2 * a)
     
 End Function
@@ -276,11 +255,9 @@ End Function
 '}
 Function newton_cbrt2d(d As Double) As Double
     
-    Dim a As Double
     Dim t As TDouble: t.Value = d
     Dim p As TLong2:   LSet p = t: p.Value1 = p.Value1 \ 3 + 715094163
-    LSet t = p
-    a = t.Value
+    Dim a As Double:   LSet t = p: a = t.Value
     a = (1# / 3#) * (d / (a * a) + 2 * a)
     newton_cbrt2d = (1# / 3#) * (d / (a * a) + 2 * a)
     
@@ -297,11 +274,9 @@ End Function
 '}
 Function newton_cbrt3d(ByVal d As Double) As Double
     
-    Dim a As Double
     Dim t As TDouble: t.Value = d
     Dim p As TLong2:   LSet p = t: p.Value1 = p.Value1 \ 3 + 715094163
-    LSet t = p
-    a = t.Value
+    Dim a As Double:   LSet t = p: a = t.Value
     a = (1# / 3#) * (d / (a * a) + 2 * a)
     a = (1# / 3#) * (d / (a * a) + 2 * a)
     newton_cbrt3d = (1# / 3#) * (d / (a * a) + 2 * a)
@@ -320,16 +295,14 @@ End Function
 '}
 Function newton_cbrt4d(ByVal d As Double) As Double
     
-    Dim a As Double
     Dim t As TDouble: t.Value = d
     Dim p As TLong2:   LSet p = t: p.Value1 = p.Value1 \ 3 + 715094163
-    LSet t = p
-    a = t.Value
+    Dim a As Double:   LSet t = p: a = t.Value
     a = (1# / 3#) * (d / (a * a) + 2 * a)
     a = (1# / 3#) * (d / (a * a) + 2 * a)
     a = (1# / 3#) * (d / (a * a) + 2 * a)
     newton_cbrt4d = (1# / 3#) * (d / (a * a) + 2 * a)
-        
+    
 End Function
 
 '
@@ -340,8 +313,13 @@ End Function
 '    return cbrta_newtonf(a, d);
 '}
 Function newton_cbrt1f(ByVal d As Single) As Single
-    Dim a As Single: a = cbrt_5f(d)
-    newton_cbrt1f = cbrta_newtonf(a, d)
+    
+    Dim t As TSingle: t.Value = d
+    Dim p As TLong:    LSet p = t: p.Value = p.Value \ 3 + 709921077
+    Dim a As Single:   LSet t = p: a = t.Value
+    a = t.Value
+    newton_cbrt1f = a - (1! / 3!) * (a - d / (a * a))
+    
 End Function
 
 '
@@ -353,9 +331,14 @@ End Function
 '    return cbrta_newtonf(a, d);
 '}
 Function newton_cbrt2f(ByVal d As Single) As Single
-    Dim a As Single: a = cbrt_5f(d)
-    a = cbrta_newtonf(a, d)
-    newton_cbrt2f = cbrta_newtonf(a, d)
+    
+    Dim t As TSingle: t.Value = d
+    Dim p As TLong:    LSet p = t: p.Value = p.Value \ 3 + 709921077
+    Dim a As Single:   LSet t = p: a = t.Value
+    a = t.Value
+    a = a - (1! / 3!) * (a - d / (a * a))
+    newton_cbrt2f = a - (1! / 3!) * (a - d / (a * a))
+    
 End Function
 
 '
@@ -368,10 +351,15 @@ End Function
 '    return cbrta_newtonf(a, d);
 '}
 Function newton_cbrt3f(ByVal d As Single) As Single
-    Dim a  As Single: a = cbrt_5f(d)
-    a = cbrta_newtonf(a, d)
-    a = cbrta_newtonf(a, d)
-    newton_cbrt3f = cbrta_newtonf(a, d)
+    
+    Dim t As TSingle: t.Value = d
+    Dim p As TLong:    LSet p = t: p.Value = p.Value \ 3 + 709921077
+    Dim a As Single:   LSet t = p: a = t.Value
+    a = t.Value
+    a = a - (1! / 3!) * (a - d / (a * a))
+    a = a - (1! / 3!) * (a - d / (a * a))
+    newton_cbrt3f = a - (1! / 3!) * (a - d / (a * a))
+    
 End Function
 
 '
@@ -386,11 +374,13 @@ End Function
 '}
 
 Function newton_cbrt4f(ByVal d As Single) As Single
-    Dim a As Single: a = cbrt_5f(d)
-    a = cbrta_newtonf(a, d)
-    a = cbrta_newtonf(a, d)
-    a = cbrta_newtonf(a, d)
-    newton_cbrt4f = cbrta_newtonf(a, d)
+    
+    Dim t As TSingle: t.Value = d
+    Dim p As TLong:    LSet p = t: p.Value = p.Value \ 3 + 709921077
+    Dim a As Single:   LSet t = p: a = t.Value
+    a = a - (1! / 3!) * (a - d / (a * a))
+    a = a - (1! / 3!) * (a - d / (a * a))
+    a = a - (1! / 3!) * (a - d / (a * a))
+    newton_cbrt4f = a - (1! / 3!) * (a - d / (a * a))
+    
 End Function
-
-
