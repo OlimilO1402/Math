@@ -9,18 +9,26 @@ Begin VB.Form Form1
    ScaleHeight     =   11910
    ScaleWidth      =   13080
    StartUpPosition =   3  'Windows-Standard
+   Begin VB.CommandButton BtnRootTests 
+      Caption         =   "Root Tests"
+      Height          =   375
+      Left            =   8160
+      TabIndex        =   5
+      Top             =   0
+      Width           =   1695
+   End
    Begin VB.CommandButton Command3 
       Caption         =   "Command3"
       Height          =   375
-      Left            =   7080
-      TabIndex        =   5
+      Left            =   6480
+      TabIndex        =   6
       Top             =   0
       Width           =   1695
    End
    Begin VB.CommandButton Command2 
       Caption         =   "Command2"
       Height          =   375
-      Left            =   5280
+      Left            =   4800
       TabIndex        =   4
       Top             =   0
       Width           =   1695
@@ -28,7 +36,7 @@ Begin VB.Form Form1
    Begin VB.CommandButton Command1 
       Caption         =   "Command1"
       Height          =   375
-      Left            =   3480
+      Left            =   3120
       TabIndex        =   3
       Top             =   0
       Width           =   1695
@@ -36,7 +44,7 @@ Begin VB.Form Form1
    Begin VB.CommandButton BtnTestValues 
       Caption         =   "Test Values"
       Height          =   375
-      Left            =   1800
+      Left            =   1560
       TabIndex        =   2
       Top             =   0
       Width           =   1575
@@ -44,7 +52,7 @@ Begin VB.Form Form1
    Begin VB.CommandButton BtnTest 
       Caption         =   "Test"
       Height          =   375
-      Left            =   120
+      Left            =   0
       TabIndex        =   1
       Top             =   0
       Width           =   1575
@@ -73,6 +81,12 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+'http://www.xbeat.net/vbspeed/
+'https://learn.microsoft.com/de-de/cpp/c-runtime-library/reference/crt-alphabetical-function-reference?view=msvc-170
+
+'https://www.youtube.com/watch?v=HekvDjzDZCo
+'https://de.wikipedia.org/wiki/X87
+
 'Private Enum ECbrt
 '
 '    AddressOf_cbrt_5f
@@ -97,15 +111,24 @@ Attribute VB_Exposed = False
 '
 'End Enum
 Option Explicit
+Private Declare Function Dbl_FSqrt Lib "FPUx87" (ByVal Value As Double) As Double
 Private m_n As Long
 Private m_Tests() As MRootTests.TRootTest
 
+Private Sub Command3_Click()
+    Dim v As Double: v = 2
+    v = Dbl_FSqrt(v)
+    
+    MsgBox v
+End Sub
+
 Private Sub Form_Load()
     m_n = 1000000 '0 'ten no one million times
-    ReDim m_Tests(0 To 6)
+    ReDim m_Tests(0 To 7)
     Dim c As Long
     m_Tests(0) = MRootTests.New_RootTest(m_n)
     MRootTests.RootTest_InitRandomNumbers m_Tests(0):   c = c + 1
+    m_Tests(c) = MRootTests.RootTest_Clone(m_Tests(0)): c = c + 1
     m_Tests(c) = MRootTests.RootTest_Clone(m_Tests(0)): c = c + 1
     m_Tests(c) = MRootTests.RootTest_Clone(m_Tests(0)): c = c + 1
     m_Tests(c) = MRootTests.RootTest_Clone(m_Tests(0)): c = c + 1
@@ -123,7 +146,7 @@ Private Sub Form_Resize()
     If W > 0 And H > 0 Then Text1.Move L, t, W, H
 End Sub
 
-Private Sub Command3_Click()
+Private Sub BtnRootTests_Click()
     Dim c As Long
     Dim i As Long
     
@@ -162,6 +185,23 @@ Private Sub Command3_Click()
         .StartTime = GetTimer
         For i = 0 To .Count - 1
             With .Test(i)
+                .Result = Dbl_FSqrt(.Value)
+            End With
+        Next
+        .EndTime = GetTimer
+    End With
+    printf RootTest_ToStr(m_Tests(c), "Dbl_FSqrt(n)       ")
+    DoEvents
+    
+    If Not MRootTests.RootTest_ResultsAreEqual(m_Tests(c), m_Tests(0)) Then
+        printf "The results are not all equal"
+    End If
+    
+    c = c + 1
+    With m_Tests(c)
+        .StartTime = GetTimer
+        For i = 0 To .Count - 1
+            With .Test(i)
                 .Result = .Value ^ (1 / 3)
             End With
         Next
@@ -183,7 +223,7 @@ Private Sub Command3_Click()
     printf RootTest_ToStr(m_Tests(c), "cbrt.newton_cbrt4d ")
     DoEvents
     
-    If Not MRootTests.RootTest_ResultsAreEqual(m_Tests(c), m_Tests(2)) Then
+    If Not MRootTests.RootTest_ResultsAreEqual(m_Tests(c), m_Tests(3)) Then
         printf "The results are not all equal"
     End If
     
@@ -200,7 +240,7 @@ Private Sub Command3_Click()
     printf RootTest_ToStr(m_Tests(c), "cbrt.halley_cbrt3d ")
     DoEvents
     
-    If Not MRootTests.RootTest_ResultsAreEqual(m_Tests(c), m_Tests(2)) Then
+    If Not MRootTests.RootTest_ResultsAreEqual(m_Tests(c), m_Tests(3)) Then
         printf "The results are not all equal"
     End If
     
@@ -217,7 +257,7 @@ Private Sub Command3_Click()
     printf RootTest_ToStr(m_Tests(c), "cbrt2.newton_cbrt4d")
     DoEvents
     
-    If Not MRootTests.RootTest_ResultsAreEqual(m_Tests(c), m_Tests(2)) Then
+    If Not MRootTests.RootTest_ResultsAreEqual(m_Tests(c), m_Tests(3)) Then
         printf "The results are not all equal"
     End If
     
@@ -234,7 +274,7 @@ Private Sub Command3_Click()
     printf RootTest_ToStr(m_Tests(c), "cbrt2.halley_cbrt3d")
     DoEvents
     
-    If Not MRootTests.RootTest_ResultsAreEqual(m_Tests(c), m_Tests(2)) Then
+    If Not MRootTests.RootTest_ResultsAreEqual(m_Tests(c), m_Tests(3)) Then
         printf "The results are not all equal"
     End If
     
