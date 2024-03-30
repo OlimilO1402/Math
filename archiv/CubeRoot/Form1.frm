@@ -86,7 +86,19 @@ Attribute VB_Exposed = False
 
 'https://www.youtube.com/watch?v=HekvDjzDZCo
 'https://de.wikipedia.org/wiki/X87
-
+'https://www.agner.org/optimize/instruction_tables.pdf
+'Pentium II and III
+'instruction Latency
+'FSQRT       69
+'SQRTPS xmm,xmm 2 56 56
+'SQRTPS xmm,m128 2 2 57 56
+'SQRTSS xmm,xmm 2 30 28
+'SQRTSS xmm,m32 2 1 31 28
+'RSQRTPS xmm,xmm 2 2 2
+'RSQRTPS xmm,m128 2 2 3 2
+'RSQRTSS xmm,xmm 1 1 1
+'RSQRTSS xmm,m32 1 1 2 1
+'
 'Private Enum ECbrt
 '
 '    AddressOf_cbrt_5f

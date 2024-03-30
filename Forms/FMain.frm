@@ -14,6 +14,7 @@ Begin VB.Form FMain
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
+   Icon            =   "FMain.frx":0000
    LinkTopic       =   "Form1"
    ScaleHeight     =   6255
    ScaleWidth      =   14655
@@ -28,12 +29,12 @@ Begin VB.Form FMain
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      Height          =   5775
+      Height          =   5895
       Left            =   0
       MultiLine       =   -1  'True
       ScrollBars      =   3  'Beides
       TabIndex        =   7
-      Top             =   480
+      Top             =   360
       Width           =   14535
    End
    Begin VB.CommandButton BtnFibonacci 
@@ -101,6 +102,67 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
+
+Private Sub Form_Load()
+    
+    Me.Caption = "Math: " & App.FileDescription & " v" & App.Major & "." & App.Minor & "." & App.Revision
+    
+    MMath.Init
+    
+    'Debug.Print CalcPi
+    'Debug.Print Fact(78)
+    'Debug.Print CDec(4) * Atn(CDec(1))
+    'Debug.Print CDec("3,141592653589792")
+    'Debug.Print CDec("3,1415926535897932384626433832795") '02884197169399375105820974944592")
+    'Debug.Print MMath.Pi
+    'Debug.Print MMath.Euler
+    Tests
+    
+    'Constants_ToTextBox LBConstants
+    
+'value range Boolean
+'True = -1 bis False = 0
+'    Dim MinBol As Boolean: MinBol = True  ' = - 1
+'    Dim MaxBol As Boolean: MaxBol = False ' = 0
+'
+'
+'
+'
+'
+'    Dim MinByt As Byte: MinByt = CByte("0")
+'    Dim MaxByt As Byte: MaxByt = CByte("0")
+'
+''value range Currency (signed Int64)
+''Currency (skalierte Ganzzahl)
+''8 Bytes -922.337.203.685.477,5808 bis 922.337.203.685.477,5807
+'
+'    Dim c As Currency
+'
+'    c = -1234567890123.46    'mit Double nur max 2 Stellen nach dem Komma in der IDE
+'    MsgBox c
+'    c = -1234567890123.4567@ 'mit Currency@ gehen alle 4 Nachkommastellen
+'    MsgBox c
+'
+'    Dim MinCur As Currency: MinCur = CCur("-922337203685477,5808")   ' No overflow.
+'    MsgBox MinCur
+'    MinCur = -922337203685477.5807@
+'    MsgBox MinCur
+'
+'    Dim MaxCur As Currency: MaxCur = CCur("922337203685477,5807")   ' No Overflow.
+'    MsgBox MaxCur
+'    MaxCur = 922337203685477.5807@
+'    MsgBox MaxCur
+End Sub
+
+Private Sub Form_Resize()
+    Dim L As Single
+    Dim t As Single: t = Text1.Top
+    Dim W As Single: W = Me.ScaleWidth
+    Dim H As Single: H = Me.ScaleHeight - t
+    If W > 0 And H > 0 Then
+        Text1.Move L, t, W, H
+    End If
+End Sub
 
 Private Sub BtnTestPrimes_Click()
     Dim N As Long: N = 100000
@@ -178,68 +240,6 @@ Private Sub BtnFibonacci_Click()
     MsgBox "Fibonacci(15) = " & MMath.Fibonacci(15)
 End Sub
 
-Private Sub Command5_Click()
-
-End Sub
-
-Private Sub Form_Load()
-    MMath.Init
-    
-    'Debug.Print CalcPi
-    'Debug.Print Fact(78)
-    'Debug.Print CDec(4) * Atn(CDec(1))
-    'Debug.Print CDec("3,141592653589792")
-    'Debug.Print CDec("3,1415926535897932384626433832795") '02884197169399375105820974944592")
-    'Debug.Print MMath.Pi
-    'Debug.Print MMath.Euler
-    Tests
-    
-    'Constants_ToTextBox LBConstants
-    
-'value range Boolean
-'True = -1 bis False = 0
-'    Dim MinBol As Boolean: MinBol = True  ' = - 1
-'    Dim MaxBol As Boolean: MaxBol = False ' = 0
-'
-'
-'
-'
-'
-'    Dim MinByt As Byte: MinByt = CByte("0")
-'    Dim MaxByt As Byte: MaxByt = CByte("0")
-'
-''value range Currency (signed Int64)
-''Currency (skalierte Ganzzahl)
-''8 Bytes -922.337.203.685.477,5808 bis 922.337.203.685.477,5807
-'
-'    Dim c As Currency
-'
-'    c = -1234567890123.46    'mit Double nur max 2 Stellen nach dem Komma in der IDE
-'    MsgBox c
-'    c = -1234567890123.4567@ 'mit Currency@ gehen alle 4 Nachkommastellen
-'    MsgBox c
-'
-'    Dim MinCur As Currency: MinCur = CCur("-922337203685477,5808")   ' No overflow.
-'    MsgBox MinCur
-'    MinCur = -922337203685477.5807@
-'    MsgBox MinCur
-'
-'    Dim MaxCur As Currency: MaxCur = CCur("922337203685477,5807")   ' No Overflow.
-'    MsgBox MaxCur
-'    MaxCur = 922337203685477.5807@
-'    MsgBox MaxCur
-End Sub
-
-Private Sub Form_Resize()
-    Dim L As Single
-    Dim t As Single: t = Text1.Top
-    Dim W As Single: W = Me.ScaleWidth
-    Dim H As Single: H = Me.ScaleHeight - t
-    If W > 0 And H > 0 Then
-        Text1.Move L, t, W, H
-    End If
-End Sub
-
 Sub Tests()
     TestConstants
     TestGgT_KgV_PFZ_FraC
@@ -258,6 +258,7 @@ Sub TestConstants()
     AddItem "=============="
     
     AddItem "Pi          =" & MMath.Pi
+    AddItem "Pi calced   =" & MMath.CalcPi
     AddItem "2*Pi        =" & MMath.Pi2
     AddItem "Pi/2        =" & MMath.Pihalf
     AddItem "Euler       =" & MMath.Euler       ' As Variant As Decimal

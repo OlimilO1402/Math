@@ -1,21 +1,36 @@
 Attribute VB_Name = "MMath"
 Option Explicit ' OM: 2024-03-04 lines 1264
 
-Public INDef  As Double
-Public posINF As Double
-Public negINF As Double
-Public NaN    As Double
+Public INDef  As Double 'not defined, undefined like 0 / 0
+Public posINF As Double 'positive infinity like 1 / 0
+Public negINF As Double 'negative infinity like -1 / 0
+Public NaN    As Double 'Not a Number
 
 'Complex number in cartesian coordinates
 Public Type Complex
-    Re As Double
-    Im As Double
+    Re As Double 'real part of the complex number
+    Im As Double 'imaginary part
 End Type
 
 'Complex number in polar coordinates or euler form
 Public Type ComplexP
-    r   As Double
-    phi As Double
+    r   As Double 'radius r
+    phi As Double 'angle phi
+End Type
+
+'this types just for conversions
+Private Type TLong
+    Value As Long
+End Type
+Private Type TSingle
+    Value As Single
+End Type
+Private Type TLong2
+    Value0 As Long
+    Value1 As Long
+End Type
+Private Type TDouble
+    Value As Double
 End Type
 
 Private Declare Sub RtlMoveMemory Lib "kernel32" (ByRef pDst As Any, ByRef pSrc As Any, ByVal bLength As Long)
@@ -335,6 +350,8 @@ Private Function LinIPol(ByVal y1 As Double, _
 
 End Function
 
+
+
 ' ^ ############################## ^ '    Linear interpolation    ' ^ ############################## ^ '
 
 ' v ############################## v '    prime-functions    ' v ############################## v '
@@ -402,7 +419,7 @@ End Function
 '    IsPrimeN = True
 'End Function
 
-Function IsPrime(ByVal value As Long) As Boolean
+Function IsPrime(ByVal Value As Long) As Boolean
 '    If Value < 200 Then
 '        Select Case Value
 '        Case 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, _
@@ -410,15 +427,15 @@ Function IsPrime(ByVal value As Long) As Boolean
 '            IsPrime = True:        Exit Function
 '        End Select
 '    End If
-    If (value And 1) = 0 Then Exit Function
+    If (Value And 1) = 0 Then Exit Function
     Dim div As Long: div = 3
     Dim squ As Long: squ = 9
-    Do While squ < value
-        If value Mod div = 0 Then Exit Function
+    Do While squ < Value
+        If Value Mod div = 0 Then Exit Function
         div = div + 2
         squ = div * div
     Loop
-    If squ <> value Then
+    If squ <> Value Then
         IsPrime = True
     End If
     InitPrimeX
@@ -709,32 +726,32 @@ Public Function GetINF(Optional ByVal sign As Long = 1) As Double
     Call RtlMoveMemory(GetINF, L(1), 8)
 End Function
 
-Public Sub GetNaN(ByRef value As Double)
+Public Sub GetNaN(ByRef Value As Double)
     Dim L(1 To 2) As Long
     L(1) = 1
     L(2) = &H7FF00000
-    Call RtlMoveMemory(value, L(1), 8)
+    Call RtlMoveMemory(Value, L(1), 8)
 End Sub
 
-Public Sub GetINDef(ByRef value As Double)
+Public Sub GetINDef(ByRef Value As Double)
 Try: On Error Resume Next
-    value = 0# / 0#
+    Value = 0# / 0#
 Catch: On Error GoTo 0
 End Sub
 ' ^ ############################## ^ '    Create functions    ' ^ ############################## ^ '
 
 ' v ############################## v '     Bool functions     ' v ############################## v '
-Public Function IsINDef(ByRef value As Double) As Boolean
+Public Function IsINDef(ByRef Value As Double) As Boolean
 Try: On Error Resume Next
-    IsINDef = (CStr(value) = CStr(INDef))
+    IsINDef = (CStr(Value) = CStr(INDef))
 Catch: On Error GoTo 0
 End Function
 
-Public Function IsNaN(ByRef value As Double) As Boolean
+Public Function IsNaN(ByRef Value As Double) As Boolean
     Dim b(0 To 7) As Byte
     Dim i As Long
     
-    RtlMoveMemory b(0), value, 8
+    RtlMoveMemory b(0), Value, 8
     
     If (b(7) = &H7F) Or (b(7) = &HFF) Then
         If (b(6) >= &HF0) Then
@@ -748,12 +765,12 @@ Public Function IsNaN(ByRef value As Double) As Boolean
     End If
 End Function
 
-Public Function IsPosINF(ByVal value As Double) As Boolean
-    IsPosINF = (value = posINF)
+Public Function IsPosINF(ByVal Value As Double) As Boolean
+    IsPosINF = (Value = posINF)
 End Function
 
-Public Function IsNegINF(ByVal value As Double) As Boolean
-    IsNegINF = (value = negINF)
+Public Function IsNegINF(ByVal Value As Double) As Boolean
+    IsNegINF = (Value = negINF)
 End Function
 ' ^ ############################## ^ '     Bool functions     ' ^ ############################## ^ '
 
@@ -875,9 +892,9 @@ Try: On Error GoTo Catch
 
     'x1_out = (-b3_27a3 + bc_6a2 - d_2a + w) ^ (1 / 3) + _
     '        (-b3_27a3 + bc_6a2 - d_2a - w) ^ (1 / 3) - b_3a
-             
+    
     'x2_out
-
+    
 'Discriminant D: q²/4 + p³/27 > = < 0
 '1: q²/4 + p³/27 > 0
 '   1 real
@@ -887,7 +904,7 @@ Try: On Error GoTo Catch
 '3:  q²/4 + p³/27 < 0
 '   3 real all distinct
 '
-
+    
     Dim p   As Double:   p = -b2_3a2 + c_a
     Dim q   As Double:   q = 2 * b3_27a3 - cb_3a2 + d_a
     Dim DD  As Double:  DD = (q ^ 2) / 4 + (p ^ 3) / 27
@@ -896,17 +913,17 @@ Try: On Error GoTo Catch
     
     Select Case DD
     Case Is < 0
-        
     Case Is = 0
     Case Is > 0
     End Select
     
     'Dim b_3a As Double: b_3a = b / (3 * a)
     Dim W As Double
-    W = (q_2 ^ 2 + p_3 ^ 3) ^ (1 / 2)
-
-    x1_out = -b_3a + (-q_2 + W) ^ (1 / 3) _
-                   + (-q_2 - W) ^ (1 / 3)
+    W = VBA.Math.Sqr(q_2 ^ 2 + p_3 ^ 3) '^ (1 / 2)
+    
+    'x1_out = -b_3a + (-q_2 + W) ^ (1 / 3) + (-q_2 - W) ^ (1 / 3)
+    
+    x1_out = -b_3a + CubeRoot(-q_2 + W) + CubeRoot(-q_2 - W) '^ (1 / 3)    '^ (1 / 3)
     
     Cubic = True
     Exit Function
@@ -929,15 +946,19 @@ Public Function SqrH(ByVal N As Double) As Double
     'Debug.Print i
 End Function
 
-Public Function CubRt(ByVal v As Double, ByRef i_out As Double) As Double
-    'CubRt(1) = 1, -1/2+- SquRt(3) / 2 i
-    If v = 0 Then Exit Function
-    If v > 0 Then
-        'Root = VBA.Sqr(v)
-        Exit Function
-    End If
-    v = Abs(v)
-    CubRt = VBA.Sqr(v)
+'Public Function CubRt(ByVal v As Double, ByRef i_out As Double) As Double
+Public Function CubeRoot(ByVal d As Double) As Double
+    'CubeRoot due to Halley
+    Dim a3 As Double
+    Dim t As TDouble: t.Value = d
+    Dim p As TLong2:   LSet p = t: p.Value1 = p.Value1 \ 3 + 715094163
+    Dim a As Double:   LSet t = p: a = t.Value
+    a3 = a * a * a
+    a = a * (a3 + d + d) / (a3 + a3 + d)
+    a3 = a * a * a
+    a = a * (a3 + d + d) / (a3 + a3 + d)
+    a3 = a * a * a
+    CubeRoot = a * (a3 + d + d) / (a3 + a3 + d)
     
 End Function
 
@@ -1236,18 +1257,6 @@ Public Function ComplexP_NthRoot(p As ComplexP, ByVal N As Long) As ComplexP()
     ComplexP_NthRoot = ccp
 End Function
 
-Public Function ModF(ByVal value As Double, ByVal div As Double) As Double
-   ModF = value - (Int(value / div) * div)
-End Function
-
-Public Function ModDbl(v As Double, d As Double) As Double
-    'berechnet das Überbleibsel bei der division
-    Dim s As Long: s = Sgn(v)
-    v = Abs(v)
-    Dim i As Long: i = Int(v / d)
-    ModDbl = s * (v - i * d)
-End Function
-
 Public Function ComplexP_ToComplex(p As ComplexP) As Complex
     With ComplexP_ToComplex
         .Re = p.r * VBA.Math.Cos(p.phi)
@@ -1257,15 +1266,31 @@ End Function
 
 ' ^ ############################## ^ '    Complex numbers    ' ^ ############################## ^ '
 
-Public Function CalcPi()
-    Dim sqr3: sqr3 = CDec("1,7320508075688772935274463415") '058723669428052538103806280558069794519330169088000370811461867572485756")
+' v ############################## v '  Modulo op on floats  ' v ############################## v '
+Public Function ModF(ByVal Value As Double, ByVal div As Double) As Double
+   ModF = Value - (Int(Value / div) * div)
+End Function
+
+Public Function ModDbl(v As Double, d As Double) As Double
+    'berechnet das Überbleibsel bei der division
+    Dim s As Long: s = Sgn(v)
+    v = Abs(v)
+    Dim i As Long: i = Int(v / d)
+    ModDbl = s * (v - i * d)
+End Function
+' ^ ############################## ^ '  Modulo op on floats  ' ^ ############################## ^ '
+
+' v ############################## v '   calculation of Pi   ' v ############################## v '
+Public Function CalcPi() 'As Variant 'As Decimal
+    Dim sqr3: sqr3 = CDec(SquareRoot3)  'CDec("1,7320508075688772935274463415") '058723669428052538103806280558069794519330169088000370811461867572485756")
     Dim sum: sum = CDec(0)
+    'On Error Resume Next
     Dim N As Long
-    For N = 1 To 40
-        sum = sum + -Fact(2 * N - 2) / (2 ^ (4 * N - 2) * Fact(N - 1) ^ 2 * (2 * N - 3) * (2 * N + 1))
+    For N = 1 To 11 '40
+        sum = sum + -Fact(CDec(2) * CDec(N) - CDec(2)) / (CDec(2) ^ (CDec(4) * CDec(N) - CDec(2)) * Fact(CDec(N) - CDec(1)) ^ CDec(2) * (CDec(2) * CDec(N) - CDec(3)) * (CDec(2) * CDec(N) + CDec(1)))
     Next
-    Dim Pi
-    Pi = 3 * sqr3 / 4 + 24 * sum
+    Dim Pi 'As Double
+    Pi = CDec(3) * sqr3 / CDec(4) + CDec(24) * CDec(sum)
     CalcPi = Pi
 End Function
 
