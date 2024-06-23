@@ -19,6 +19,14 @@ Begin VB.Form FMain
    ScaleHeight     =   6255
    ScaleWidth      =   14655
    StartUpPosition =   3  'Windows-Standard
+   Begin VB.CommandButton BtnTestFloorCeiling 
+      Caption         =   "Floor/Ceiling"
+      Height          =   375
+      Left            =   8760
+      TabIndex        =   8
+      Top             =   0
+      Width           =   1575
+   End
    Begin VB.TextBox Text1 
       BeginProperty Font 
          Name            =   "Consolas"
@@ -102,6 +110,28 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
+
+Private Sub BtnTestFloorCeiling_Click()
+
+    'https://learn.microsoft.com/en-us/office/vba/language/reference/user-interface-help/int-fix-functions
+    Dim MyNumber As Double
+    MyNumber = Int(99.8)     ' Returns 99.   'Floor
+    MyNumber = Fix(99.2)     ' Returns 99.   'Floor
+    
+    MyNumber = Int(-99.8)    ' Returns -100. 'Floor
+    MyNumber = Fix(-99.8)    ' Returns -99.  'Ceiling
+    
+    MyNumber = Int(-99.2)    ' Returns -100. 'Floor
+    MyNumber = Fix(-99.2)    ' Returns -99.  'Ceiling
+    
+    MyNumber = 99.8: MsgBox (MyNumber & "; Floor=" & MMath.Floor(MyNumber) & "; Ceiling=  " & MMath.Ceiling(MyNumber))  ' 99.8; Floor=100; Ceiling=  99
+    MyNumber = 99.2: MsgBox (MyNumber & "; Floor=" & MMath.Floor(MyNumber) & "; Ceiling=  " & MMath.Ceiling(MyNumber))  ' 99.2; Floor=100; Ceiling=  99
+    
+    MyNumber = -99.8: MsgBox (MyNumber & "; Floor=" & MMath.Floor(MyNumber) & "; Ceiling=" & MMath.Ceiling(MyNumber))   '-99.8; Floor=-99; Ceiling=-100
+    MyNumber = -99.2: MsgBox (MyNumber & "; Floor=" & MMath.Floor(MyNumber) & "; Ceiling=" & MMath.Ceiling(MyNumber))   '-99.2; Floor=-99; Ceiling=-100
+    
+    
+End Sub
 
 Private Sub Form_Load()
     

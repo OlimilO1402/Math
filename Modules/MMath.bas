@@ -697,12 +697,14 @@ End Function
 
 ' v ############################## v '    Rounding functions     ' v ############################## v '
 Public Function Floor(ByVal a As Double) As Double
-    Floor = CDbl(Int(a))
+    Floor = VBA.Conversion.Int(a)
 End Function
 
 Public Function Ceiling(ByVal a As Double) As Double
-    Ceiling = CDbl(Int(a))
-    If a <> 0 Then If Abs(Ceiling / a) <> 1 Then Ceiling = Ceiling + 1
+    Ceiling = VBA.Conversion.Fix(a)
+    If a > 0 Then Ceiling = Ceiling + 1
+    'If a > 0 Then Ceiling = CDbl(Int(a) + 1#) Else Ceiling = CDbl(Fix(a))
+    'If a <> 0 Then If Abs(Ceiling / a) <> 1 Then Ceiling = Ceiling + 1
 End Function
 ' ^ ############################## ^ '    Rounding functions     ' ^ ############################## ^ '
 
