@@ -19,14 +19,6 @@ Begin VB.Form FMain
    ScaleHeight     =   6255
    ScaleWidth      =   14655
    StartUpPosition =   3  'Windows-Standard
-   Begin VB.CommandButton BtnTestFloorCeiling 
-      Caption         =   "Floor/Ceiling"
-      Height          =   375
-      Left            =   8760
-      TabIndex        =   8
-      Top             =   0
-      Width           =   1575
-   End
    Begin VB.TextBox Text1 
       BeginProperty Font 
          Name            =   "Consolas"
@@ -41,33 +33,9 @@ Begin VB.Form FMain
       Left            =   0
       MultiLine       =   -1  'True
       ScrollBars      =   3  'Beides
-      TabIndex        =   7
+      TabIndex        =   4
       Top             =   360
       Width           =   14535
-   End
-   Begin VB.CommandButton BtnFibonacci 
-      Caption         =   "Fibonacci"
-      Height          =   375
-      Left            =   7200
-      TabIndex        =   6
-      Top             =   0
-      Width           =   1575
-   End
-   Begin VB.CommandButton BtnFindMinMax 
-      Caption         =   "Find Min, Max"
-      Height          =   375
-      Left            =   5640
-      TabIndex        =   5
-      Top             =   0
-      Width           =   1575
-   End
-   Begin VB.CommandButton BtnPrimeFactors 
-      Caption         =   "Get Prime Factors"
-      Height          =   375
-      Left            =   4080
-      TabIndex        =   4
-      Top             =   0
-      Width           =   1575
    End
    Begin VB.CommandButton BtnTestPrimes2 
       Caption         =   "Test Primes 2"
@@ -111,57 +79,12 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
 
-Private Sub BtnTestFloorCeiling_Click()
-
-    'https://learn.microsoft.com/en-us/office/vba/language/reference/user-interface-help/int-fix-functions
-    Dim MyNumber As Double
-    MyNumber = Int(99.8)     ' Returns 99.   'Floor
-    MyNumber = Fix(99.2)     ' Returns 99.   'Floor
-    
-    MyNumber = Int(-99.8)    ' Returns -100. 'Floor
-    MyNumber = Fix(-99.8)    ' Returns -99.  'Ceiling
-    
-    MyNumber = Int(-99.2)    ' Returns -100. 'Floor
-    MyNumber = Fix(-99.2)    ' Returns -99.  'Ceiling
-    
-    MyNumber = 99.8: MsgBox (MyNumber & "; Floor=" & MMath.Floor(MyNumber) & "; Ceiling=  " & MMath.Ceiling(MyNumber))  ' 99.8; Floor=100; Ceiling=  99
-    MyNumber = 99.2: MsgBox (MyNumber & "; Floor=" & MMath.Floor(MyNumber) & "; Ceiling=  " & MMath.Ceiling(MyNumber))  ' 99.2; Floor=100; Ceiling=  99
-    
-    MyNumber = -99.8: MsgBox (MyNumber & "; Floor=" & MMath.Floor(MyNumber) & "; Ceiling=" & MMath.Ceiling(MyNumber))   '-99.8; Floor=-99; Ceiling=-100
-    MyNumber = -99.2: MsgBox (MyNumber & "; Floor=" & MMath.Floor(MyNumber) & "; Ceiling=" & MMath.Ceiling(MyNumber))   '-99.2; Floor=-99; Ceiling=-100
-    
-    
-End Sub
-
 Private Sub Form_Load()
     
     Me.Caption = "Math: " & App.FileDescription & " v" & App.Major & "." & App.Minor & "." & App.Revision
-    
     MMath.Init
-    
-    'Debug.Print CalcPi
-    'Debug.Print Fact(78)
-    'Debug.Print CDec(4) * Atn(CDec(1))
-    'Debug.Print CDec("3,141592653589792")
-    'Debug.Print CDec("3,1415926535897932384626433832795") '02884197169399375105820974944592")
-    'Debug.Print MMath.Pi
-    'Debug.Print MMath.Euler
     Tests
     
-    'Constants_ToTextBox LBConstants
-    
-'value range Boolean
-'True = -1 bis False = 0
-'    Dim MinBol As Boolean: MinBol = True  ' = - 1
-'    Dim MaxBol As Boolean: MaxBol = False ' = 0
-'
-'
-'
-'
-'
-'    Dim MinByt As Byte: MinByt = CByte("0")
-'    Dim MaxByt As Byte: MaxByt = CByte("0")
-'
 ''value range Currency (signed Int64)
 ''Currency (skalierte Ganzzahl)
 ''8 Bytes -922.337.203.685.477,5808 bis 922.337.203.685.477,5807
@@ -248,38 +171,17 @@ Private Sub BtnTestPrimes2_Click()
     
 End Sub
 
-Private Sub BtnPrimeFactors_Click()
-    'MsgBox MMath.Dedekind(8)
-    
-    'MsgBox PFZ(6442450938@)
-    Dim N As Long: N = 2147483644
-    MsgBox "The prime factors of " & Format(N, "#,##0") & " are " & PFZ(N)
-    
-End Sub
-
-Private Sub BtnFindMinMax_Click()
-    Dim m 'As Long
-    
-    m = MinArr(15, 12, 22, 45, 100, 72, 11, 83, 46, 25, 35)
-    MsgBox "The Minimum out of (15, 12, 22, 45, 100, 72, 11, 83, 46, 25, 35) is " & m '11
-    m = MaxArr(15, 12, 22, 45, 100, 72, 11, 83, 46, 25, 35)
-    MsgBox "The Maximum out of (15, 12, 22, 45, 100, 72, 11, 83, 46, 25, 35) is " & m '100
-End Sub
-
-Private Sub BtnFibonacci_Click()
-    MsgBox "Fibonacci(15) = " & MMath.Fibonacci(15)
-End Sub
-
 Sub Tests()
     TestConstants
     TestGgT_KgV_PFZ_FraC
     TestFactorials
     TestPrimes
-    TestComplexNumbers
     TestQuadraticCubic
     TestPascalTriangle
     TestComplex
-    
+    TestMinMax
+    TestFibonacci
+    TestFloorCeiling
 End Sub
 
 Sub TestConstants()
@@ -311,8 +213,13 @@ Sub TestConstants()
 End Sub
 
 Sub TestGgT_KgV_PFZ_FraC()
+    
+    'MsgBox PFZ(6442450938@)
+    
     AddItem "TestGgT_KgV_PFZ_FraC"
     AddItem "===================="
+    Dim N As Long: N = 2147483644
+    AddItem "The prime factors of " & Format(N, "#,##0") & " are " & PFZ(N)
     
     Dim n1 As Long: n1 = 1234
     Dim n2 As Long: n2 = 56
@@ -325,7 +232,9 @@ Sub TestGgT_KgV_PFZ_FraC()
     MMath.CancelFraction nn, za
     AddItem "CancelFraction(" & n1 & ", " & n2 & ") = " & nn & " / " & za
     AddItem ""
+    
 End Sub
+
 Sub TestFactorials()
     AddItem "TestFactorials"
     AddItem "=============="
@@ -354,17 +263,6 @@ Sub TestPrimes()
     'Dim n As Long: n = 99991
     Dim N As Long: N = 99991
     AddItem "IsPrimeA(" & N & ") = " & MMath.IsPrime(N)
-    AddItem ""
-End Sub
-
-Sub TestComplexNumbers()
-    AddItem "TestComplexNumbers"
-    AddItem "=================="
-    
-    Dim z1 As Complex: z1 = MMath.Real_ToComplex(8)
-    AddItem "v=" & 8
-    AddItem "z1(v)=" & MMath.Complex_ToStr(z1)
-    
     AddItem ""
 End Sub
 
@@ -413,15 +311,21 @@ End Sub
 Sub TestPascalTriangle()
     AddItem "TestPascalTriangle"
     AddItem "=================="
-    Dim pt(): pt = MMath.PascalTriangle(12) 'max 1030 rows
+    Dim pt(): pt = MMath.PascalTriangle(14) 'max 1030 rows
     AddItem MMath.PascalTriangle_ToStr(pt)
     AddItem ""
 End Sub
 
 Sub TestComplex()
+    
     AddItem "TestComplexNumbers"
     AddItem "=================="
-    Dim z1 As Complex: z1 = MMath.Complex(1, 0.5)
+    Dim z1 As Complex
+    z1 = MMath.Real_ToComplex(8)
+    AddItem "v=" & 8
+    AddItem "z1(v)=" & MMath.Complex_ToStr(z1)
+    
+    z1 = MMath.Complex(1, 0.5)
     AddItem "In cartes. coords.:"
     AddItem "z1 = " & Complex_ToStr(z1)
     Dim z2 As Complex: z2 = MMath.Complex(2, 3)
@@ -474,6 +378,47 @@ Sub TestComplex()
     For i = 0 To N - 1
         AddItem ComplexP_ToStrE(zzp(i))
     Next
+    
+    AddItem ""
+End Sub
+
+Private Sub TestMinMax()
+    Dim m 'As Long
+    m = MinArr(15, 12, 22, 45, 100, 72, 11, 83, 46, 25, 35)
+    AddItem "The Minimum out of (15, 12, 22, 45, 100, 72, 11, 83, 46, 25, 35) is " & m '11
+    m = MaxArr(15, 12, 22, 45, 100, 72, 11, 83, 46, 25, 35)
+    AddItem "The Maximum out of (15, 12, 22, 45, 100, 72, 11, 83, 46, 25, 35) is " & m '100
+    
+    AddItem ""
+End Sub
+
+Private Sub TestFibonacci()
+    AddItem "TestFibonacci"
+    AddItem "============="
+    AddItem "Fibonacci(15) = " & MMath.Fibonacci(15)
+    
+    AddItem ""
+End Sub
+
+Private Sub TestFloorCeiling()
+    AddItem "TestFloorCeiling"
+    AddItem "================"
+    'https://learn.microsoft.com/en-us/office/vba/language/reference/user-interface-help/int-fix-functions
+    Dim MyNumber As Double
+    MyNumber = Int(99.8)     ' Returns 99.   'Floor
+    MyNumber = Fix(99.2)     ' Returns 99.   'Floor
+    
+    MyNumber = Int(-99.8)    ' Returns -100. 'Floor
+    MyNumber = Fix(-99.8)    ' Returns -99.  'Ceiling
+    
+    MyNumber = Int(-99.2)    ' Returns -100. 'Floor
+    MyNumber = Fix(-99.2)    ' Returns -99.  'Ceiling
+    
+    MyNumber = 99.8: AddItem (MyNumber & "; Floor=" & MMath.Floor(MyNumber) & "; Ceiling=  " & MMath.Ceiling(MyNumber))  ' 99.8; Floor=100; Ceiling=  99
+    MyNumber = 99.2: AddItem (MyNumber & "; Floor=" & MMath.Floor(MyNumber) & "; Ceiling=  " & MMath.Ceiling(MyNumber))  ' 99.2; Floor=100; Ceiling=  99
+    
+    MyNumber = -99.8: AddItem (MyNumber & "; Floor=" & MMath.Floor(MyNumber) & "; Ceiling=" & MMath.Ceiling(MyNumber))   '-99.8; Floor=-99; Ceiling=-100
+    MyNumber = -99.2: AddItem (MyNumber & "; Floor=" & MMath.Floor(MyNumber) & "; Ceiling=" & MMath.Ceiling(MyNumber))   '-99.2; Floor=-99; Ceiling=-100
     
     AddItem ""
 End Sub

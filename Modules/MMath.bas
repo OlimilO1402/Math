@@ -6,6 +6,11 @@ Public posINF As Double 'positive infinity like 1 / 0
 Public negINF As Double 'negative infinity like -1 / 0
 Public NaN    As Double 'Not a Number
 
+Public Const Epsilon = 0.0000001
+Public Const EpsilonDec As Variant = 1E-16               ' 1E-16
+Public Const EpsilonDbl As Double = 0.000000000001 ' 1E-12
+Public Const EpsilonSng As Single = 0.00000001     ' 1E-08
+
 'Complex number in cartesian coordinates
 Public Type Complex
     Re As Double 'real part of the complex number
@@ -103,6 +108,9 @@ Public Sub Init()
 
 'https://oeis.org/A000796
          Pi = Constant_Parse(1, "3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8, 9, 7, 9, 3, 2, 3, 8, 4, 6, 2, 6, 4, 3, 3, 8, 3, 2, 7, 9, 5, 0, 2, 8, 8, 4, 1, 9, 7, 1, 6, 9, 3, 9, 9, 3, 7, 5, 1, 0, 5, 8, 2, 0, 9, 7, 4, 9, 4, 4, 5, 9, 2, 3, 0, 7, 8, 1, 6, 4, 0, 6, 2, 8, 6, 2, 0, 8, 9, 9, 8, 6, 2, 8, 0, 3, 4, 8, 2, 5, 3, 4, 2, 1, 1, 7, 0, 6, 7, 9, 8, 2, 1, 4")
+     
+         Pi = CDec(CDec(4) * CDec(Atn(1)))
+
      
      Pihalf = Pi / CDec(2) 'Constant_Parse(1, "")
         Pi2 = Constant_Parse(1, "6, 2, 8, 3, 1, 8, 5, 3, 0, 7, 1, 7, 9, 5, 8, 6, 4, 7, 6, 9, 2, 5, 2, 8, 6, 7, 6, 6, 5, 5, 9, 0, 0, 5, 7, 6, 8, 3, 9, 4, 3, 3, 8, 7, 9, 8, 7, 5, 0, 2, 1, 1, 6, 4, 1, 9, 4, 9, 8, 8, 9, 1, 8, 4, 6, 1, 5, 6, 3, 2, 8, 1, 2, 5, 7, 2, 4, 1, 7, 9, 9, 7, 2, 5, 6, 0, 6, 9, 6, 5, 0, 6, 8, 4, 2, 3, 4, 1, 3")
@@ -205,26 +213,26 @@ Private Sub InitFactorials()
     m_Factorials(171) = GetINFE
 End Sub
 
-Public Function Fact(ByVal N As Long) As Variant 'As Decimal
-    If N > 170 Then N = 171
-    Fact = m_Factorials(N)
+Public Function Fact(ByVal n As Long) As Variant 'As Decimal
+    If n > 170 Then n = 171
+    Fact = m_Factorials(n)
 End Function
 
-Public Function Atan2(ByVal y As Double, ByVal x As Double) As Double
+Public Function Atan2(ByVal Y As Double, ByVal x As Double) As Double
     If x > 0 Then        'egal ob y > 0 oder y < 0    '1. Quadrant und 4. Quadrant
-        Atan2 = VBA.Math.Atn(y / x)
+        Atan2 = VBA.Math.Atn(Y / x)
     ElseIf x < 0 Then
-        If y > 0 Then                '2. Quadrant
-            Atan2 = VBA.Math.Atn(y / x) + Pi
-        ElseIf y < 0 Then            '3. Quadrant
-            Atan2 = VBA.Math.Atn(y / x) - Pi
+        If Y > 0 Then                '2. Quadrant
+            Atan2 = VBA.Math.Atn(Y / x) + Pi
+        ElseIf Y < 0 Then            '3. Quadrant
+            Atan2 = VBA.Math.Atn(Y / x) - Pi
         Else                         'neg x-Achse
             Atan2 = Pi
         End If
     Else
-        If y > 0 Then                'pos y-Achse
+        If Y > 0 Then                'pos y-Achse
             Atan2 = 0.5 * Pi
-        ElseIf y < 0 Then            'neg y-Achse
+        ElseIf Y < 0 Then            'neg y-Achse
             Atan2 = -0.5 * Pi
         Else                         'Nullpunkt
             Atan2 = 0#
@@ -232,8 +240,8 @@ Public Function Atan2(ByVal y As Double, ByVal x As Double) As Double
     End If
 End Function
 
-Public Function Square(ByVal N As Double) As Double
-   Square = N * N
+Public Function Square(ByVal n As Double) As Double
+   Square = n * n
 End Function
 
 Private Function Constant_Parse(ByVal nDigsVkst As Byte, ByVal sc As String) As String
@@ -255,48 +263,48 @@ End Function
 '    until c=0;
 '    result:=a
 'end;
-Function ggT(ByVal x As Long, ByVal y As Long) As Long
+Function ggT(ByVal x As Long, ByVal Y As Long) As Long
     'ggT = größter gemeinsamer Teiler
-   Do While x <> y
-      If x > y Then
-         x = x - y
+   Do While x <> Y
+      If x > Y Then
+         x = x - Y
       Else
-         y = y - x
+         Y = Y - x
       End If
    Loop 'Wend
    ggT = x
 End Function
 
-Public Function GreatestCommonDivisor(ByVal x As Long, ByVal y As Long) As Long
-   GreatestCommonDivisor = ggT(x, y)
+Public Function GreatestCommonDivisor(ByVal x As Long, ByVal Y As Long) As Long
+   GreatestCommonDivisor = ggT(x, Y)
 End Function
 
 'function kgV(a,b:integer):integer;
 'Begin
 '  result:=a*b div ggT(a,b);
 'end;
-Public Function kgV(ByVal x As Long, ByVal y As Long) As Long
-    kgV = (x * y) \ ggT(x, y)
+Public Function kgV(ByVal x As Long, ByVal Y As Long) As Long
+    kgV = (x * Y) \ ggT(x, Y)
 End Function
 
-Public Function LeastCommonMultiple(ByVal x As Long, ByVal y As Long) As Long
+Public Function LeastCommonMultiple(ByVal x As Long, ByVal Y As Long) As Long
     'kgV = kleinstes gemeinsames Vielfaches
-    LeastCommonMultiple = kgV(x, y)
+    LeastCommonMultiple = kgV(x, Y)
 End Function
 
-Public Function PFZ(ByVal N As Long) As String
+Public Function PFZ(ByVal n As Long) As String
     Dim s As String
     Dim i As Long: i = 2 'CDec(2)
     Do
-        While N Mod i = 0
-            N = N / i
+        While n Mod i = 0
+            n = n / i
             If s <> vbNullString Then s = s & "*" 'first time wo *
             s = s & CStr(i)
         Wend
         'If i = 2 Then i = i + CDec(1) Else i = i + 2 'CDec(2)
         If i = 2 Then i = i + 1 Else i = i + 2 'CDec(2)
-        If i > Int(Sqr(N)) Then i = N '//ohne diese Zeile:Kaffeepause!
-    Loop Until N = 1
+        If i > Int(Sqr(n)) Then i = n '//ohne diese Zeile:Kaffeepause!
+    Loop Until n = 1
     If InStr(s, "*") = 0 Then s = "Primzahl"
     PFZ = s
 End Function
@@ -447,9 +455,9 @@ Public Function IsPrimeX(ByVal number As Long) As Boolean
         IsPrimeX = (number = 2)
         Exit Function
     End If
-    Dim N As Long: N = CLng(VBA.Math.Sqr(CDbl(number)))
+    Dim n As Long: n = CLng(VBA.Math.Sqr(CDbl(number)))
     Dim i As Long: i = 3
-    Do While (i <= N)
+    Do While (i <= n)
         If ((number Mod i) = 0) Then
             IsPrimeX = False
             Exit Function
@@ -513,10 +521,10 @@ Sub ReadPrimesBin()
     Dim FNm As String:  FNm = App.Path & "\" & "Primes100000.Int32"
     Dim FNr As Integer: FNr = FreeFile
     Open FNm For Binary Access Read As FNr
-    Dim N As Long: N = LOF(FNr) / 4
+    Dim n As Long: n = LOF(FNr) / 4
     'Debug.Print n
     'ReDim Primes(0 To 9591)
-    ReDim Primes(0 To N - 1)
+    ReDim Primes(0 To n - 1)
     Get FNr, , Primes
     Close FNr
 End Sub
@@ -588,6 +596,20 @@ End Function
 Public Function MaxByt(ByVal V1 As Byte, ByVal V2 As Byte) As Byte
     If V1 > V2 Then MaxByt = V1 Else MaxByt = V2
 End Function
+Public Function MinByt3(ByVal V1 As Byte, ByVal V2 As Byte, ByVal V3 As Byte) As Byte
+    If V1 < V2 Then
+        If V1 < V3 Then MinByt3 = V1 Else MinByt3 = V3
+    Else
+        If V2 < V3 Then MinByt3 = V2 Else MinByt3 = V3
+    End If
+End Function
+Public Function MaxByt3(ByVal V1 As Byte, ByVal V2 As Byte, ByVal V3 As Byte) As Byte
+    If V1 > V2 Then
+        If V1 > V3 Then MaxByt3 = V1 Else MaxByt3 = V3
+    Else
+        If V2 > V3 Then MaxByt3 = V2 Else MaxByt3 = V3
+    End If
+End Function
 
 Public Function MinInt(ByVal V1 As Integer, ByVal V2 As Integer) As Integer
     If V1 < V2 Then MinInt = V1 Else MinInt = V2
@@ -608,6 +630,20 @@ Public Function MinSng(ByVal V1 As Single, ByVal V2 As Single) As Single
 End Function
 Public Function MaxSng(ByVal V1 As Single, ByVal V2 As Single) As Single
     If V1 > V2 Then MaxSng = V1 Else MaxSng = V2
+End Function
+Public Function MinSng3(ByVal V1 As Single, ByVal V2 As Single, ByVal V3 As Single) As Single
+    If V1 < V2 Then
+        If V1 < V3 Then MinSng3 = V1 Else MinSng3 = V3
+    Else
+        If V2 < V3 Then MinSng3 = V2 Else MinSng3 = V3
+    End If
+End Function
+Public Function MaxSng3(ByVal V1 As Single, ByVal V2 As Single, ByVal V3 As Single) As Single
+    If V1 > V2 Then
+        If V1 > V3 Then MaxSng3 = V1 Else MaxSng3 = V3
+    Else
+        If V2 > V3 Then MaxSng3 = V2 Else MaxSng3 = V3
+    End If
 End Function
 
 Public Function MinDbl(ByVal V1 As Double, ByVal V2 As Double) As Double
@@ -640,23 +676,38 @@ End Function
 'End Sub
 
 ' v ############################## v '    Fibonacci functions    ' v ############################## v '
-Function FibonacciA(Optional ByVal N As Long = -1) As Long()
-    If N <= 0 Then N = 46
+Function FibonacciA(Optional ByVal n As Long = -1) As Long()
+    If n <= 0 Then n = 46
     'Calculates the Fibonacci-series for a given number n
-    ReDim fib(0 To N) As Long: fib(1) = 1
+    ReDim fib(0 To n) As Long: fib(1) = 1
     Dim i As Long
-    For i = 2 To N
+    For i = 2 To n
         fib(i) = fib(i - 1) + fib(i - 2)
     Next
     FibonacciA = fib
 End Function
 
-Private Function FibonacciR(ByVal N As Long) As Long
+Private Function FibonacciR(ByVal n As Long) As Long
     'Calculates the Fibonacci number to any given number (may be slow for values higher than 20)
-    If N > 46 Then Exit Function
-    If N > 1 Then FibonacciR = FibonacciR(N - 1) + FibonacciR(N - 2) Else FibonacciR = N
+    If n > 46 Then Exit Function
+    If n > 1 Then FibonacciR = FibonacciR(n - 1) + FibonacciR(n - 2) Else FibonacciR = n
 End Function
 ' ^ ############################## ^ '    Fibonacci functions    ' ^ ############################## ^ '
+
+' v ############################## v '    additional functions    ' v ############################## v '
+Public Function SinusCardinalis(ByVal x As Double) As Double ' aka sinc
+    If x = 0 Then
+        SinusCardinalis = 1
+    Else
+        SinusCardinalis = VBA.Math.Sin(x) / x
+    End If
+End Function
+
+Public Function BigMul(ByVal a As Long, ByVal b As Long) As Variant
+    BigMul = CDec(a) * CDec(b)
+End Function
+' ^ ############################## ^ '    additional functions    ' ^ ############################## ^ '
+
 
 ' v ############################## v '    Logarithm functions    ' v ############################## v '
 
@@ -686,8 +737,7 @@ Public Function Log10(ByVal d As Double) As Double
 End Function
 
 'Logarithm to a given base
-Public Function LogN(ByVal x As Double, _
-                     Optional ByVal base As Double = 10#) As Double
+Public Function LogN(ByVal x As Double, Optional ByVal base As Double = 10#) As Double
                      'base must not be 1 or 0
     If base = 1 Or base = 0 Then Exit Function
     LogN = VBA.Math.Log(x) / VBA.Math.Log(base)
@@ -774,6 +824,39 @@ End Function
 Public Function IsNegINF(ByVal Value As Double) As Boolean
     IsNegINF = (Value = negINF)
 End Function
+
+Public Function IsZero(Value) As Boolean
+    Select Case VarType(Value)
+    Case VbVarType.vbSingle:   'IsZero = Sgn(Value) * Value <= m_EpsilonSng
+                                IsZero = Abs(Value) <= EpsilonSng
+    Case VbVarType.vbDouble:   'IsZero = Sgn(Value) * Value <= m_EpsilonDbl
+                                IsZero = Abs(Value) <= EpsilonDbl
+    Case VbVarType.vbDecimal:  'IsZero = Sgn(Value) * Value <= m_EpsilonDec
+                                IsZero = Abs(Value) <= EpsilonDec
+    Case Else:                  IsZero = Abs(Value) <= Epsilon
+    End Select
+End Function
+
+Public Function IsZeroDbl(ByVal Value As Double) As Boolean
+    IsZeroDbl = Abs(Value) <= EpsilonDbl
+End Function
+
+Public Function IsZeroSng(ByVal Value As Single) As Boolean
+    IsZeroSng = Abs(Value) <= EpsilonSng
+End Function
+
+Public Function IsEqual(V1, V2) As Boolean
+    IsEqual = Abs(V1 - V2) <= Epsilon 'Dbl
+End Function
+
+Public Function IsEqualDbl(ByVal V1 As Double, ByVal V2 As Double) As Boolean
+    IsEqualDbl = Abs(V1 - V2) <= EpsilonDbl
+End Function
+
+Public Function IsEqualSng(ByVal V1 As Single, ByVal V2 As Single) As Boolean
+    IsEqualSng = Abs(V1 - V2) <= EpsilonSng
+End Function
+
 ' ^ ############################## ^ '     Bool functions     ' ^ ############################## ^ '
 
 ' v ############################## v '    Output functions    ' v ############################## v '
@@ -803,24 +886,25 @@ End Function
 ' ^ ############################## ^ '    Output functions    ' ^ ############################## ^ '
 
 ' v ############################## v '     Input function     ' v ############################## v '
-Public Function Double_TryParse(s As String, Value_out As Double) As Boolean
-Try: On Error GoTo Catch
-    If Len(s) = 0 Then Exit Function
-    s = Replace(s, ",", ".")
-    If StrComp(s, "1.#QNAN") = 0 Then
-        GetNaN Value_out
-    ElseIf StrComp(s, "1.#INF") = 0 Then
-        Value_out = GetINF
-    ElseIf StrComp(s, "-1.#INF") = 0 Then
-        Value_out = GetINF(-1)
-    ElseIf StrComp(s, "-1.#IND") = 0 Then
-        GetINDef Value_out
-    Else
-        Value_out = Val(s)
-    End If
-    Double_TryParse = True
-Catch:
-End Function
+'nope from 2024-07-14 on ou can find this function inside MString
+'Public Function Double_TryParse(s As String, Value_out As Double) As Boolean
+'Try: On Error GoTo Catch
+'    If Len(s) = 0 Then Exit Function
+'    s = Replace(s, ",", ".")
+'    If StrComp(s, "1.#QNAN") = 0 Then
+'        GetNaN Value_out
+'    ElseIf StrComp(s, "1.#INF") = 0 Then
+'        Value_out = GetINF
+'    ElseIf StrComp(s, "-1.#INF") = 0 Then
+'        Value_out = GetINF(-1)
+'    ElseIf StrComp(s, "-1.#IND") = 0 Then
+'        GetINDef Value_out
+'    Else
+'        Value_out = Val(s)
+'    End If
+'    Double_TryParse = True
+'Catch:
+'End Function
 ' ^ ############################## ^ '       Input function       ' ^ ############################## ^ '
 ' ^ ############################## ^ ' IEEE754-INFINITY functions ' ^ ############################## ^ '
 
@@ -932,16 +1016,16 @@ Try: On Error GoTo Catch
 Catch:
 End Function
 
-Public Function SqrH(ByVal N As Double) As Double
+Public Function SqrH(ByVal n As Double) As Double
     'SquareRoot due to Heron algorithm
-    Dim s As Long:   s = Sgn(N): N = Abs(N)
-    Dim r As Double: r = N
+    Dim s As Long:   s = Sgn(n): n = Abs(n)
+    Dim r As Double: r = n
     Dim i As Long
     SqrH = 1
     Do
         i = i + 1
         SqrH = (SqrH + r) / 2
-        r = N / SqrH
+        r = n / SqrH
         If (SqrH - r) < 0.0000000000001 Then Exit Do
         If i = 20 Then Exit Do
     Loop
@@ -1000,7 +1084,7 @@ End Function
 
 Public Function PascalTriangle(ByVal nrows As Integer) As Variant()
     If nrows > 1030 Then
-        MsgBox nrows & ": overflow!" & vbCrLf & "The triangle will be computed with the maximum of only 1030 rows."
+        MsgBox nrows & ": overflow!" & vbCrLf & "The pascal-triangle will be computed with a maximum of 1030 rows."
         'Exit Function
     End If
     nrows = Min(nrows, 1030)
@@ -1168,18 +1252,18 @@ Public Function ComplexP_ToStrE(p As ComplexP) As String
     End With
 End Function
 
-Public Function ComplexP_Add(p1 As ComplexP, p2 As ComplexP) As ComplexP
+Public Function ComplexP_Add(P1 As ComplexP, P2 As ComplexP) As ComplexP
     'Dim z1 As Complex: z1 = ComplexP_ToComplex(p1)
     'Dim z2 As Complex: z2 = ComplexP_ToComplex(p2)
     'Dim z3 As Complex: z2 = Complex_Add(z1, z2)
     'ComplexP_Add = Complex_ToComplexP(z3)
-    ComplexP_Add = Complex_ToComplexP(Complex_Add(ComplexP_ToComplex(p1), ComplexP_ToComplex(p2)))
+    ComplexP_Add = Complex_ToComplexP(Complex_Add(ComplexP_ToComplex(P1), ComplexP_ToComplex(P2)))
 End Function
 
-Public Function ComplexP_Mul(p1 As ComplexP, p2 As ComplexP) As ComplexP
+Public Function ComplexP_Mul(P1 As ComplexP, P2 As ComplexP) As ComplexP
     With ComplexP_Mul
-        .r = p1.r * p2.r
-        .phi = p1.phi + p2.phi
+        .r = P1.r * P2.r
+        .phi = P1.phi + P2.phi
     End With
 End Function
 
@@ -1234,25 +1318,25 @@ Public Function ComplexP_Pow(p As ComplexP, ByVal expon_p As Long, ByVal expon_q
     ComplexP_Pow = ccp
 End Function
 
-Public Function ComplexP_NthRoot(p As ComplexP, ByVal N As Long) As ComplexP()
+Public Function ComplexP_NthRoot(p As ComplexP, ByVal n As Long) As ComplexP()
     'berechnet die n-te Wurzel einer komplexem zahl p
     'computes the nth-root of the complex number p
     Dim ccp() As ComplexP
-    If N = 0 Then Exit Function 'q € N w/o 0
-    If N = 1 Then
+    If n = 0 Then Exit Function 'q € N w/o 0
+    If n = 1 Then
         ReDim ccp(0 To 0): ccp(0) = p
         ComplexP_NthRoot = ccp()
         Exit Function
     End If
-    Dim N_1  As Double:  N_1 = 1 / N
+    Dim N_1  As Double:  N_1 = 1 / n
     Dim r    As Double:    r = p.r ^ N_1
     Dim phi  As Double:  phi = p.phi * N_1
     Dim ppi2 As Double: ppi2 = Pi2
-    Dim dp   As Double:   dp = ppi2 / N
-    ReDim ccp(0 To N - 1)
+    Dim dp   As Double:   dp = ppi2 / n
+    ReDim ccp(0 To n - 1)
     ccp(0) = ComplexP(r, phi)
     Dim i As Long
-    For i = 1 To N - 1
+    For i = 1 To n - 1
         phi = phi + dp
         ccp(i) = ComplexP(r, phi)
     Next
@@ -1287,9 +1371,9 @@ Public Function CalcPi() 'As Variant 'As Decimal
     Dim sqr3: sqr3 = CDec(SquareRoot3)  'CDec("1,7320508075688772935274463415") '058723669428052538103806280558069794519330169088000370811461867572485756")
     Dim sum: sum = CDec(0)
     'On Error Resume Next
-    Dim N As Long
-    For N = 1 To 11 '40
-        sum = sum + -Fact(CDec(2) * CDec(N) - CDec(2)) / (CDec(2) ^ (CDec(4) * CDec(N) - CDec(2)) * Fact(CDec(N) - CDec(1)) ^ CDec(2) * (CDec(2) * CDec(N) - CDec(3)) * (CDec(2) * CDec(N) + CDec(1)))
+    Dim n As Long
+    For n = 1 To 11 '40
+        sum = sum + -Fact(CDec(2) * CDec(n) - CDec(2)) / (CDec(2) ^ (CDec(4) * CDec(n) - CDec(2)) * Fact(CDec(n) - CDec(1)) ^ CDec(2) * (CDec(2) * CDec(n) - CDec(3)) * (CDec(2) * CDec(n) + CDec(1)))
     Next
     Dim Pi 'As Double
     Pi = CDec(3) * sqr3 / CDec(4) + CDec(24) * CDec(sum)
