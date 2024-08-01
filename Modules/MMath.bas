@@ -790,9 +790,9 @@ Try: On Error Resume Next
     Value = 0# / 0#
 Catch: On Error GoTo 0
 End Sub
-' ^ ############################## ^ '    Create functions    ' ^ ############################## ^ '
+' ^ ############################## ^ '     Create functions     ' ^ ############################## ^ '
 
-' v ############################## v '     Bool functions     ' v ############################## v '
+' v ############################## v '      Bool functions      ' v ############################## v '
 Public Function IsINDef(ByRef Value As Double) As Boolean
 Try: On Error Resume Next
     IsINDef = (CStr(Value) = CStr(INDef))
@@ -827,13 +827,10 @@ End Function
 
 Public Function IsZero(Value) As Boolean
     Select Case VarType(Value)
-    Case VbVarType.vbSingle:   'IsZero = Sgn(Value) * Value <= m_EpsilonSng
-                                IsZero = Abs(Value) <= EpsilonSng
-    Case VbVarType.vbDouble:   'IsZero = Sgn(Value) * Value <= m_EpsilonDbl
-                                IsZero = Abs(Value) <= EpsilonDbl
-    Case VbVarType.vbDecimal:  'IsZero = Sgn(Value) * Value <= m_EpsilonDec
-                                IsZero = Abs(Value) <= EpsilonDec
-    Case Else:                  IsZero = Abs(Value) <= Epsilon
+    Case VbVarType.vbSingle:  IsZero = Abs(Value) <= EpsilonSng
+    Case VbVarType.vbDouble:  IsZero = Abs(Value) <= EpsilonDbl
+    Case VbVarType.vbDecimal: IsZero = Abs(Value) <= EpsilonDec
+    Case Else:                IsZero = Abs(Value) <= Epsilon
     End Select
 End Function
 
@@ -857,9 +854,31 @@ Public Function IsEqualSng(ByVal V1 As Single, ByVal V2 As Single) As Boolean
     IsEqualSng = Abs(V1 - V2) <= EpsilonSng
 End Function
 
-' ^ ############################## ^ '     Bool functions     ' ^ ############################## ^ '
+' ^ ############################## ^ '      Bool functions      ' ^ ############################## ^ '
 
-' v ############################## v '    Output functions    ' v ############################## v '
+' v ############################## v '    Rounding functions    ' v ############################## v '
+Public Function RoundUp(ByVal Value As Double, Optional ByVal NumDigitsAfterDecimal As Byte = 0) As Double
+    If Value < 0 Then
+        RoundUp = Math.Round(Value, NumDigitsAfterDecimal)
+        If Value < RoundUp Then RoundUp = RoundUp - 10 ^ -NumDigitsAfterDecimal
+    Else
+        RoundUp = Math.Round(Value, NumDigitsAfterDecimal)
+        If RoundUp < Value Then RoundUp = RoundUp + 10 ^ -NumDigitsAfterDecimal
+    End If
+End Function
+
+Public Function RoundDown(ByVal Value As Double, Optional ByVal NumDigitsAfterDecimal As Byte = 0) As Double
+    If Value < 0 Then
+        RoundDown = Math.Round(Value, NumDigitsAfterDecimal)
+        If RoundDown < Value Then RoundDown = RoundDown + 10 ^ -NumDigitsAfterDecimal
+    Else
+        RoundDown = Math.Round(Value, NumDigitsAfterDecimal)
+        If Value < RoundDown Then RoundDown = RoundDown - 10 ^ -NumDigitsAfterDecimal
+    End If
+End Function
+' ^ ############################## ^ '    Rounding functions    ' ^ ############################## ^ '
+
+' v ############################## v '     Output functions     ' v ############################## v '
 Public Function INDefToString() As String
     On Error Resume Next
     INDefToString = CStr(INDef)
@@ -883,9 +902,9 @@ End Function
 Public Function NegINFToString() As String
     NegINFToString = CStr(negINF)
 End Function
-' ^ ############################## ^ '    Output functions    ' ^ ############################## ^ '
+' ^ ############################## ^ '     Output functions     ' ^ ############################## ^ '
 
-' v ############################## v '     Input function     ' v ############################## v '
+' v ############################## v '      Input function      ' v ############################## v '
 'nope from 2024-07-14 on ou can find this function inside MString
 'Public Function Double_TryParse(s As String, Value_out As Double) As Boolean
 'Try: On Error GoTo Catch

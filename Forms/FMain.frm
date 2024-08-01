@@ -57,9 +57,9 @@ Begin VB.Form FMain
       AutoSize        =   -1  'True
       Caption         =   "Label3"
       Height          =   195
-      Left            =   3240
+      Left            =   4440
       TabIndex        =   3
-      Top             =   240
+      Top             =   120
       Width           =   495
    End
    Begin VB.Label Label2 
@@ -68,7 +68,7 @@ Begin VB.Form FMain
       Height          =   195
       Left            =   3240
       TabIndex        =   2
-      Top             =   0
+      Top             =   120
       Width           =   495
    End
 End
@@ -118,12 +118,12 @@ Private Sub Form_Resize()
 End Sub
 
 Private Sub BtnTestPrimes_Click()
-    Dim N As Long: N = 100000
+    Dim n As Long: n = 100000
     Dim t As Single: t = Timer
     Dim i As Long, b As Boolean
     Dim p As Long
     Dim c As Long
-    For i = 0 To N
+    For i = 0 To n
         b = IsPrime(i)
         If b Then
             p = i
@@ -131,7 +131,7 @@ Private Sub BtnTestPrimes_Click()
         End If
     Next
     t = Timer - t
-    MsgBox "Testing numbers from 0 to " & Format(N, "#,##0") & " whether it's a prime." & vbCrLf & _
+    MsgBox "Testing numbers from 0 to " & Format(n, "#,##0") & " whether it's a prime." & vbCrLf & _
            "Found " & c & " primes. This took about " & t & " seconds." & vbCrLf & "The last prime was " & Format(p, "#,##0")
 End Sub
 
@@ -182,6 +182,7 @@ Sub Tests()
     TestMinMax
     TestFibonacci
     TestFloorCeiling
+    TestRounding
 End Sub
 
 Sub TestConstants()
@@ -218,8 +219,8 @@ Sub TestGgT_KgV_PFZ_FraC()
     
     AddItem "TestGgT_KgV_PFZ_FraC"
     AddItem "===================="
-    Dim N As Long: N = 2147483644
-    AddItem "The prime factors of " & Format(N, "#,##0") & " are " & PFZ(N)
+    Dim n As Long: n = 2147483644
+    AddItem "The prime factors of " & Format(n, "#,##0") & " are " & PFZ(n)
     
     Dim n1 As Long: n1 = 1234
     Dim n2 As Long: n2 = 56
@@ -261,8 +262,8 @@ Sub TestPrimes()
     'Dim n As Long: n = 5
     'Dim n As Long: n = 96211
     'Dim n As Long: n = 99991
-    Dim N As Long: N = 99991
-    AddItem "IsPrimeA(" & N & ") = " & MMath.IsPrime(N)
+    Dim n As Long: n = 99991
+    AddItem "IsPrimeA(" & n & ") = " & MMath.IsPrime(n)
     AddItem ""
 End Sub
 
@@ -372,10 +373,10 @@ Sub TestComplex()
     phi = Pihalf
     zp = MMath.ComplexP(r, phi)
     
-    Dim N As Long: N = 5
-    zzp = ComplexP_NthRoot(zp, N)
+    Dim n As Long: n = 5
+    zzp = ComplexP_NthRoot(zp, n)
     
-    For i = 0 To N - 1
+    For i = 0 To n - 1
         AddItem ComplexP_ToStrE(zzp(i))
     Next
     
@@ -421,6 +422,74 @@ Private Sub TestFloorCeiling()
     MyNumber = -99.2: AddItem (MyNumber & "; Floor=" & MMath.Floor(MyNumber) & "; Ceiling=" & MMath.Ceiling(MyNumber))   '-99.2; Floor=-99; Ceiling=-100
     
     AddItem ""
+End Sub
+
+Private Sub TestRounding()
+    
+    AddItem "TestRounding"
+    AddItem "============"
+    
+    Dim d As Double
+    Dim r As Double
+    Dim n As Byte
+    Dim s As String
+    
+    n = 2
+    d = 123.456
+    r = Round(d, n):     s = s & "Round(" & d & ", " & n & ") = " & r & vbCrLf
+    r = RoundUp(d, n):   s = s & "RoundUp(" & d & ", " & n & ") = " & r & vbCrLf
+    r = RoundDown(d, n): s = s & "RoundDown(" & d & ", " & n & ") = " & r & vbCrLf
+    AddItem s
+    s = ""
+    d = -d
+    r = Round(d, n):     s = s & "Round(" & d & ", " & n & ") = " & r & vbCrLf
+    r = RoundUp(d, n):   s = s & "RoundUp(" & d & ", " & n & ") = " & r & vbCrLf
+    r = RoundDown(d, n): s = s & "RoundDown(" & d & ", " & n & ") = " & r & vbCrLf
+    AddItem s
+    s = ""
+    
+    d = 12.3456
+    r = Round(d, n):     s = s & "Round(" & d & ", " & n & ") = " & r & vbCrLf
+    r = RoundUp(d, n):   s = s & "RoundUp(" & d & ", " & n & ") = " & r & vbCrLf
+    r = RoundDown(d, n): s = s & "RoundDown(" & d & ", " & n & ") = " & r & vbCrLf
+    AddItem s
+    s = ""
+    d = -d
+    r = Round(d, n):     s = s & "Round(" & d & ", " & n & ") = " & r & vbCrLf
+    r = RoundUp(d, n):   s = s & "RoundUp(" & d & ", " & n & ") = " & r & vbCrLf
+    r = RoundDown(d, n): s = s & "RoundDown(" & d & ", " & n & ") = " & r & vbCrLf
+    AddItem s
+    s = ""
+    
+    
+    n = 0
+    d = 123.456
+    r = Round(d, n):     s = s & "Round(" & d & ", " & n & ") = " & r & vbCrLf
+    r = RoundUp(d, n):   s = s & "RoundUp(" & d & ", " & n & ") = " & r & vbCrLf
+    r = RoundDown(d, n): s = s & "RoundDown(" & d & ", " & n & ") = " & r & vbCrLf
+    AddItem s
+    s = ""
+    d = -d
+    r = Round(d, n):     s = s & "Round(" & d & ", " & n & ") = " & r & vbCrLf
+    r = RoundUp(d, n):   s = s & "RoundUp(" & d & ", " & n & ") = " & r & vbCrLf
+    r = RoundDown(d, n): s = s & "RoundDown(" & d & ", " & n & ") = " & r & vbCrLf
+    AddItem s
+    s = ""
+    
+    d = 12.3456
+    r = Round(d, n):     s = s & "Round(" & d & ", " & n & ") = " & r & vbCrLf
+    r = RoundUp(d, n):   s = s & "RoundUp(" & d & ", " & n & ") = " & r & vbCrLf
+    r = RoundDown(d, n): s = s & "RoundDown(" & d & ", " & n & ") = " & r & vbCrLf
+    AddItem s
+    s = ""
+    d = -d
+    r = Round(d, n):     s = s & "Round(" & d & ", " & n & ") = " & r & vbCrLf
+    r = RoundUp(d, n):   s = s & "RoundUp(" & d & ", " & n & ") = " & r & vbCrLf
+    r = RoundDown(d, n): s = s & "RoundDown(" & d & ", " & n & ") = " & r & vbCrLf
+    AddItem s
+    s = ""
+    
+    
 End Sub
 
 Sub AddItem(s As String)
