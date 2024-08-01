@@ -26,7 +26,7 @@ Contains the following basic physics and math Constants:
 * QuantumAlpha     fine structure constant
 
 Contains the following basic math functions:
-* testing for IEEE positive and negative inifinite, Nob-a-number, indefined
+* testing for IEEE positive and negative inifinite, not-a-number, undefined
 * fibonacci 
 * all possible factorial numbers
 * greatest common divisor, least-common-multiple, prime-factorisation, cancel-fration, 
