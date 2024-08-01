@@ -17,9 +17,9 @@ Contains the following basic physics and math Constants:
 * ElemCharge       elementary charge of a proton     e   = 1.602176634 · 10^-19 C (Coulomb)
 * MassElektron     resting mass of an electron       m_e = 9.109 · 10^-31 kg
 * MassProton       resting mass of a  proton         m_p = 1.6726215813 · 10^-27 kg
-* PlanckQuantum    Plancks Wirkungsquantum           h   = 6,62607015 · 10^(-37) m² · kg / s
+* PlanckQuantum    Plancks Wirkungsquantum           h   = 6,62607015 · 10^-37 m² · kg / s
 * Avogadro         Avogadro-constant                 N_A = 6,022 · 10^23
-* Gravitation      Newtons gravitational constant    G   = 6,6743 · 10^-11 m³ / (kg * s²)
+* Gravitation      Newtons gravitational constant    G   = 6,6743 · 10^-11 m³ / (kg · s²)
 * BoltzmannConst   Boltzmann-constant                k_B = 1,38064852 · 10^23 m2 kg s-2 K-1
 * MagnPermittvy    magnetic field constant         mue_0 = µ0 ˜  1.2566370621219 · 10 ^-6 N/A²
 * ElecPermittvy    electrical field constant       eps_0 = 8.854187812813 · 10-12 (A s)/(V m)
