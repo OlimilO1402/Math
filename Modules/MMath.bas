@@ -660,6 +660,33 @@ Public Function MaxCur(ByVal V1 As Currency, ByVal V2 As Currency) As Currency
     If V1 > V2 Then MaxCur = V1 Else MaxCur = V2
 End Function
 
+'Einen Wert in Schranken zwingen, obere Werte auf Max reduzieren, untere Werte auf Min heben
+'MinMax, Clamp,
+'its like a sound compressor: lower sounds gets louder, louder sounds must not oversteer over a maxvalue
+Public Function Clamp(Value, MinVal, MaxVal)
+    Clamp = Max(MinVal, Min(MaxVal, Value))
+End Function
+
+Public Function ClampByt(ByVal Value As Byte, ByVal MinVal As Byte, ByVal MaxVal As Byte) As Byte
+    ClampByt = MaxByt(MinVal, MinByt(MaxVal, Value))
+End Function
+
+Public Function ClampInt(ByVal Value As Integer, ByVal MinVal As Integer, ByVal MaxVal As Integer) As Integer
+    ClampInt = MaxInt(MinVal, MinInt(MaxVal, Value))
+End Function
+
+Public Function ClampLng(ByVal Value As Long, ByVal MinVal As Long, ByVal MaxVal As Long) As Long
+    ClampLng = MaxLng(MinVal, MinLng(MaxVal, Value))
+End Function
+
+Public Function ClampSng(ByVal Value As Single, ByVal MinVal As Single, ByVal MaxVal As Single) As Single
+    ClampSng = MaxSng(MinVal, MinSng(MaxVal, Value))
+End Function
+
+Public Function ClampDbl(ByVal Value As Double, ByVal MinVal As Double, ByVal MaxVal As Double) As Double
+    ClampDbl = MaxDbl(MinVal, MinDbl(MaxVal, Value))
+End Function
+
 ' ^ ############################## ^ '    Min-Max-functions    ' ^ ############################## ^ '
 
 'Private Sub InitDedekind()
