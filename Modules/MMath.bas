@@ -218,21 +218,21 @@ Public Function Fact(ByVal n As Long) As Variant 'As Decimal
     Fact = m_Factorials(n)
 End Function
 
-Public Function Atan2(ByVal Y As Double, ByVal x As Double) As Double
+Public Function Atan2(ByVal y As Double, ByVal x As Double) As Double
     If x > 0 Then        'egal ob y > 0 oder y < 0    '1. Quadrant und 4. Quadrant
-        Atan2 = VBA.Math.Atn(Y / x)
+        Atan2 = VBA.Math.Atn(y / x)
     ElseIf x < 0 Then
-        If Y > 0 Then                '2. Quadrant
-            Atan2 = VBA.Math.Atn(Y / x) + Pi
-        ElseIf Y < 0 Then            '3. Quadrant
-            Atan2 = VBA.Math.Atn(Y / x) - Pi
+        If y > 0 Then                '2. Quadrant
+            Atan2 = VBA.Math.Atn(y / x) + Pi
+        ElseIf y < 0 Then            '3. Quadrant
+            Atan2 = VBA.Math.Atn(y / x) - Pi
         Else                         'neg x-Achse
             Atan2 = Pi
         End If
     Else
-        If Y > 0 Then                'pos y-Achse
+        If y > 0 Then                'pos y-Achse
             Atan2 = 0.5 * Pi
-        ElseIf Y < 0 Then            'neg y-Achse
+        ElseIf y < 0 Then            'neg y-Achse
             Atan2 = -0.5 * Pi
         Else                         'Nullpunkt
             Atan2 = 0#
@@ -263,33 +263,33 @@ End Function
 '    until c=0;
 '    result:=a
 'end;
-Function ggT(ByVal x As Long, ByVal Y As Long) As Long
+Function ggT(ByVal x As Long, ByVal y As Long) As Long
     'ggT = größter gemeinsamer Teiler
-   Do While x <> Y
-      If x > Y Then
-         x = x - Y
+   Do While x <> y
+      If x > y Then
+         x = x - y
       Else
-         Y = Y - x
+         y = y - x
       End If
    Loop 'Wend
    ggT = x
 End Function
 
-Public Function GreatestCommonDivisor(ByVal x As Long, ByVal Y As Long) As Long
-   GreatestCommonDivisor = ggT(x, Y)
+Public Function GreatestCommonDivisor(ByVal x As Long, ByVal y As Long) As Long
+   GreatestCommonDivisor = ggT(x, y)
 End Function
 
 'function kgV(a,b:integer):integer;
 'Begin
 '  result:=a*b div ggT(a,b);
 'end;
-Public Function kgV(ByVal x As Long, ByVal Y As Long) As Long
-    kgV = (x * Y) \ ggT(x, Y)
+Public Function kgV(ByVal x As Long, ByVal y As Long) As Long
+    kgV = (x * y) \ ggT(x, y)
 End Function
 
-Public Function LeastCommonMultiple(ByVal x As Long, ByVal Y As Long) As Long
+Public Function LeastCommonMultiple(ByVal x As Long, ByVal y As Long) As Long
     'kgV = kleinstes gemeinsames Vielfaches
-    LeastCommonMultiple = kgV(x, Y)
+    LeastCommonMultiple = kgV(x, y)
 End Function
 
 Public Function PFZ(ByVal n As Long) As String
@@ -343,11 +343,11 @@ End Function
 'x1 ' y1
 'x2 ' LinIPol
 'x3 ' y3
-Private Function LinIPol(ByVal y1 As Double, _
-                         ByVal y3 As Double, _
-                         ByVal x1 As Double, _
-                         ByVal x2 As Double, _
-                         ByVal x3 As Double) As Double
+Public Function LinIPol(ByVal y1 As Double, _
+                        ByVal y3 As Double, _
+                        ByVal x1 As Double, _
+                        ByVal x2 As Double, _
+                        ByVal x3 As Double) As Double
 
     ' errechnet einen Wert y2 zu dem Wert x2 durch lineare Interpolation
     If (x3 - x1) = 0 Then
@@ -358,6 +358,21 @@ Private Function LinIPol(ByVal y1 As Double, _
 
 End Function
 
+'     |  x1  |  x   |  x2
+'-------------------------
+' y1  | f11     ?     f21
+' y   |  ?     ???     ?
+' y2  | f12     ?     f22
+'
+Public Function BilIPol(ByVal x1 As Double, ByVal x As Double, ByVal x2 As Double, ByVal y1 As Double, ByVal y As Double, ByVal y2 As Double, ByVal f11 As Double, ByVal f12 As Double, ByVal f21 As Double, ByVal f22 As Double) As Double
+    'https://de.wikipedia.org/wiki/Bilineare_Filterung
+    Dim x2Minx1 As Double: x2Minx1 = x2 - x1
+    Dim x2MinxDivx2Minx1 As Double: x2MinxDivx2Minx1 = (x2 - x) / x2Minx1
+    Dim xMinx1Divx2Minx1 As Double: xMinx1Divx2Minx1 = (x - x1) / x2Minx1
+    Dim R1 As Double: R1 = x2MinxDivx2Minx1 * f11 + xMinx1Divx2Minx1 * f21
+    Dim R2 As Double: R2 = x2MinxDivx2Minx1 * f12 + xMinx1Divx2Minx1 * f22
+    BilIPol = (y2 - y) / (y2 - y1) * R1 + (y - y1) / (y2 - y1) * R2
+End Function
 
 
 ' ^ ############################## ^ '    Linear interpolation    ' ^ ############################## ^ '
@@ -879,6 +894,14 @@ End Function
 
 Public Function IsEqualSng(ByVal V1 As Single, ByVal V2 As Single) As Boolean
     IsEqualSng = Abs(V1 - V2) <= EpsilonSng
+End Function
+
+Public Function IsOdd(ByVal Value As Long) As Boolean
+    IsOdd = Value Mod 2 <> 0
+End Function
+
+Public Function IsEven(ByVal Value As Long) As Boolean
+    IsEven = Value Mod 2 = 0
 End Function
 
 ' ^ ############################## ^ '      Bool functions      ' ^ ############################## ^ '
@@ -1425,4 +1448,23 @@ Public Function CalcPi() 'As Variant 'As Decimal
     Pi = CDec(3) * sqr3 / CDec(4) + CDec(24) * CDec(sum)
     CalcPi = Pi
 End Function
+' ^ ############################## ^ '   calculation of Pi   ' ^ ############################## ^ '
+
+' v ############################## v '  unsigned arithmetic  ' v ############################## v '
+
+Private Function UnsignedAdd(ByVal Value As Long, ByVal Incr As Long) As Long
+' This function is useful when doing pointer arithmetic,
+' but note it only works for positive values of Incr
+
+   If Value And &H80000000 Then  'Start < 0
+       UnsignedAdd = Value + Incr
+   ElseIf (Value Or &H80000000) < -Incr Then
+       UnsignedAdd = Value + Incr
+   Else
+       UnsignedAdd = (Value + &H80000000) + (Incr + &H80000000)
+   End If
+   
+End Function
+
+' ^ ############################## ^ '  unsigned arithmetic  ' ^ ############################## ^ '
 
