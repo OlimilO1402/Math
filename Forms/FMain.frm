@@ -84,6 +84,10 @@ Private Sub Form_Load()
     Me.Caption = "Math: " & App.FileDescription & " v" & App.Major & "." & App.Minor & "." & App.Revision
     MMath.Init
     Tests
+'value range Currency (Int64) / 10000
+    Dim Cur1 As Currency: Cur1 = 922337203685477.5807@ 'CCur("922337203685477,5807")   ' No overflow.
+    'Dim Cur2 As Currency: Cur2 = 922337203685477.5808@ 'CCur("922337203685477,5808")   ' Overflow.
+    'Dim Cur3 As Currency: Cur3 = 'CCur("922337203685477,5809")   ' overflow.
     
 ''value range Currency (signed Int64)
 ''Currency (skalierte Ganzzahl)
@@ -108,18 +112,18 @@ Private Sub Form_Load()
 End Sub
 
 Private Sub Form_Resize()
-    Dim L As Single
-    Dim t As Single: t = Text1.Top
+    Dim l As Single
+    Dim T As Single: T = Text1.Top
     Dim W As Single: W = Me.ScaleWidth
-    Dim H As Single: H = Me.ScaleHeight - t
+    Dim H As Single: H = Me.ScaleHeight - T
     If W > 0 And H > 0 Then
-        Text1.Move L, t, W, H
+        Text1.Move l, T, W, H
     End If
 End Sub
 
 Private Sub BtnTestPrimes_Click()
     Dim n As Long: n = 100000
-    Dim t As Single: t = Timer
+    Dim T As Single: T = Timer
     Dim i As Long, b As Boolean
     Dim p As Long
     Dim c As Long
@@ -130,9 +134,9 @@ Private Sub BtnTestPrimes_Click()
             c = c + 1
         End If
     Next
-    t = Timer - t
+    T = Timer - T
     MsgBox "Testing numbers from 0 to " & Format(n, "#,##0") & " whether it's a prime." & vbCrLf & _
-           "Found " & c & " primes. This took about " & t & " seconds." & vbCrLf & "The last prime was " & Format(p, "#,##0")
+           "Found " & c & " primes. This took about " & T & " seconds." & vbCrLf & "The last prime was " & Format(p, "#,##0")
 End Sub
 
 Private Sub BtnTestPrimes2_Click()
@@ -200,14 +204,17 @@ Sub TestConstants()
     AddItem "GoldenRatio =" & MMath.GoldenRatio ' As Variant As Decimal
 
 'Physikalische Konstanten
-    AddItem "SpeedOfLight   =" & MMath.SpeedOfLight & " m/s"  'Lichtgeschwindigkeit im Vakuum      c
-    AddItem "MassOfElektron =" & MMath.MassElektron   'Ruhemasse des Elektrons             me
-    AddItem "MassOfProton   =" & MMath.MassProton     'Ruhemasse des Protons               mp
-    AddItem "Gravitation    =" & MMath.Gravitation    'Newtonsche Gravitationskonstante    G
-    AddItem "Avogadro       =" & MMath.Avogadro       'Avogadro-Konstante                  NA
-    AddItem "ProtonCharge   =" & MMath.ElemCharge     'Elementarladung (des Protons)       e
-    AddItem "PlanckQuantum  =" & MMath.PlanckQuantum  'Plancksches Wirkungsquantum         h
-    AddItem "QuantumAlpha   =" & MMath.QuantumAlpha
+    AddItem "SpeedOfLight     =" & MMath.SpeedOfLight & " m/s"  'Lichtgeschwindigkeit im Vakuum      c
+    AddItem "MassOfElektron   =" & MMath.MassElektron   'Ruhemasse des Elektrons             me
+    AddItem "MassOfProton     =" & MMath.MassProton     'Ruhemasse des Protons               mp
+    AddItem "Gravitation      =" & MMath.Gravitation    'Newtonsche Gravitationskonstante    G
+    AddItem "Avogadro         =" & MMath.Avogadro       'Avogadro-Konstante                  NA
+    AddItem "Boltzmann        =" & MMath.Boltzmann      'Boltzmann-Konstante                 k_B
+    AddItem "StefanBoltzmann  =" & MMath.StefanBoltzmann 'Stefan Boltzmann-Konstante         sigma
+    
+    AddItem "ProtonCharge     =" & MMath.ElemCharge     'Elementarladung (des Protons)       e
+    AddItem "PlanckQuantum    =" & MMath.PlanckQuantum  'Plancksches Wirkungsquantum         h
+    AddItem "QuantumAlpha     =" & MMath.QuantumAlpha
     AddItem "ElectricPermittivity = " & MMath.ElecPermittvy ' Dielectrizitäts-Konstante  eps_0
     AddItem ""
     

@@ -20,16 +20,18 @@ Contains the following basic physics and math Constants:
 * PlanckQuantum    Plancks Wirkungsquantum           h   = 6,62607015 · 10^-37 m² · kg / s
 * Avogadro         Avogadro-constant                 N_A = 6,022 · 10^23
 * Gravitation      Newtons gravitational constant    G   = 6,6743 · 10^-11 m³ / (kg · s²)
-* BoltzmannConst   Boltzmann-constant                k_B = 1,38064852 · 10^23 m2 kg s-2 K-1
+* Boltzmann        Boltzmann-constant                k_B = 1,38064852 · 10^-23 m² kg s-2 K-1
+* StefanBoltzmann  Stefan Boltzmann-constant       sigma = 5,670374419 · 10^-8 W/(m²*K^4)
 * MagnPermittvy    magnetic field constant         mue_0 = µ0 ˜  1.2566370621219 · 10 ^-6 N/A²
 * ElecPermittvy    electrical field constant       eps_0 = 8.854187812813 · 10-12 (A s)/(V m)
 * QuantumAlpha     fine structure constant
 
 Contains the following basic math functions:
-* testing for IEEE positive and negative inifinite, not-a-number, undefined
-* fibonacci 
-* all possible factorial numbers
-* greatest common divisor, least-common-multiple, prime-factorisation, cancel-fration, 
+* testing for IEEE positive and negative inifinite, not-a-number or undefined
+* testing if two numbers are equal or one number is equal to null (with epsilon)
+* fibonacci-series
+* all possible factorial numbers (of all numeric integeral datatypes up to decimal)
+* greatest common divisor, least-common-multiple, prime-factorisation, cancel-fraction, 
 * linear interpolation
 * testing a number for prime, GetNextPrime, GetRandomPrime, contains all primes up to 100000
 * Min and Max for all primitive numeric datatypes
@@ -39,11 +41,9 @@ Contains the following basic math functions:
 * rounding, round-up, round-down, floor, ceiling
 * solving quadratic formula, squareroot 
 * solving cubic formula, cuberoot
-* calculating with complex-numbers 
-* pascal triangles
+* complex-number datatype and all calculations with complex-numbers 
+* pascal-triangle
 * modulo function for floating-points
 * calculation of Pi
-
-
-
+  
 ![Math Image](Resources/Math.png "Math Image")

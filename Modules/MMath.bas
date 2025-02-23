@@ -1,5 +1,5 @@
 Attribute VB_Name = "MMath"
-Option Explicit ' OM: 2024-03-04 lines 1264
+Option Explicit ' OM: 2024-11-30 lines 1478
 
 Public INDef  As Double 'not defined, undefined like 0 / 0
 Public posINF As Double 'positive infinity like 1 / 0
@@ -42,10 +42,27 @@ Private Declare Sub RtlMoveMemory Lib "kernel32" (ByRef pDst As Any, ByRef pSrc 
 
 'value range Byte (unsigned int8)
 '0-255
+Public Const MinByte    As Byte = 0
+Public Const MaxByte    As Byte = 255
 
-'value range Integer (signed int16)
+'value range Integer (short) (signed int16)
 '-32768 - 32767
+Public Const MinInteger As Integer = &H8000 '-32768
+Public Const MaxInteger As Integer = &H7FFF ' 32767
 
+'value range Long (Int32)
+Public Const MinLong    As Long = &H80000000  '-2147483648
+Public Const MaxLong    As Long = &H7FFFFFFF  ' 2147483647
+
+Public Const MinSingle  As Single = -3.40282347E+38 '-3.40282347E+38;
+Public Const MaxSingle  As Single = 3.40282347E+38  ' 3.40282347E+38
+
+Public Const MinDouble As Double = -1.7976931348623E+308 ' -1.7976931348623157E+308;
+Public Const MaxDouble As Double = 1.7976931348623E+308  ' = 1.7976931348623157E+308;
+
+'value range Currency (Int64 / 10000)
+Public Const MinCurrency As Currency = -922337203685477.5807@
+Public Const MaxCurrency As Currency = 922337203685477.5807@
 
 'value range Currency (Int64)
 '    Dim Cur1: bigDec1 = CDec("9223372036854775807")   ' No overflow.
@@ -73,17 +90,18 @@ Public SquareRoot3 ' As Decimal
 Public GoldenRatio ' As Decimal
 
 'Physical constants
-Public SpeedOfLight   ' Lichtgeschwindigkeit im Vakuum      c   = 299792458 m/s
-Public ElemCharge     ' Elementarladung (des Protons)       e   = 1,602176634 * 10^-19 C (Coulomb)
-Public MassElektron   ' Ruhemasse des Elektrons             m_e = 9,109*10^-31 kg
-Public MassProton     ' Ruhemasse des Protons               m_p = 1,6726215813 · 10^-27 kg
-Public PlanckQuantum  ' Plancksches Wirkungsquantum         h   = 6,62607015 * 10^(-37) m² * kg / s
-Public Avogadro       ' Avogadro-Konstante                  N_A = 6,022 * 10^23
-Public Gravitation    ' Newtonsche Gravitationskonstante    G   = 6,6743 * 10^-11 m³ / (kg * s²)
-Public BoltzmannConst ' Boltzmann-Konstante                 k_B = 1,38064852 × 10-23 m2 kg s-2 K-1
-Public MagnPermittvy  ' magnetische Feldkonstante           mue_0 = µ0 ˜ 1.2566370621219 * 10 ^(-6) N/A²
-Public ElecPermittvy  ' elektrische Feldkonstante           eps_0 = 8.8541878128(13)e-12 (A s)/(V m)
-Public QuantumAlpha   ' FineStructureConstant
+Public SpeedOfLight    ' Lichtgeschwindigkeit im Vakuum      c   = 299792458 m/s
+Public ElemCharge      ' Elementarladung (des Protons)       e   = 1,602176634 * 10^-19 C (Coulomb)
+Public MassElektron    ' Ruhemasse des Elektrons             m_e = 9,109*10^-31 kg
+Public MassProton      ' Ruhemasse des Protons               m_p = 1,6726215813 · 10^-27 kg
+Public PlanckQuantum   ' Plancksches Wirkungsquantum         h   = 6,62607015 * 10^(-37) m² * kg / s
+Public Avogadro        ' Avogadro-Konstante                  N_A = 6,022 * 10^23
+Public Gravitation     ' Newtonsche Gravitationskonstante    G   = 6,6743 * 10^-11 m³ / (kg * s²)
+Public Boltzmann       ' Boltzmann-Konstante                 k_B = 1,38064852 × 10^-23 m² kg / (s² * K)
+Public StefanBoltzmann ' Stefan Boltzmann-Konstante          sigma = 5,670374419 × 10^-8 W/(m² * K^4)
+Public MagnPermittvy   ' magnetische Feldkonstante           mue_0 = µ0 ˜ 1.2566370621219 * 10 ^(-6) N/A²
+Public ElecPermittvy   ' elektrische Feldkonstante           eps_0 = 8.8541878128(13)e-12 (A s)/(V m)
+Public QuantumAlpha    ' FineStructureConstant
 
 Private m_Factorials()   ' As Decimal
 Public Primes()  As Long ' contains all primes up to 100000
@@ -110,7 +128,6 @@ Public Sub Init()
          Pi = Constant_Parse(1, "3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8, 9, 7, 9, 3, 2, 3, 8, 4, 6, 2, 6, 4, 3, 3, 8, 3, 2, 7, 9, 5, 0, 2, 8, 8, 4, 1, 9, 7, 1, 6, 9, 3, 9, 9, 3, 7, 5, 1, 0, 5, 8, 2, 0, 9, 7, 4, 9, 4, 4, 5, 9, 2, 3, 0, 7, 8, 1, 6, 4, 0, 6, 2, 8, 6, 2, 0, 8, 9, 9, 8, 6, 2, 8, 0, 3, 4, 8, 2, 5, 3, 4, 2, 1, 1, 7, 0, 6, 7, 9, 8, 2, 1, 4")
      
          Pi = CDec(CDec(4) * CDec(Atn(1)))
-
      
      Pihalf = Pi / CDec(2) 'Constant_Parse(1, "")
         Pi2 = Constant_Parse(1, "6, 2, 8, 3, 1, 8, 5, 3, 0, 7, 1, 7, 9, 5, 8, 6, 4, 7, 6, 9, 2, 5, 2, 8, 6, 7, 6, 6, 5, 5, 9, 0, 0, 5, 7, 6, 8, 3, 9, 4, 3, 3, 8, 7, 9, 8, 7, 5, 0, 2, 1, 1, 6, 4, 1, 9, 4, 9, 8, 8, 9, 1, 8, 4, 6, 1, 5, 6, 3, 2, 8, 1, 2, 5, 7, 2, 4, 1, 7, 9, 9, 7, 2, 5, 6, 0, 6, 9, 6, 5, 0, 6, 8, 4, 2, 3, 4, 1, 3")
@@ -127,8 +144,12 @@ SquareRoot3 = Constant_Parse(1, "1, 7, 3, 2, 0, 5, 0, 8, 0, 7, 5, 6, 8, 8, 7, 7,
 'https://oeis.org/A001622
 GoldenRatio = Constant_Parse(1, "1, 6, 1, 8, 0, 3, 3, 9, 8, 8, 7, 4, 9, 8, 9, 4, 8, 4, 8, 2, 0, 4, 5, 8, 6, 8, 3, 4, 3, 6, 5, 6, 3, 8, 1, 1, 7, 7, 2, 0, 3, 0, 9, 1, 7, 9, 8, 0, 5, 7, 6, 2, 8, 6, 2, 1, 3, 5, 4, 4, 8, 6, 2, 2, 7, 0, 5, 2, 6, 0, 4, 6, 2, 8, 1, 8, 9, 0, 2, 4, 4, 9, 7, 0, 7, 2, 0, 7, 2, 0, 4, 1, 8, 9, 3, 9, 1, 1, 3, 7, 4, 8, 4, 7, 5")
 
+
+
 'https://oeis.org/A003678
 SpeedOfLight = Constant_Parse(9, "2, 9, 9, 7, 9, 2, 4, 5, 8") ' m / sec
+
+ElemCharge = Constant_Parse(1, "1, 6, 0, 2, 1, 7, 6, 6, 3, 4") * 10 ^ -19 'C (Coulomb)
 
 'https://oeis.org/A081801
 MassElektron = Constant_Parse(1, "9, 1, 0, 9, 3, 8") * 10 ^ -31 'kg
@@ -137,6 +158,13 @@ MassElektron = Constant_Parse(1, "9, 1, 0, 9, 3, 8") * 10 ^ -31 'kg
 'https://oeis.org/A070059
 MassProton = Constant_Parse(1, "1, 6, 7, 2, 6, 2, 1, 9, 2") * 10 ^ -27 'kg
 
+'https://oeis.org/A003676
+PlanckQuantum = 6.62607015 * 10 ^ (-34)
+
+'Teilchenzahl
+'N_A
+'https://oeis.org/A322578
+Avogadro = Constant_Parse(1, "6, 0, 2, 2, 1, 4, 0, 7, 6") * 10 ^ 23 '1/mol
 
 'https://oeis.org/A070058
 '6.674 30(15) * 10^(-11) m^3 kg^(-1) s^(-2)
@@ -152,22 +180,19 @@ Gravitation = Constant_Parse(6, "6, 6, 7, 4, 3, 9, 0") * 10 ^ -11
 'Prinzipiell müssen wir nur 1g durch 27u teilen, nur können wir das nur machen,
 'wenn wir dieselben Einheiten haben
 '
+'https://oeis.org/A070063
+' Boltzmann-Konstante                 k_B = 1,38064852 × 10-23 m2 kg s-2 K-1
+Boltzmann = Constant_Parse(1, "1, 3, 8, 0, 6, 4, 9") * 10 ^ -23
 
-'Teilchenzahl
-'N_A
-'https://oeis.org/A322578
-Avogadro = Constant_Parse(1, "6, 0, 2, 2, 1, 4, 0, 7, 6") * 10 ^ 23 '1/mol
-
-ElemCharge = Constant_Parse(1, "1, 6, 0, 2, 1, 7, 6, 6, 3, 4") * 10 ^ -19 'C (Coulomb)
-
-'https://oeis.org/A003676
-PlanckQuantum = 6.62607015 * 10 ^ (-34)
-
-QuantumAlpha = CDec(CDec(1) / CDec(137))
+'https://oeis.org/A081820
+' Stefan Boltzmann-Konstante    sigma = 5,670374419 × 10-8 W/(m^2 * K^4)
+StefanBoltzmann = Constant_Parse(1, "5, 6, 7, 0, 3, 7, 4, 4, 1, 9, 1, 8, 4, 4, 2, 9, 4, 5, 3, 9, 7, 0, 9, 9, 6, 7, 3, 1, 8, 8, 9, 2, 3, 0, 8, 7, 5, 8, 4, 0, 1, 2, 2, 9, 7, 0, 2, 9, 1, 3, 0, 3, 6, 8, 2, 4, 0, 5, 4, 6, 1, 7, 3, 7, 0, 5, 3, 9, 4, 8, 1, 6, 0, 6, 2, 6, 5, 2, 3, 3, 2, 6, 0, 8, 2, 5, 7, 1, 8, 5, 7, 7, 7, 0, 4, 4, 6, 8, 8, 7, 0, 3") * 10 ^ -8
 
 MagnPermittvy = Constant_Parse(1, "1, 2, 5, 6, 6, 3, 7, 0, 6, 1, 4, 3, 5, 9, 1, 7, 2, 9, 5, 3, 8, 5, 0, 5, 7, 3, 5, 3, 3, 1, 1, 8, 0, 1, 1, 5, 3, 6, 7, 8, 8, 6, 7, 7, 5, 9, 7, 5, 0, 0, 4, 2, 3, 2, 8, 3, 8, 9, 9, 7, 7, 8, 3, 6, 9, 2, 3, 1, 2, 6, 5, 6, 2, 5, 1, 4, 4, 8, 3, 5, 9, 9, 4, 5, 1, 2, 1, 3, 9, 3, 0, 1, 3, 6, 8, 4, 6, 8, 2") * 10 ^ -6   '
 
 ElecPermittvy = Constant_Parse(1, "8, 8, 5, 4, 1, 8, 7, 8, 1, 7, 6, 2, 0, 3, 8, 9, 8, 5, 0, 5, 3, 6, 5, 6, 3, 0, 3, 1, 7, 1, 0, 7, 5, 0, 2, 6, 0, 6, 0, 8, 3, 7, 0, 1, 6, 6, 5, 9, 9, 4, 4, 9, 8, 0, 8, 1, 0, 2, 4, 1, 7, 1, 5, 2, 4, 0, 5, 3, 9, 5, 0, 9, 5, 4, 5, 9, 9, 8, 2, 1, 1, 4, 2, 8, 5, 2, 8, 9, 1, 6, 0, 7, 1, 8, 2, 0, 0, 8, 9, 3, 2, 8, 6, 7") * 10 ^ -12   '
+
+QuantumAlpha = CDec(CDec(1) / CDec(137))
 
     InitFactorials
     
@@ -311,9 +336,9 @@ End Function
 
 'Bruch = Zähler / Nenner   'fraction = numerator / denominator
 Public Function CancelFraction(numerator_inout As Long, denominator_inout As Long) As Boolean
-    Dim t As Long: t = ggT(numerator_inout, ByVal denominator_inout)
-    numerator_inout = numerator_inout \ t
-    denominator_inout = denominator_inout \ t
+    Dim T As Long: T = ggT(numerator_inout, ByVal denominator_inout)
+    numerator_inout = numerator_inout \ T
+    denominator_inout = denominator_inout \ T
     If denominator_inout < 0 Then
         numerator_inout = -numerator_inout
         denominator_inout = -denominator_inout
@@ -811,20 +836,20 @@ End Function
 
 ' or without error handling:
 Public Function GetINF(Optional ByVal sign As Long = 1) As Double
-    Dim L(1 To 2) As Long
+    Dim l(1 To 2) As Long
     If Sgn(sign) > 0 Then
-        L(2) = &H7FF00000
+        l(2) = &H7FF00000
     ElseIf Sgn(sign) < 0 Then
-        L(2) = &HFFF00000
+        l(2) = &HFFF00000
     End If
-    Call RtlMoveMemory(GetINF, L(1), 8)
+    Call RtlMoveMemory(GetINF, l(1), 8)
 End Function
 
 Public Sub GetNaN(ByRef Value As Double)
-    Dim L(1 To 2) As Long
-    L(1) = 1
-    L(2) = &H7FF00000
-    Call RtlMoveMemory(Value, L(1), 8)
+    Dim l(1 To 2) As Long
+    l(1) = 1
+    l(2) = &H7FF00000
+    Call RtlMoveMemory(Value, l(1), 8)
 End Sub
 
 Public Sub GetINDef(ByRef Value As Double)
@@ -897,11 +922,11 @@ Public Function IsEqualSng(ByVal V1 As Single, ByVal V2 As Single) As Boolean
 End Function
 
 Public Function IsOdd(ByVal Value As Long) As Boolean
-    IsOdd = Value Mod 2 <> 0
+    IsOdd = Value And 1& ' Mod 2 <> 0
 End Function
 
 Public Function IsEven(ByVal Value As Long) As Boolean
-    IsEven = Value Mod 2 = 0
+    IsEven = Not Value And 1& ' Mod 2 = 0
 End Function
 
 ' ^ ############################## ^ '      Bool functions      ' ^ ############################## ^ '
@@ -1105,9 +1130,9 @@ End Function
 Public Function CubeRoot(ByVal d As Double) As Double
     'CubeRoot due to Halley
     Dim a3 As Double
-    Dim t As TDouble: t.Value = d
-    Dim p As TLong2:   LSet p = t: p.Value1 = p.Value1 \ 3 + 715094163
-    Dim a As Double:   LSet t = p: a = t.Value
+    Dim T As TDouble: T.Value = d
+    Dim p As TLong2:   LSet p = T: p.Value1 = p.Value1 \ 3 + 715094163
+    Dim a As Double:   LSet T = p: a = T.Value
     a3 = a * a * a
     a = a * (a3 + d + d) / (a3 + a3 + d)
     a3 = a * a * a
