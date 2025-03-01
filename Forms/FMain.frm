@@ -113,17 +113,17 @@ End Sub
 
 Private Sub Form_Resize()
     Dim l As Single
-    Dim T As Single: T = Text1.Top
+    Dim t As Single: t = Text1.Top
     Dim W As Single: W = Me.ScaleWidth
-    Dim H As Single: H = Me.ScaleHeight - T
+    Dim H As Single: H = Me.ScaleHeight - t
     If W > 0 And H > 0 Then
-        Text1.Move l, T, W, H
+        Text1.Move l, t, W, H
     End If
 End Sub
 
 Private Sub BtnTestPrimes_Click()
     Dim n As Long: n = 100000
-    Dim T As Single: T = Timer
+    Dim t As Single: t = Timer
     Dim i As Long, b As Boolean
     Dim p As Long
     Dim c As Long
@@ -134,9 +134,9 @@ Private Sub BtnTestPrimes_Click()
             c = c + 1
         End If
     Next
-    T = Timer - T
+    t = Timer - t
     MsgBox "Testing numbers from 0 to " & Format(n, "#,##0") & " whether it's a prime." & vbCrLf & _
-           "Found " & c & " primes. This took about " & T & " seconds." & vbCrLf & "The last prime was " & Format(p, "#,##0")
+           "Found " & c & " primes. This took about " & t & " seconds." & vbCrLf & "The last prime was " & Format(p, "#,##0")
 End Sub
 
 Private Sub BtnTestPrimes2_Click()
@@ -187,6 +187,7 @@ Sub Tests()
     TestFibonacci
     TestFloorCeiling
     TestRounding
+    TestRandom
 End Sub
 
 Sub TestConstants()
@@ -496,6 +497,27 @@ Private Sub TestRounding()
     AddItem s
     s = ""
     
+    
+End Sub
+
+Private Sub TestRandom()
+    
+    AddItem "TestRandom"
+    AddItem "=========="
+    
+    Dim s As String
+    Dim b As Byte
+    Dim i As Integer
+    Dim l As Long
+    Dim d
+    
+    i = MPtr.RndInt8:     s = "RndInt8  (       -128 ..        128): " & i:    AddItem s
+    b = MPtr.RndUInt8:    s = "RndUInt8 (          0 ..        255): " & b:    AddItem s
+    i = MPtr.RndInt16:    s = "RndInt16 (     -32768 ..      32767): " & i:    AddItem s
+    l = MPtr.RndUInt16:   s = "RndUInt16(          0 ..      65536): " & l:    AddItem s
+    l = MPtr.RndInt32:    s = "RndInt32 (-2147483648 .. 2147483647): " & l:    AddItem s
+    d = MPtr.RndUInt32:   s = "RndUInt32(          0 .. 4294967296): " & d:    AddItem s
+    d = MPtr.RndInt64:    s = "RndInt64 (          0 .. 4294967296): " & d:    AddItem s
     
 End Sub
 

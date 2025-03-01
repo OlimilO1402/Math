@@ -41,16 +41,17 @@ End Type
 Private Declare Sub RtlMoveMemory Lib "kernel32" (ByRef pDst As Any, ByRef pSrc As Any, ByVal bLength As Long)
 
 'value range Byte (unsigned int8)
-'0-255
+'0 .. 255
 Public Const MinByte    As Byte = 0
 Public Const MaxByte    As Byte = 255
 
 'value range Integer (short) (signed int16)
-'-32768 - 32767
+'-32768 .. 32767
 Public Const MinInteger As Integer = &H8000 '-32768
 Public Const MaxInteger As Integer = &H7FFF ' 32767
 
 'value range Long (Int32)
+'-2147483648 .. 2147483647
 Public Const MinLong    As Long = &H80000000  '-2147483648
 Public Const MaxLong    As Long = &H7FFFFFFF  ' 2147483647
 
@@ -66,7 +67,7 @@ Public Const MaxCurrency As Currency = 922337203685477.5807@
 
 'value range Currency (Int64)
 '    Dim Cur1: bigDec1 = CDec("9223372036854775807")   ' No overflow.
-'    Dim Cur2: bigDec2 = CDec("9223372036854775808")   ' No Overflow.
+'    Dim Cur2: bigDec2 = CDec("9223372036854775808")   ' No overflow.
 '    Dim Cur3: bigDec3 = CDec("9223372036854775809")   ' No overflow.
 
 'value range Decimal
@@ -336,9 +337,9 @@ End Function
 
 'Bruch = Zähler / Nenner   'fraction = numerator / denominator
 Public Function CancelFraction(numerator_inout As Long, denominator_inout As Long) As Boolean
-    Dim T As Long: T = ggT(numerator_inout, ByVal denominator_inout)
-    numerator_inout = numerator_inout \ T
-    denominator_inout = denominator_inout \ T
+    Dim t As Long: t = ggT(numerator_inout, ByVal denominator_inout)
+    numerator_inout = numerator_inout \ t
+    denominator_inout = denominator_inout \ t
     If denominator_inout < 0 Then
         numerator_inout = -numerator_inout
         denominator_inout = -denominator_inout
@@ -1130,9 +1131,9 @@ End Function
 Public Function CubeRoot(ByVal d As Double) As Double
     'CubeRoot due to Halley
     Dim a3 As Double
-    Dim T As TDouble: T.Value = d
-    Dim p As TLong2:   LSet p = T: p.Value1 = p.Value1 \ 3 + 715094163
-    Dim a As Double:   LSet T = p: a = T.Value
+    Dim t As TDouble: t.Value = d
+    Dim p As TLong2:   LSet p = t: p.Value1 = p.Value1 \ 3 + 715094163
+    Dim a As Double:   LSet t = p: a = t.Value
     a3 = a * a * a
     a = a * (a3 + d + d) / (a3 + a3 + d)
     a3 = a * a * a
