@@ -1,5 +1,29 @@
 Attribute VB_Name = "MMath"
 Option Explicit ' OM: 2024-11-30 lines 1478
+' OM: 2025-07-22 lines 1826
+'#####################  v  for Bit Shifting v   ####################
+' by Paul - wpsjr1@syix.com
+' http://www.syix.com/wpsjr1/index.html
+
+' Author's comments:  use ShiftLeft04 or ShiftRightZ05 without the wrappers if you need more speed,
+' they're 25% faster than these.
+
+' NOTE: YOU *MUST* CALL InitFunctionsShift() BEFORE USING THESE FUNCTIONS
+
+Private Declare Function VirtualProtect Lib "kernel32" (lpAddress As Any, ByVal dwSize As Long, ByVal flNewProtect As Long, lpflOldProtect As Long) As Long
+Private Declare Sub RtlMoveMemory Lib "kernel32" (Destination As Any, Source As Any, ByVal Length As Long)
+
+Private Const SHLCode As String = "8A4C240833C0F6C1E075068B442404D3E0C20800"  ' shl eax, cl = D3 E0
+Private Const SHRCode As String = "8A4C240833C0F6C1E075068B442404D3E8C20800"  ' shr eax, cl = D3 E8
+Private Const SARCode As String = "8A4C240833C0F6C1E075068B442404D3F8C20800"  ' sar eax, cl = D3 F8
+Private Const PAGE_EXECUTE_READWRITE As Long = &H40
+
+Dim bHoldSHL() As Byte
+Dim bHoldSHR() As Byte
+Dim bHoldSAR() As Byte
+Dim lCompiled As Long
+'#####################  ^  for Bit Shifting ^   ####################
+
 
 Public INDef  As Double 'not defined, undefined like 0 / 0
 Public posINF As Double 'positive infinity like 1 / 0
@@ -25,20 +49,18 @@ End Type
 
 'this types just for conversions
 Private Type TLong
-    Value As Long
+    value As Long
 End Type
 Private Type TSingle
-    Value As Single
+    value As Single
 End Type
 Private Type TLong2
     Value0 As Long
     Value1 As Long
 End Type
 Private Type TDouble
-    Value As Double
+    value As Double
 End Type
-
-Private Declare Sub RtlMoveMemory Lib "kernel32" (ByRef pDst As Any, ByRef pSrc As Any, ByVal bLength As Long)
 
 'value range Byte (unsigned int8)
 '0 .. 255
@@ -117,6 +139,14 @@ Public Fibonacci() As Long
 ');
 'Private Declare Function RtlCompareMemory Lib "ntdll" (pSrc1 As Long, pSrc2 As Long, ByVal Length As Long) As Long
 
+'#####################  v  for Bit Shifting v   ####################
+Private Sub InitFunctionsShift() ' call this in your Sub Main or Form_Load
+    If Compiled Then
+        SubstituteCode bHoldSHL, SHLCode, AddressOf ShiftLeft
+        SubstituteCode bHoldSHR, SHRCode, AddressOf ShiftRightZ
+        SubstituteCode bHoldSAR, SARCode, AddressOf ShiftRight
+    End If
+End Sub
 
 Public Sub Init()
         'Pi = CDec("3,1415926535897932384626433832795") '0288419716939937510582097494459230781640628620899862803482534211706798214")
@@ -209,6 +239,7 @@ QuantumAlpha = CDec(CDec(1) / CDec(137))
     'InitDedekind
     InitFibonacci
     InitINF
+    InitFunctionsShift
 End Sub
 
 Public Sub InitINF()
@@ -244,24 +275,24 @@ Public Function Fact(ByVal n As Long) As Variant 'As Decimal
     Fact = m_Factorials(n)
 End Function
 
-Public Function Atan2(ByVal y As Double, ByVal x As Double) As Double
+Public Function ATan2(ByVal y As Double, ByVal x As Double) As Double
     If x > 0 Then        'egal ob y > 0 oder y < 0    '1. Quadrant und 4. Quadrant
-        Atan2 = VBA.Math.Atn(y / x)
+        ATan2 = VBA.Math.Atn(y / x)
     ElseIf x < 0 Then
         If y > 0 Then                '2. Quadrant
-            Atan2 = VBA.Math.Atn(y / x) + Pi
+            ATan2 = VBA.Math.Atn(y / x) + Pi
         ElseIf y < 0 Then            '3. Quadrant
-            Atan2 = VBA.Math.Atn(y / x) - Pi
+            ATan2 = VBA.Math.Atn(y / x) - Pi
         Else                         'neg x-Achse
-            Atan2 = Pi
+            ATan2 = Pi
         End If
     Else
         If y > 0 Then                'pos y-Achse
-            Atan2 = 0.5 * Pi
+            ATan2 = 0.5 * Pi
         ElseIf y < 0 Then            'neg y-Achse
-            Atan2 = -0.5 * Pi
+            ATan2 = -0.5 * Pi
         Else                         'Nullpunkt
-            Atan2 = 0#
+            ATan2 = 0#
         End If
     End If
 End Function
@@ -361,6 +392,44 @@ End Function
 
 Public Function IsPowerOfTwo(ByVal x As Long) As Boolean
     IsPowerOfTwo = (x <> 0) And ((x And (x - 1)) = 0)
+End Function
+
+
+'Public Shared Function Pow(ByVal x As Double, ByVal y As Double) As Double
+Public Static Function Pow(ByVal x As Double, ByVal y As Double) As Double 'cDouble
+    'Set Pow = New cDouble
+    Pow = x ^ y
+End Function
+
+Public Static Function Powr2(ByVal Exponent As Long) As Long
+    Powr2 = Pow2(Exponent)
+End Function
+ 
+Public Static Function Pow2(ByVal Exponent As Long) As Long
+    ' by Donald, donald@xbeat.net, 20001217
+    ' * Power205
+    Dim alPow2(0 To 31) As Long
+    Dim i As Long
+    
+    Select Case Exponent
+    Case 0 To 31
+        ' initialize lookup table
+        If alPow2(0) = 0 Then
+            alPow2(0) = 1
+            For i = 1 To 30
+                alPow2(i) = alPow2(i - 1) * 2
+            Next
+            alPow2(31) = &H80000000
+        End If
+        ' return
+        Pow2 = alPow2(Exponent)
+    End Select
+End Function
+
+Private Function Compiled() As Long
+    On Error Resume Next
+    Debug.Print 1 \ 0
+    Compiled = (Err.number = 0)
 End Function
 
 ' ^ ############################## ^ '    ggT and kgV-functions    ' ^ ############################## ^ '
@@ -468,7 +537,7 @@ End Function
 '    IsPrimeN = True
 'End Function
 
-Function IsPrime(ByVal Value As Long) As Boolean
+Function IsPrime(ByVal value As Long) As Boolean
 '    If Value < 200 Then
 '        Select Case Value
 '        Case 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, _
@@ -476,15 +545,15 @@ Function IsPrime(ByVal Value As Long) As Boolean
 '            IsPrime = True:        Exit Function
 '        End Select
 '    End If
-    If (Value And 1) = 0 Then Exit Function
+    If (value And 1) = 0 Then Exit Function
     Dim div As Long: div = 3
     Dim squ As Long: squ = 9
-    Do While squ < Value
-        If Value Mod div = 0 Then Exit Function
+    Do While squ < value
+        If value Mod div = 0 Then Exit Function
         div = div + 2
         squ = div * div
     Loop
-    If squ <> Value Then
+    If squ <> value Then
         IsPrime = True
     End If
     InitPrimeX
@@ -704,28 +773,28 @@ End Function
 'Einen Wert in Schranken zwingen, obere Werte auf Max reduzieren, untere Werte auf Min heben
 'MinMax, Clamp,
 'its like a sound compressor: lower sounds gets louder, louder sounds must not oversteer over a maxvalue
-Public Function Clamp(Value, MinVal, MaxVal)
-    Clamp = Max(MinVal, Min(MaxVal, Value))
+Public Function Clamp(value, MinVal, MaxVal)
+    Clamp = Max(MinVal, Min(MaxVal, value))
 End Function
 
-Public Function ClampByt(ByVal Value As Byte, ByVal MinVal As Byte, ByVal MaxVal As Byte) As Byte
-    ClampByt = MaxByt(MinVal, MinByt(MaxVal, Value))
+Public Function ClampByt(ByVal value As Byte, ByVal MinVal As Byte, ByVal MaxVal As Byte) As Byte
+    ClampByt = MaxByt(MinVal, MinByt(MaxVal, value))
 End Function
 
-Public Function ClampInt(ByVal Value As Integer, ByVal MinVal As Integer, ByVal MaxVal As Integer) As Integer
-    ClampInt = MaxInt(MinVal, MinInt(MaxVal, Value))
+Public Function ClampInt(ByVal value As Integer, ByVal MinVal As Integer, ByVal MaxVal As Integer) As Integer
+    ClampInt = MaxInt(MinVal, MinInt(MaxVal, value))
 End Function
 
-Public Function ClampLng(ByVal Value As Long, ByVal MinVal As Long, ByVal MaxVal As Long) As Long
-    ClampLng = MaxLng(MinVal, MinLng(MaxVal, Value))
+Public Function ClampLng(ByVal value As Long, ByVal MinVal As Long, ByVal MaxVal As Long) As Long
+    ClampLng = MaxLng(MinVal, MinLng(MaxVal, value))
 End Function
 
-Public Function ClampSng(ByVal Value As Single, ByVal MinVal As Single, ByVal MaxVal As Single) As Single
-    ClampSng = MaxSng(MinVal, MinSng(MaxVal, Value))
+Public Function ClampSng(ByVal value As Single, ByVal MinVal As Single, ByVal MaxVal As Single) As Single
+    ClampSng = MaxSng(MinVal, MinSng(MaxVal, value))
 End Function
 
-Public Function ClampDbl(ByVal Value As Double, ByVal MinVal As Double, ByVal MaxVal As Double) As Double
-    ClampDbl = MaxDbl(MinVal, MinDbl(MaxVal, Value))
+Public Function ClampDbl(ByVal value As Double, ByVal MinVal As Double, ByVal MaxVal As Double) As Double
+    ClampDbl = MaxDbl(MinVal, MinDbl(MaxVal, value))
 End Function
 
 ' ^ ############################## ^ '    Min-Max-functions    ' ^ ############################## ^ '
@@ -793,6 +862,7 @@ End Function
 '10000           | 10           | Log(Zahl)       =   4    | Log aka lg := Logarithm to base 10, with the excelfunction Log, base not explicitely given
 '   32           |  2           | Log(Zahl;Basis) =   5    | Log        := Logarithm to base  2, if the base 2 was explicitely given
 
+
 'Logarithmus naturalis, logarithm to base e
 Public Function LN(ByVal d As Double) As Double
     LN = VBA.Math.Log(d)
@@ -810,6 +880,12 @@ Public Function LogN(ByVal x As Double, Optional ByVal base As Double = 10#) As 
     If base = 1 Or base = 0 Then Exit Function
     LogN = VBA.Math.Log(x) / VBA.Math.Log(base)
 End Function
+'Public Shared Function Log(ByVal d As Double) As Double
+'Public Shared Function Log(ByVal a As Double, ByVal newBase As Double) As Double
+Public Static Function Log(ByVal d As Double, ByVal newBase As Double) As Double 'cDouble
+    'Set Log = New cDouble
+    Log = VBA.Math.Log(d) / VBA.Math.Log(newBase)
+End Function
 
 ' ^ ############################## ^ '    Logarithm functions    ' ^ ############################## ^ '
 
@@ -824,54 +900,74 @@ Public Function Ceiling(ByVal a As Double) As Double
     'If a > 0 Then Ceiling = CDbl(Int(a) + 1#) Else Ceiling = CDbl(Fix(a))
     'If a <> 0 Then If Abs(Ceiling / a) <> 1 Then Ceiling = Ceiling + 1
 End Function
+
+Public Function RoundUp(ByVal value As Double, Optional ByVal NumDigitsAfterDecimal As Byte = 0) As Double
+    If value < 0 Then
+        RoundUp = Math.Round(value, NumDigitsAfterDecimal)
+        If value < RoundUp Then RoundUp = RoundUp - 10 ^ -NumDigitsAfterDecimal
+    Else
+        RoundUp = Math.Round(value, NumDigitsAfterDecimal)
+        If RoundUp < value Then RoundUp = RoundUp + 10 ^ -NumDigitsAfterDecimal
+    End If
+End Function
+
+Public Function RoundDown(ByVal value As Double, Optional ByVal NumDigitsAfterDecimal As Byte = 0) As Double
+    If value < 0 Then
+        RoundDown = Math.Round(value, NumDigitsAfterDecimal)
+        If RoundDown < value Then RoundDown = RoundDown + 10 ^ -NumDigitsAfterDecimal
+    Else
+        RoundDown = Math.Round(value, NumDigitsAfterDecimal)
+        If value < RoundDown Then RoundDown = RoundDown - 10 ^ -NumDigitsAfterDecimal
+    End If
+End Function
 ' ^ ############################## ^ '    Rounding functions     ' ^ ############################## ^ '
 
 ' v ############################## v ' IEEE754-INFINITY functions ' v ############################## v '
 ' v ############################## v '      Create functions      ' v ############################## v '
 'either with error handling:
-Public Function GetINFE(Optional ByVal sign As Long = 1) As Double
+Public Function GetINFE(Optional ByVal Sign As Long = 1) As Double
 Try: On Error Resume Next
-    GetINFE = Sgn(sign) / 0
+    GetINFE = Sgn(Sign) / 0
 Catch: On Error GoTo 0
 End Function
 
 ' or without error handling:
-Public Function GetINF(Optional ByVal sign As Long = 1) As Double
+Public Function GetINF(Optional ByVal Sign As Long = 1) As Double
     Dim l(1 To 2) As Long
-    If Sgn(sign) > 0 Then
+    If Sgn(Sign) > 0 Then
         l(2) = &H7FF00000
-    ElseIf Sgn(sign) < 0 Then
+    ElseIf Sgn(Sign) < 0 Then
         l(2) = &HFFF00000
     End If
     Call RtlMoveMemory(GetINF, l(1), 8)
 End Function
 
-Public Sub GetNaN(ByRef Value As Double)
+Public Sub GetNaN(ByRef value As Double)
     Dim l(1 To 2) As Long
     l(1) = 1
     l(2) = &H7FF00000
-    Call RtlMoveMemory(Value, l(1), 8)
+    Call RtlMoveMemory(value, l(1), 8)
 End Sub
 
-Public Sub GetINDef(ByRef Value As Double)
+Public Sub GetINDef(ByRef value As Double)
 Try: On Error Resume Next
-    Value = 0# / 0#
+    value = 0# / 0#
 Catch: On Error GoTo 0
 End Sub
 ' ^ ############################## ^ '     Create functions     ' ^ ############################## ^ '
 
 ' v ############################## v '      Bool functions      ' v ############################## v '
-Public Function IsINDef(ByRef Value As Double) As Boolean
+Public Function IsINDef(ByRef value As Double) As Boolean
 Try: On Error Resume Next
-    IsINDef = (CStr(Value) = CStr(INDef))
+    IsINDef = (CStr(value) = CStr(INDef))
 Catch: On Error GoTo 0
 End Function
 
-Public Function IsNaN(ByRef Value As Double) As Boolean
+Public Function IsNaN(ByRef value As Double) As Boolean
     Dim b(0 To 7) As Byte
     Dim i As Long
     
-    RtlMoveMemory b(0), Value, 8
+    RtlMoveMemory b(0), value, 8
     
     If (b(7) = &H7F) Or (b(7) = &HFF) Then
         If (b(6) >= &HF0) Then
@@ -885,29 +981,29 @@ Public Function IsNaN(ByRef Value As Double) As Boolean
     End If
 End Function
 
-Public Function IsPosINF(ByVal Value As Double) As Boolean
-    IsPosINF = (Value = posINF)
+Public Function IsPosINF(ByVal value As Double) As Boolean
+    IsPosINF = (value = posINF)
 End Function
 
-Public Function IsNegINF(ByVal Value As Double) As Boolean
-    IsNegINF = (Value = negINF)
+Public Function IsNegINF(ByVal value As Double) As Boolean
+    IsNegINF = (value = negINF)
 End Function
 
-Public Function IsZero(Value) As Boolean
-    Select Case VarType(Value)
-    Case VbVarType.vbSingle:  IsZero = Abs(Value) <= EpsilonSng
-    Case VbVarType.vbDouble:  IsZero = Abs(Value) <= EpsilonDbl
-    Case VbVarType.vbDecimal: IsZero = Abs(Value) <= EpsilonDec
-    Case Else:                IsZero = Abs(Value) <= Epsilon
+Public Function IsZero(value) As Boolean
+    Select Case VarType(value)
+    Case VbVarType.vbSingle:  IsZero = Abs(value) <= EpsilonSng
+    Case VbVarType.vbDouble:  IsZero = Abs(value) <= EpsilonDbl
+    Case VbVarType.vbDecimal: IsZero = Abs(value) <= EpsilonDec
+    Case Else:                IsZero = Abs(value) <= Epsilon
     End Select
 End Function
 
-Public Function IsZeroDbl(ByVal Value As Double) As Boolean
-    IsZeroDbl = Abs(Value) <= EpsilonDbl
+Public Function IsZeroDbl(ByVal value As Double) As Boolean
+    IsZeroDbl = Abs(value) <= EpsilonDbl
 End Function
 
-Public Function IsZeroSng(ByVal Value As Single) As Boolean
-    IsZeroSng = Abs(Value) <= EpsilonSng
+Public Function IsZeroSng(ByVal value As Single) As Boolean
+    IsZeroSng = Abs(value) <= EpsilonSng
 End Function
 
 Public Function IsEqual(V1, V2) As Boolean
@@ -922,37 +1018,114 @@ Public Function IsEqualSng(ByVal V1 As Single, ByVal V2 As Single) As Boolean
     IsEqualSng = Abs(V1 - V2) <= EpsilonSng
 End Function
 
-Public Function IsOdd(ByVal Value As Long) As Boolean
-    IsOdd = Value And 1& ' Mod 2 <> 0
+Public Function IsOdd(ByVal value As Long) As Boolean
+    IsOdd = value And 1& ' Mod 2 <> 0
 End Function
 
-Public Function IsEven(ByVal Value As Long) As Boolean
-    IsEven = Not Value And 1& ' Mod 2 = 0
+Public Function IsEven(ByVal value As Long) As Boolean
+    IsEven = Not value And 1& ' Mod 2 = 0
 End Function
 
 ' ^ ############################## ^ '      Bool functions      ' ^ ############################## ^ '
 
-' v ############################## v '    Rounding functions    ' v ############################## v '
-Public Function RoundUp(ByVal Value As Double, Optional ByVal NumDigitsAfterDecimal As Byte = 0) As Double
-    If Value < 0 Then
-        RoundUp = Math.Round(Value, NumDigitsAfterDecimal)
-        If Value < RoundUp Then RoundUp = RoundUp - 10 ^ -NumDigitsAfterDecimal
-    Else
-        RoundUp = Math.Round(Value, NumDigitsAfterDecimal)
-        If RoundUp < Value Then RoundUp = RoundUp + 10 ^ -NumDigitsAfterDecimal
-    End If
+' v ############################## v '    Bit-Shifting functions    ' v ############################## v '
+
+' this is the Murphy McCauley method which I modified slightly, http://www.fullspectrum.com/deeth/
+Private Sub SubstituteCode(StoreHere() As Byte, CodeString As String, ByVal AddressOfFunctionToReplace As Long)
+    Dim OldProtection As Long
+    Dim s As String
+    Dim i As Long
+      
+    ReDim StoreHere(Len(CodeString) \ 2 - 1)
+    
+    For i = 0 To Len(CodeString) \ 2 - 1
+        StoreHere(i) = Val("&H" & Mid$(CodeString, i * 2 + 1, 2))
+    Next
+    
+    VirtualProtect ByVal AddressOfFunctionToReplace, 21, PAGE_EXECUTE_READWRITE, OldProtection
+    RtlMoveMemory ByVal AddressOfFunctionToReplace, &H90, 1 ' nop to insure our first line is not concated with the previous instruction
+    RtlMoveMemory ByVal AddressOfFunctionToReplace + 1, StoreHere(0), 20 ' shr/shl code substitution
+    VirtualProtect ByVal AddressOfFunctionToReplace, 21, OldProtection, OldProtection
+    
+    ' alternately, if the code is much longer use this instead:
+    
+    ' VirtualProtect ByVal AddressOfFunctionToReplace, 7, PAGE_EXECUTE_READWRITE, OldProtection
+    ' RtlMoveMemory ByVal AddressOfFunctionToReplace, &HB8, 1  ' mov eax, PointerToCode
+    ' RtlMoveMemory ByVal AddressOfFunctionToReplace + 1, Varptr(StoreHere(0)),4
+    ' RtlMoveMemory ByVal AddressOfFunctionToReplace + 5, &HE0FF&, 2 ' jmp eax
+    ' VirtualProtect ByVal AddressOfFunctionToReplace, 7, OldProtection, OldProtection
+End Sub
+
+' Leave these placeholder functions, and their code
+Public Function ShiftLeft(ByVal value As Long, ByVal ShiftCount As Long) As Long
+    ' by Donald, donald@xbeat.net, 20001215
+    Dim mask As Long
+    
+    Select Case ShiftCount
+    Case 1 To 31
+        ' mask out bits that are pushed over the edge anyway
+        mask = Pow2(31 - ShiftCount)
+        ShiftLeft = value And (mask - 1)
+        ' shift
+        ShiftLeft = ShiftLeft * Pow2(ShiftCount)
+        ' set sign bit
+        If value And mask Then
+          ShiftLeft = ShiftLeft Or &H80000000
+        End If
+    Case 0
+        ' ret unchanged
+        ShiftLeft = value
+    End Select
 End Function
 
-Public Function RoundDown(ByVal Value As Double, Optional ByVal NumDigitsAfterDecimal As Byte = 0) As Double
-    If Value < 0 Then
-        RoundDown = Math.Round(Value, NumDigitsAfterDecimal)
-        If RoundDown < Value Then RoundDown = RoundDown + 10 ^ -NumDigitsAfterDecimal
-    Else
-        RoundDown = Math.Round(Value, NumDigitsAfterDecimal)
-        If Value < RoundDown Then RoundDown = RoundDown - 10 ^ -NumDigitsAfterDecimal
-    End If
+Public Function ShiftRightZ(ByVal value As Long, ByVal ShiftCount As Long) As Long
+    ' by Donald, donald@xbeat.net, 20001215
+    Select Case ShiftCount
+    Case 1 To 31
+        If value And &H80000000 Then
+            ShiftRightZ = (value And Not &H80000000) \ 2
+            ShiftRightZ = ShiftRightZ Or &H40000000
+            ShiftRightZ = ShiftRightZ \ Pow2(ShiftCount - 1)
+        Else
+            ShiftRightZ = value \ Pow2(ShiftCount)
+        End If
+    Case 0
+        ' ret unchanged
+        ShiftRightZ = value
+    End Select
 End Function
-' ^ ############################## ^ '    Rounding functions    ' ^ ############################## ^ '
+
+Public Static Function ShiftRight(ByVal value As Long, ByVal ShiftCount As Long) As Long
+    ' by Donald, donald@xbeat.net, 20011009
+    Dim lPow2(0 To 30) As Long
+    Dim i As Long
+    
+    Select Case ShiftCount
+    Case 0:      ShiftRight = value
+    Case 1 To 30
+        If i = 0 Then
+            lPow2(0) = 1
+            For i = 1 To 30
+                lPow2(i) = 2 * lPow2(i - 1)
+            Next
+        End If
+        If value And &H80000000 Then
+            ShiftRight = value \ lPow2(ShiftCount)
+            If ShiftRight * lPow2(ShiftCount) <> value Then
+                ShiftRight = ShiftRight - 1
+            End If
+        Else
+            ShiftRight = value \ lPow2(ShiftCount)
+        End If
+    Case 31
+        If value And &H80000000 Then
+            ShiftRight = -1
+        Else
+            ShiftRight = 0
+        End If
+    End Select
+End Function
+' ^ ############################## ^ '    Bit-Shifting functions    ' ^ ############################## ^ '
 
 ' v ############################## v '     Output functions     ' v ############################## v '
 Public Function INDefToString() As String
@@ -1002,6 +1175,174 @@ End Function
 'End Function
 ' ^ ############################## ^ '       Input function       ' ^ ############################## ^ '
 ' ^ ############################## ^ ' IEEE754-INFINITY functions ' ^ ############################## ^ '
+
+' v ############################## v '      Trigonometric functions      ' v ############################## v '
+
+Public Function DegToRad(ByVal angleInDegrees As Double) As Double
+    DegToRad = angleInDegrees * MMath.Pi / 180#
+End Function
+
+Public Function RadToDeg(ByVal angleInRadians As Double) As Double
+    RadToDeg = angleInRadians * 180# / MMath.Pi
+End Function
+
+'Public Shared Function Abs(ByVal value As Decimal) As Decimal
+'Public Shared Function Abs(ByVal value As Double) As Double
+'Public Shared Function Abs(ByVal value As Integer) As Integer
+'Public Shared Function Abs(ByVal value As Long) As Long
+'Public Shared Function Abs(ByVal value As Short) As Short
+'Public Shared Function Abs(ByVal value As Single) As Single
+'Public Shared Function Abs(ByVal value As System.SByte) As System.SByte
+Public Function Abs_(ByVal varValue As Variant) As Variant
+    Abs_ = VBA.Math.Abs(varValue)
+End Function
+
+'Public Shared Function Acos(ByVal d As Double) As Double
+Public Static Function ACos(ByVal d As Double) As Double 'cDouble
+    'Acos ist die Umkehrfunktion zur Cosinusfunktion
+    'Cos(x) = y; ACos(y) = x
+    'Set Acos = New cDouble
+    ACos = (3.14159265358979 / 2) - Atn(d / (Sqr(1 - d ^ 2)))
+End Function
+
+'Public Shared Function Asin(ByVal d As Double) As Double
+Public Static Function ASin(ByVal d As Double) As Double 'cDouble
+    'Set Asin = New cDouble
+    ASin = Atn(d / (Sqr(1 - d ^ 2)))
+End Function
+
+'Public Shared Function Atan(ByVal d As Double) As Double
+Public Static Function ATan(ByVal d As Double) As Double 'cDouble
+    'Set Atan = New cDouble
+    ATan = Atn(d)
+End Function
+'Und was ist mit ACot ????? =Pi/2 - Atan(x)
+
+'Public Shared Function Atan2(ByVal y As Double, ByVal x As Double) As Double
+'Public Static Function ATan2(ByVal y As Double, ByVal x As Double) As Double 'cDouble
+'    'Set Atan2 = New cDouble
+'    ATan2 = Atn(y / x)
+'End Function
+
+'Public Shared Function BigMul(ByVal a As Integer, ByVal b As Integer) As Long
+'Public Static Function BigMul(ByVal a As Long, ByVal b As Long) As Variant 'As Long
+'    'vergiss es
+'    BigMul = CVar(a) * CVar(b)
+'End Function
+
+'Public Shared Function Ceiling(ByVal a As Double) As Double
+'Public Static Function Ceiling(ByVal a As Double) As Double 'cDouble
+'    'Set Ceiling = New cDouble
+'    Ceiling = Int(a)
+'End Function
+
+'Public Shared Function Cos(ByVal d As Double) As Double
+Public Static Function Cos(ByVal d As Double) As Double 'cDouble
+    'Set Cos = New cDouble
+    Cos = VBA.Math.Cos(d)
+End Function
+
+'Public Shared Function Cosh(ByVal value As Double) As Double
+Public Static Function Cosh(ByVal value As Double) As Double 'cDouble
+    'Set Cosh = New cDouble
+    Cosh = (VBA.Math.Exp(value) + VBA.Math.Exp(-value)) / 2
+End Function
+
+'Public Shared Function DivRem(ByVal a As Integer, ByVal b As Integer, ByRef result As Integer) As Integer
+'Public Shared Function DivRem(ByVal a As Long, ByVal b As Long, ByRef result As Long) As Long
+Public Static Function DivRem(ByVal a As Long, ByVal b As Long, ByRef Result As Long) As Long 'cInteger 'Long
+    'Set DivRem = New cInteger
+End Function
+
+'Public Shared Function Exp(ByVal d As Double) As Double
+Public Static Function Exp(ByVal d As Double) As Double 'cDouble
+    'Set Exp = New cDouble
+    Exp = VBA.Math.Exp(d)
+End Function
+
+'Public Shared Function Floor(ByVal d As Double) As Double
+'Public Function Floor(ByVal d As Double) As Double 'cDouble
+'    'Set Floor = New cDouble
+'End Function
+
+'Public Shared Function IEEERemainder(ByVal x As Double, ByVal y As Double) As Double
+'Public Static Function IEEERemainder(ByVal x As Double, ByVal y As Double) As Double 'cDouble
+'    'Set IEEERemainder = New cDouble
+'End Function
+
+
+'Public Shared Function Sign(ByVal value As Decimal) As Integer
+'Public Shared Function Sign(ByVal value As Double) As Integer
+'Public Shared Function Sign(ByVal value As Integer) As Integer
+'Public Shared Function Sign(ByVal value As Long) As Integer
+'Public Shared Function Sign(ByVal value As Short) As Integer
+'Public Shared Function Sign(ByVal value As Single) As Integer
+'Public Shared Function Sign(ByVal value As System.SByte) As Integer
+Public Static Function Sign(ByVal varValue As Variant) As Variant
+    Sign = Sgn(varValue)
+End Function
+
+'Public Shared Function Sin(ByVal a As Double) As Double
+Public Static Function Sin(ByVal a As Double) As Double 'cDouble
+    'Set Sin = New cDouble
+    Sin = VBA.Math.Sin(a)
+End Function
+
+'Public Shared Function Sinh(ByVal value As Double) As Double
+Public Static Function Sinh(ByVal value As Double) As Double
+    Sinh = (VBA.Math.Exp(value) - VBA.Math.Exp(-value)) / 2
+End Function
+
+'Public Shared Function Sqrt(ByVal d As Double) As Double
+Public Static Function Sqrt(ByVal d As Double) As Double
+    Sqrt = VBA.Math.Sqr(d)
+End Function
+
+'Public Shared Function Tan(ByVal a As Double) As Double
+Public Static Function Tan(ByVal a As Double) As Double
+    Tan = VBA.Math.Tan(a)
+End Function
+'Und was ist mit Cot??? =Cos(a)/Sin(a)
+
+Public Function Tanh(ByVal a As Double) As Double
+    Tanh = (VBA.Math.Exp(a) - VBA.Math.Exp(-a)) / (VBA.Math.Exp(a) + VBA.Math.Exp(-a))
+End Function
+
+
+'Public Shared Const E As Double = 2.7182818284590451
+Public Static Property Get E() As Double 'cDouble
+    'Set E = New cDouble
+    E = 2.71828182845905
+End Property
+'
+''Public Shared Const PI As Double = 3.1415926535897931
+'Public Static Property Get Pi() As Double 'cDouble
+'    'Set Pi = New cDouble
+'    Pi = 3.14159265358979
+'End Property
+' ^ ############################## ^ '      Trigonometric functions      ' ^ ############################## ^ '
+
+'#######  for Bit Shifting ##########
+' v ############################## v '    Bit Shifting functions    ' v ############################## v '
+Public Function ShL(Shifting As Long, Shifter As Long) As Long
+    ShL = ShiftLeft(Shifting, Shifter)
+End Function
+Public Function ShRz(Shifting As Long, Shifter As Long) As Long
+    ShRz = ShiftRightZ(Shifting, Shifter)
+End Function
+Public Function ShR(Shifting As Long, Shifter As Long) As Long
+    ShR = ShiftRight(Shifting, Shifter)
+End Function
+
+Public Sub Increment(ByRef LngVal As Long) 'As Long
+    LngVal = LngVal + 1
+End Sub
+
+Public Sub Decrement(ByRef LngVal As Long) 'As Long
+    LngVal = LngVal - 1
+End Sub
+' ^ ############################## ^ '    Bit Shifting functions    ' ^ ############################## ^ '
+
 
 ' v ############################## v '     solving quadratic & cubic formula     ' v ############################## v '
 Public Function Quadratic(ByVal a As Double, ByVal b As Double, ByVal c As Double, ByRef x1_out As Double, ByRef x2_out As Double) As Boolean
@@ -1131,9 +1472,9 @@ End Function
 Public Function CubeRoot(ByVal d As Double) As Double
     'CubeRoot due to Halley
     Dim a3 As Double
-    Dim t As TDouble: t.Value = d
+    Dim t As TDouble: t.value = d
     Dim p As TLong2:   LSet p = t: p.Value1 = p.Value1 \ 3 + 715094163
-    Dim a As Double:   LSet t = p: a = t.Value
+    Dim a As Double:   LSet t = p: a = t.value
     a3 = a * a * a
     a = a * (a3 + d + d) / (a3 + a3 + d)
     a3 = a * a * a
@@ -1322,7 +1663,7 @@ End Function
 Public Function Complex_ToComplexP(c As Complex) As ComplexP
     With Complex_ToComplexP
         .r = VBA.Math.Sqr(Abs(c.Re * c.Re + c.Im * c.Im))
-        .phi = Atan2(c.Im, c.Re)
+        .phi = ATan2(c.Im, c.Re)
         'oder:
         '.phi = Sgn(c.Im) * Arccos(c.Re / .r)
     End With
@@ -1448,8 +1789,8 @@ End Function
 ' ^ ############################## ^ '    Complex numbers    ' ^ ############################## ^ '
 
 ' v ############################## v '  Modulo op on floats  ' v ############################## v '
-Public Function ModF(ByVal Value As Double, ByVal div As Double) As Double
-   ModF = Value - (Int(Value / div) * div)
+Public Function ModF(ByVal value As Double, ByVal div As Double) As Double
+   ModF = value - (Int(value / div) * div)
 End Function
 
 Public Function ModDbl(v As Double, d As Double) As Double
@@ -1478,19 +1819,18 @@ End Function
 
 ' v ############################## v '  unsigned arithmetic  ' v ############################## v '
 
-Private Function UnsignedAdd(ByVal Value As Long, ByVal Incr As Long) As Long
+Private Function UnsignedAdd(ByVal value As Long, ByVal Incr As Long) As Long
 ' This function is useful when doing pointer arithmetic,
 ' but note it only works for positive values of Incr
 
-   If Value And &H80000000 Then  'Start < 0
-       UnsignedAdd = Value + Incr
-   ElseIf (Value Or &H80000000) < -Incr Then
-       UnsignedAdd = Value + Incr
+   If value And &H80000000 Then  'Start < 0
+       UnsignedAdd = value + Incr
+   ElseIf (value Or &H80000000) < -Incr Then
+       UnsignedAdd = value + Incr
    Else
-       UnsignedAdd = (Value + &H80000000) + (Incr + &H80000000)
+       UnsignedAdd = (value + &H80000000) + (Incr + &H80000000)
    End If
    
 End Function
 
 ' ^ ############################## ^ '  unsigned arithmetic  ' ^ ############################## ^ '
-

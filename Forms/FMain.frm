@@ -188,6 +188,7 @@ Sub Tests()
     TestFloorCeiling
     TestRounding
     TestRandom
+    TestTrigono
 End Sub
 
 Sub TestConstants()
@@ -518,9 +519,43 @@ Private Sub TestRandom()
     l = MPtr.RndInt32:    s = "RndInt32 (-2147483648 .. 2147483647): " & l:    AddItem s
     d = MPtr.RndUInt32:   s = "RndUInt32(          0 .. 4294967296): " & d:    AddItem s
     d = MPtr.RndInt64:    s = "RndInt64 (          0 .. 4294967296): " & d:    AddItem s
+    AddItem ""
     
+End Sub
+
+Private Sub TestTrigono()
+    
+    AddItem "Test trigonometric functions"
+    AddItem "============================"
+    
+    Dim ad As Double: ad = 60
+    Dim ar As Double: ar = MMath.DegToRad(ad)
+    Dim s As String
+    Dim res As Double
+    
+    res = MMath.Sin(ar): s = "Sin(" & ad & "°) = " & res:    AddItem s
+    res = MMath.Cos(ar): s = "Cos(" & ad & "°) = " & res:    AddItem s
+    res = MMath.Tan(ar): s = "Tan(" & ad & "°) = " & res:    AddItem s
+    AddItem ""
+    
+    res = MMath.ASin(MMath.Sin(ar)): s = "ArcSin(" & MMath.Sin(ar) & ") = " & MMath.RadToDeg(res):    AddItem s
+    res = MMath.ACos(MMath.Cos(ar)): s = "ArcCos(" & MMath.Cos(ar) & ") = " & MMath.RadToDeg(res):    AddItem s
+    res = MMath.ATan(MMath.Tan(ar)): s = "ArcTan(" & MMath.Tan(ar) & ") = " & MMath.RadToDeg(res):    AddItem s
+    AddItem ""
+    
+    res = MMath.Sinh(ar): s = "SinHyp(" & ad & "°) = " & res:    AddItem s
+    res = MMath.Cosh(ar): s = "CosHyp(" & ad & "°) = " & res:    AddItem s
+    res = MMath.Tanh(ar): s = "TanHyp(" & ad & "°) = " & res:    AddItem s
+    AddItem ""
+    
+    res = MMath.aSinh(ar): s = "SinHyp(" & ad & "°) = " & res:    AddItem s
+    res = MMath.Cosh(ar): s = "CosHyp(" & ad & "°) = " & res:    AddItem s
+    res = MMath.Tanh(ar): s = "TanHyp(" & ad & "°) = " & res:    AddItem s
+    AddItem ""
+
 End Sub
 
 Sub AddItem(s As String)
     Text1.Text = Text1.Text & s & vbCrLf
 End Sub
+
