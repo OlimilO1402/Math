@@ -126,17 +126,17 @@ Private Sub BtnTestPrimes_Click()
     Dim t As Single: t = Timer
     Dim i As Long, b As Boolean
     Dim p As Long
-    Dim c As Long
+    Dim C As Long
     For i = 0 To n
         b = IsPrime(i)
         If b Then
             p = i
-            c = c + 1
+            C = C + 1
         End If
     Next
     t = Timer - t
     MsgBox "Testing numbers from 0 to " & Format(n, "#,##0") & " whether it's a prime." & vbCrLf & _
-           "Found " & c & " primes. This took about " & t & " seconds." & vbCrLf & "The last prime was " & Format(p, "#,##0")
+           "Found " & C & " primes. This took about " & t & " seconds." & vbCrLf & "The last prime was " & Format(p, "#,##0")
 End Sub
 
 Private Sub BtnTestPrimes2_Click()
@@ -177,6 +177,7 @@ End Sub
 
 Sub Tests()
     TestConstants
+    TestTempConvs
     TestGgT_KgV_PFZ_FraC
     TestFactorials
     TestPrimes
@@ -219,6 +220,44 @@ Sub TestConstants()
     AddItem "QuantumAlpha     =" & MMath.QuantumAlpha
     AddItem "ElectricPermittivity = " & MMath.ElecPermittvy ' Dielectrizitäts-Konstante  eps_0
     AddItem ""
+    
+End Sub
+
+Sub TestTempConvs()
+    
+    Dim C As Double, F As Double, K As Double
+    
+    C = 40:   F = TempCelsius_ToFahrenheit(C)
+    AddItem C & " °C == " & F & " °F"        ''  40 °C ==  104 °F
+    C = -40:  F = TempCelsius_ToFahrenheit(C)
+    AddItem C & " °C == " & F & " °F"        '' -40 °C ==  -40 °F
+    
+    C = 40:   K = TempCelsius_ToKelvin(C)
+    AddItem C & " °C == " & K & " °K"        ''  40 °C ==  313,15 °K
+    C = -40:  K = TempCelsius_ToKelvin(C)
+    AddItem C & " °C == " & K & " °K"        '' -40 °C ==  233,15 °K
+    
+    
+    F = 104:  C = TempFahrenheit_ToCelsius(F)
+    AddItem F & " °F == " & C & " °C"        '' 104 °F ==   40 °C
+    F = -104: C = TempFahrenheit_ToCelsius(F)
+    AddItem F & " °F == " & C & " °C"        ''-104 °F ==  -75,556 °C
+    
+    F = 104:  K = TempFahrenheit_ToKelvin(F)
+    AddItem F & " °F == " & K & " °K"        '' 104 °F ==  313,15 °K
+    F = -104: K = TempFahrenheit_ToKelvin(F)
+    AddItem F & " °F == " & K & " °K"        ''-104 °F ==  197,59 °K
+    
+    
+    K = 104:  C = TempKelvin_ToCelsius(K)
+    AddItem K & " °K == " & C & " °C"        '' 104 °K == -169,15 °C
+    K = 40:   C = TempKelvin_ToCelsius(K)
+    AddItem K & " °K == " & C & " °C"        ''  40 °K == -233,15 °C
+    
+    K = 104:  F = TempKelvin_ToFahrenheit(K)
+    AddItem K & " °K == " & F & " °F"        '' 104 °K == -272,47 °F
+    K = 40:   F = TempKelvin_ToFahrenheit(K)
+    AddItem K & " °K == " & F & " °F"        ''  40 °K == -387,67 °F
     
 End Sub
 
@@ -279,7 +318,7 @@ End Sub
 Sub TestQuadraticCubic()
     AddItem "TestQuadraticCubic"
     AddItem "=================="
-    Dim a As Double, b As Double, c As Double, d As Double
+    Dim a As Double, b As Double, C As Double, d As Double
     Dim x1 As Double
     Dim x2 As Double, i2 As Double
     Dim x3 As Double, i3 As Double
@@ -288,29 +327,29 @@ Sub TestQuadraticCubic()
     'c = -2 '6 '-4
     'd = -4 '21 '4
     
-    a = 1: b = 8: c = -20
+    a = 1: b = 8: C = -20
     x1 = 0: x2 = 0: x3 = 0
     
-    AddItem Quadratic_ToStr(a, b, c)
-    If Quadratic(a, b, c, x1, x2) Then
+    AddItem Quadratic_ToStr(a, b, C)
+    If Quadratic(a, b, C, x1, x2) Then
         'x1 = 2; x2 = -10
         AddItem "x1 = " & x1 & "; x2 = " & x2
     End If
     
-    a = 2: b = -6: c = -4: d = -4
-    AddItem Quadratic_ToStr(a, b, c)
-    If Quadratic(a, b, c, x1, x2) Then
+    a = 2: b = -6: C = -4: d = -4
+    AddItem Quadratic_ToStr(a, b, C)
+    If Quadratic(a, b, C, x1, x2) Then
         'x1 = -1; x2 = -2
         AddItem "x1 = " & x1 & "; x2 = " & x2
     End If
     
     'a = 0.25: b = 0.75: c = -1.5: d = -2
-    a = 2: b = 6: c = -4: d = -24
+    a = 2: b = 6: C = -4: d = -24
     x1 = 0: x2 = 0: i2 = 0: x3 = 0: i3 = 0
     
-    AddItem Cubic_ToStr(a, b, c, d)
+    AddItem Cubic_ToStr(a, b, C, d)
     
-    If MMath.Cubic(a, b, c, d, x1, x2, i2, x3, i3) Then
+    If MMath.Cubic(a, b, C, d, x1, x2, i2, x3, i3) Then
         
         AddItem "x1 = " & x1
         
@@ -548,9 +587,9 @@ Private Sub TestTrigono()
     res = MMath.Tanh(ar): s = "TanHyp(" & ad & "°) = " & res:    AddItem s
     AddItem ""
     
-    res = MMath.aSinh(ar): s = "SinHyp(" & ad & "°) = " & res:    AddItem s
-    res = MMath.Cosh(ar): s = "CosHyp(" & ad & "°) = " & res:    AddItem s
-    res = MMath.Tanh(ar): s = "TanHyp(" & ad & "°) = " & res:    AddItem s
+    res = MMath.ArSinH(ar): s = "SinHyp(" & ad & "°) = " & res:    AddItem s
+    res = MMath.ArCosH(ar): s = "CosHyp(" & ad & "°) = " & res:    AddItem s
+    res = MMath.ArTanH(ar): s = "TanHyp(" & ad & "°) = " & res:    AddItem s
     AddItem ""
 
 End Sub

@@ -126,11 +126,15 @@ Public MagnPermittvy   ' magnetische Feldkonstante           mue_0 = µ0 ˜ 1.2566
 Public ElecPermittvy   ' elektrische Feldkonstante           eps_0 = 8.8541878128(13)e-12 (A s)/(V m)
 Public QuantumAlpha    ' FineStructureConstant
 
+Public Const TempCelsius_AbsolutZero As Double = 273.15
+
 Private m_Factorials()   ' As Decimal
 Public Primes()  As Long ' contains all primes up to 100000
 Public PrimesX() As Long ' a distinct selection of primes
 
 Public Fibonacci() As Long
+
+
 
 'NTSYSAPI SIZE_T RtlCompareMemory(
 '  [in] const VOID *Source1,
@@ -255,17 +259,17 @@ End Sub
 
 Private Sub InitFactorials()
     ReDim m_Factorials(0 To 171)
-    Dim i As Long, f: f = CDec(1)
-    m_Factorials(0) = f
-    m_Factorials(1) = f
+    Dim i As Long, F: F = CDec(1)
+    m_Factorials(0) = F
+    m_Factorials(1) = F
     For i = 2 To 27
-        f = f * CDec(i)
-        m_Factorials(i) = f
+        F = F * CDec(i)
+        m_Factorials(i) = F
     Next
-    f = CDbl(f)
+    F = CDbl(F)
     For i = 28 To 170
-        f = f * CDbl(i)
-        m_Factorials(i) = f
+        F = F * CDbl(i)
+        m_Factorials(i) = F
     Next
     m_Factorials(171) = GetINFE
 End Sub
@@ -840,8 +844,8 @@ Public Function SinusCardinalis(ByVal x As Double) As Double ' aka sinc
     End If
 End Function
 
-Public Function BigMul(ByVal a As Long, ByVal b As Long) As Variant
-    BigMul = CDec(a) * CDec(b)
+Public Function BigMul(ByVal A As Long, ByVal b As Long) As Variant
+    BigMul = CDec(A) * CDec(b)
 End Function
 ' ^ ############################## ^ '    additional functions    ' ^ ############################## ^ '
 
@@ -890,13 +894,13 @@ End Function
 ' ^ ############################## ^ '    Logarithm functions    ' ^ ############################## ^ '
 
 ' v ############################## v '    Rounding functions     ' v ############################## v '
-Public Function Floor(ByVal a As Double) As Double
-    Floor = VBA.Conversion.Int(a)
+Public Function Floor(ByVal A As Double) As Double
+    Floor = VBA.Conversion.Int(A)
 End Function
 
-Public Function Ceiling(ByVal a As Double) As Double
-    Ceiling = VBA.Conversion.Fix(a)
-    If a > 0 Then Ceiling = Ceiling + 1
+Public Function Ceiling(ByVal A As Double) As Double
+    Ceiling = VBA.Conversion.Fix(A)
+    If A > 0 Then Ceiling = Ceiling + 1
     'If a > 0 Then Ceiling = CDbl(Int(a) + 1#) Else Ceiling = CDbl(Fix(a))
     'If a <> 0 Then If Abs(Ceiling / a) <> 1 Then Ceiling = Ceiling + 1
 End Function
@@ -1181,10 +1185,93 @@ End Function
 Public Function DegToRad(ByVal angleInDegrees As Double) As Double
     DegToRad = angleInDegrees * MMath.Pi / 180#
 End Function
-
 Public Function RadToDeg(ByVal angleInRadians As Double) As Double
     RadToDeg = angleInRadians * 180# / MMath.Pi
 End Function
+
+
+Public Static Function Sin(ByVal A As Double) As Double
+    Sin = VBA.Math.Sin(A)
+End Function
+Public Static Function Cos(ByVal A As Double) As Double
+    Cos = VBA.Math.Cos(A)
+End Function
+Public Static Function Tan(ByVal A As Double) As Double
+    Tan = VBA.Math.Tan(A)
+End Function
+
+Public Static Function Csc(ByVal A As Double) As Double
+    Csc = 1 / VBA.Math.Sin(A)
+End Function
+Public Static Function Sec(ByVal A As Double) As Double
+    Sec = 1 / VBA.Math.Cos(A)
+End Function
+Public Static Function Cot(ByVal A As Double) As Double
+    Cot = 1 / VBA.Math.Tan(A)
+End Function
+
+
+Public Static Function ASin(ByVal d As Double) As Double
+    ASin = Atn(d / (Sqr(1 - d ^ 2)))
+End Function
+Public Static Function ACos(ByVal d As Double) As Double
+    ACos = (3.14159265358979 / 2) - Atn(d / (Sqr(1 - d ^ 2)))
+End Function
+Public Static Function ATan(ByVal d As Double) As Double
+    ATan = VBA.Math.Atn(d)
+End Function
+
+Public Static Function ArcCsc(ByVal y As Double) As Double
+    ArcCsc = ASin(1 / y)
+End Function
+Public Static Function ArcSec(ByVal x As Double) As Double
+    ArcSec = ACos(1 / x)
+End Function
+Public Static Function ArcCot(ByVal t As Double) As Double
+    ArcCot = Pi * 0.5 - VBA.Math.Atn(t)
+End Function
+
+
+Public Static Function Sinh(ByVal value As Double) As Double
+    Sinh = (VBA.Math.Exp(value) - VBA.Math.Exp(-value)) / 2
+End Function
+Public Static Function Cosh(ByVal value As Double) As Double
+    Cosh = (VBA.Math.Exp(value) + VBA.Math.Exp(-value)) / 2
+End Function
+Public Static Function Tanh(ByVal A As Double) As Double
+    Tanh = (VBA.Math.Exp(A) - VBA.Math.Exp(-A)) / (VBA.Math.Exp(A) + VBA.Math.Exp(-A))
+End Function
+
+Public Static Function CscH(ByVal y As Double) As Double
+    CscH = 2 / (VBA.Math.Exp(y) - VBA.Math.Exp(-y))
+End Function
+Public Static Function SecH(ByVal x As Double) As Double
+    SecH = 2 / (Exp(x) + Exp(-x))
+End Function
+Public Static Function CotH(ByVal t As Double) As Double
+    CotH = (VBA.Math.Exp(t) + VBA.Math.Exp(-t)) / (VBA.Math.Exp(t) - VBA.Math.Exp(-t))
+End Function
+
+Public Static Function ArSinH(ByVal y As Double) As Double
+    ArSinH = VBA.Math.Log(y + Sqr(y * y + 1))
+End Function
+Public Static Function ArCosH(ByVal x As Double) As Double
+    ArCosH = VBA.Math.Log(x + Sqr(x * x - 1))
+End Function
+Public Static Function ArTanH(ByVal t As Double) As Double
+    ArTanH = VBA.Math.Log((1 + t) / (1 - t)) / 2
+End Function
+
+Public Static Function ArCscH(ByVal x As Double) As Double
+    ArCscH = VBA.Math.Log((Sgn(x) * Sqr(x * x + 1) + 1) / x)
+End Function
+Public Static Function ArSecH(ByVal x As Double) As Double
+    ArSecH = VBA.Math.Log((Sqr(-x * x + 1) + 1) / x)
+End Function
+Public Static Function ArCotH(ByVal x As Double) As Double
+    ArCotH = VBA.Math.Log((x + 1) / (x - 1)) / 2
+End Function
+
 
 'Public Shared Function Abs(ByVal value As Decimal) As Decimal
 'Public Shared Function Abs(ByVal value As Double) As Double
@@ -1197,25 +1284,6 @@ Public Function Abs_(ByVal varValue As Variant) As Variant
     Abs_ = VBA.Math.Abs(varValue)
 End Function
 
-'Public Shared Function Acos(ByVal d As Double) As Double
-Public Static Function ACos(ByVal d As Double) As Double 'cDouble
-    'Acos ist die Umkehrfunktion zur Cosinusfunktion
-    'Cos(x) = y; ACos(y) = x
-    'Set Acos = New cDouble
-    ACos = (3.14159265358979 / 2) - Atn(d / (Sqr(1 - d ^ 2)))
-End Function
-
-'Public Shared Function Asin(ByVal d As Double) As Double
-Public Static Function ASin(ByVal d As Double) As Double 'cDouble
-    'Set Asin = New cDouble
-    ASin = Atn(d / (Sqr(1 - d ^ 2)))
-End Function
-
-'Public Shared Function Atan(ByVal d As Double) As Double
-Public Static Function ATan(ByVal d As Double) As Double 'cDouble
-    'Set Atan = New cDouble
-    ATan = Atn(d)
-End Function
 'Und was ist mit ACot ????? =Pi/2 - Atan(x)
 
 'Public Shared Function Atan2(ByVal y As Double, ByVal x As Double) As Double
@@ -1236,21 +1304,11 @@ End Function
 '    Ceiling = Int(a)
 'End Function
 
-'Public Shared Function Cos(ByVal d As Double) As Double
-Public Static Function Cos(ByVal d As Double) As Double 'cDouble
-    'Set Cos = New cDouble
-    Cos = VBA.Math.Cos(d)
-End Function
 
-'Public Shared Function Cosh(ByVal value As Double) As Double
-Public Static Function Cosh(ByVal value As Double) As Double 'cDouble
-    'Set Cosh = New cDouble
-    Cosh = (VBA.Math.Exp(value) + VBA.Math.Exp(-value)) / 2
-End Function
 
 'Public Shared Function DivRem(ByVal a As Integer, ByVal b As Integer, ByRef result As Integer) As Integer
 'Public Shared Function DivRem(ByVal a As Long, ByVal b As Long, ByRef result As Long) As Long
-Public Static Function DivRem(ByVal a As Long, ByVal b As Long, ByRef Result As Long) As Long 'cInteger 'Long
+Public Static Function DivRem(ByVal A As Long, ByVal b As Long, ByRef Result As Long) As Long 'cInteger 'Long
     'Set DivRem = New cInteger
 End Function
 
@@ -1282,31 +1340,17 @@ Public Static Function Sign(ByVal varValue As Variant) As Variant
     Sign = Sgn(varValue)
 End Function
 
-'Public Shared Function Sin(ByVal a As Double) As Double
-Public Static Function Sin(ByVal a As Double) As Double 'cDouble
-    'Set Sin = New cDouble
-    Sin = VBA.Math.Sin(a)
-End Function
 
-'Public Shared Function Sinh(ByVal value As Double) As Double
-Public Static Function Sinh(ByVal value As Double) As Double
-    Sinh = (VBA.Math.Exp(value) - VBA.Math.Exp(-value)) / 2
-End Function
+
+
 
 'Public Shared Function Sqrt(ByVal d As Double) As Double
 Public Static Function Sqrt(ByVal d As Double) As Double
     Sqrt = VBA.Math.Sqr(d)
 End Function
 
-'Public Shared Function Tan(ByVal a As Double) As Double
-Public Static Function Tan(ByVal a As Double) As Double
-    Tan = VBA.Math.Tan(a)
-End Function
 'Und was ist mit Cot??? =Cos(a)/Sin(a)
 
-Public Function Tanh(ByVal a As Double) As Double
-    Tanh = (VBA.Math.Exp(a) - VBA.Math.Exp(-a)) / (VBA.Math.Exp(a) + VBA.Math.Exp(-a))
-End Function
 
 
 'Public Shared Const E As Double = 2.7182818284590451
@@ -1345,7 +1389,7 @@ End Sub
 
 
 ' v ############################## v '     solving quadratic & cubic formula     ' v ############################## v '
-Public Function Quadratic(ByVal a As Double, ByVal b As Double, ByVal c As Double, ByRef x1_out As Double, ByRef x2_out As Double) As Boolean
+Public Function Quadratic(ByVal A As Double, ByVal b As Double, ByVal C As Double, ByRef x1_out As Double, ByRef x2_out As Double) As Boolean
 Try: On Error GoTo Catch
     
     'maybe the midnight-formula:
@@ -1354,8 +1398,8 @@ Try: On Error GoTo Catch
     'x2_out = (-b - w) / (2 * a)
     
     'or maybe the pq-formula
-    Dim p    As Double:   p = b / a
-    Dim q    As Double:   q = c / a
+    Dim p    As Double:   p = b / A
+    Dim q    As Double:   q = C / A
     Dim p_2  As Double: p_2 = p / 2
     Dim p2_4 As Double: p2_4 = p_2 * p_2
     Dim W As Double: W = VBA.Sqr(p2_4 - q)
@@ -1368,11 +1412,11 @@ Try: On Error GoTo Catch
 Catch:
 End Function
 
-Public Function Quadratic_ToStr(ByVal a As Double, ByVal b As Double, ByVal c As Double) As String
-    Quadratic_ToStr = a & "x²" & GetOp(b) & "x" & GetOp(c) & " = 0"
+Public Function Quadratic_ToStr(ByVal A As Double, ByVal b As Double, ByVal C As Double) As String
+    Quadratic_ToStr = A & "x²" & GetOp(b) & "x" & GetOp(C) & " = 0"
 End Function
-Public Function Cubic_ToStr(ByVal a As Double, ByVal b As Double, ByVal c As Double, ByVal d As Double) As String
-    Cubic_ToStr = a & "x³" & GetOp(b) & "x²" & GetOp(c) & "x" & GetOp(d) & " = 0"
+Public Function Cubic_ToStr(ByVal A As Double, ByVal b As Double, ByVal C As Double, ByVal d As Double) As String
+    Cubic_ToStr = A & "x³" & GetOp(b) & "x²" & GetOp(C) & "x" & GetOp(d) & " = 0"
 End Function
 Private Function GetOp(ByVal v As Double) As String
     Select Case v
@@ -1386,29 +1430,29 @@ End Function
 'https://www.youtube.com/watch?v=xhjNRQxqJTM '&t=116s
 'https://www.youtube.com/watch?v=q14F6fZf5kc '&t=1658s
 'https://www.youtube.com/watch?v=N-KXStupwsc '&t=4s
-Public Function Cubic(ByVal a As Double, ByVal b As Double, ByVal c As Double, ByVal d As Double, ByRef x1_out As Double, ByRef x2_out As Double, ByRef i2_out As Double, ByRef x3_out As Double, ByRef i3_out As Double) As Boolean
+Public Function Cubic(ByVal A As Double, ByVal b As Double, ByVal C As Double, ByVal d As Double, ByRef x1_out As Double, ByRef x2_out As Double, ByRef i2_out As Double, ByRef x3_out As Double, ByRef i3_out As Double) As Boolean
 Try: On Error GoTo Catch
     'Scipione del Ferro (1465-1526), Nicolo Tartaglia (1500-1557), Gerolamo Cardano (1501-1576)
     'Rafael Bombelli (1526-1572)
-    If a = 0 Then
-        Cubic = Quadratic(b, c, d, x1_out, x2_out)
+    If A = 0 Then
+        Cubic = Quadratic(b, C, d, x1_out, x2_out)
         Exit Function
     End If
-    Dim a2 As Double: a2 = a * a
-    Dim a3 As Double: a3 = a * a2
+    Dim a2 As Double: a2 = A * A
+    Dim a3 As Double: a3 = A * a2
     Dim b2 As Double: b2 = b * b
     Dim b3 As Double: b3 = b * b2
     'Dim bc As Double: bc = b * c
     Dim b3_27a3 As Double: b3_27a3 = b3 / (27 * a3)
     'Dim bc_6a2  As Double:  bc_6a2 = bc / (6 * a2)
-    Dim cb_3a2  As Double:  cb_3a2 = c * b / (3 * a2)
+    Dim cb_3a2  As Double:  cb_3a2 = C * b / (3 * a2)
     Dim b2_3a2  As Double:  b2_3a2 = b2 / (3 * a2)
     'Dim b2_9a2  As Double:  b2_9a2 = b2 / (9 * a2)
-    Dim d_a  As Double: d_a = d / a
+    Dim d_a  As Double: d_a = d / A
     'Dim d_2a As Double: d_2a = d / (2 * a)
-    Dim c_a  As Double: c_a = c / a
+    Dim c_a  As Double: c_a = C / A
     'Dim c_3a As Double: c_3a = c / (3 * a)
-    Dim b_3a As Double: b_3a = b / (3 * a)
+    Dim b_3a As Double: b_3a = b / (3 * A)
     
     'Dim w As Double: w = VBA.Sqr((-b3_27a3 + bc_6a2 - d_2a) ^ 2 + (-b2_9a2 + c_3a) ^ 3)
 
@@ -1474,13 +1518,13 @@ Public Function CubeRoot(ByVal d As Double) As Double
     Dim a3 As Double
     Dim t As TDouble: t.value = d
     Dim p As TLong2:   LSet p = t: p.Value1 = p.Value1 \ 3 + 715094163
-    Dim a As Double:   LSet t = p: a = t.value
-    a3 = a * a * a
-    a = a * (a3 + d + d) / (a3 + a3 + d)
-    a3 = a * a * a
-    a = a * (a3 + d + d) / (a3 + a3 + d)
-    a3 = a * a * a
-    CubeRoot = a * (a3 + d + d) / (a3 + a3 + d)
+    Dim A As Double:   LSet t = p: A = t.value
+    a3 = A * A * A
+    A = A * (a3 + d + d) / (a3 + a3 + d)
+    a3 = A * A * A
+    A = A * (a3 + d + d) / (a3 + a3 + d)
+    a3 = A * A * A
+    CubeRoot = A * (a3 + d + d) / (a3 + a3 + d)
     
 End Function
 
@@ -1660,10 +1704,10 @@ Public Function Complex_Abs2(z As Complex) As Double
     With z: Complex_Abs2 = .Re * .Re + .Im * .Im:    End With
 End Function
 
-Public Function Complex_ToComplexP(c As Complex) As ComplexP
+Public Function Complex_ToComplexP(C As Complex) As ComplexP
     With Complex_ToComplexP
-        .r = VBA.Math.Sqr(Abs(c.Re * c.Re + c.Im * c.Im))
-        .phi = ATan2(c.Im, c.Re)
+        .r = VBA.Math.Sqr(Abs(C.Re * C.Re + C.Im * C.Im))
+        .phi = ATan2(C.Im, C.Re)
         'oder:
         '.phi = Sgn(c.Im) * Arccos(c.Re / .r)
     End With
@@ -1819,7 +1863,7 @@ End Function
 
 ' v ############################## v '  unsigned arithmetic  ' v ############################## v '
 
-Private Function UnsignedAdd(ByVal value As Long, ByVal Incr As Long) As Long
+Public Function UnsignedAdd(ByVal value As Long, ByVal Incr As Long) As Long
 ' This function is useful when doing pointer arithmetic,
 ' but note it only works for positive values of Incr
 
@@ -1834,3 +1878,32 @@ Private Function UnsignedAdd(ByVal value As Long, ByVal Incr As Long) As Long
 End Function
 
 ' ^ ############################## ^ '  unsigned arithmetic  ' ^ ############################## ^ '
+
+' v ############################## v ' Celsius, Fahrenheit, Kelvin ' v ############################## v '
+'Public Const TempCelsius_AbsolutZero As Double = 273.15
+
+'e.g.: -40 °C = -40 °F
+Public Function TempCelsius_ToFahrenheit(ByVal TempCelsius As Double) As Double
+    TempCelsius_ToFahrenheit = TempCelsius * 1.8 + 32
+End Function
+Public Function TempCelsius_ToKelvin(ByVal TempCelsius As Double) As Double
+    TempCelsius_ToKelvin = 273.15 + TempCelsius
+End Function
+
+
+Public Function TempFahrenheit_ToCelsius(ByVal TempFahrenheit As Double) As Double
+    TempFahrenheit_ToCelsius = (TempFahrenheit - 32) * 5 / 9
+End Function
+Public Function TempFahrenheit_ToKelvin(ByVal TempFahrenheit As Double) As Double
+    TempFahrenheit_ToKelvin = (TempFahrenheit - 32) * 5 / 9 + 273.15
+End Function
+
+
+Public Function TempKelvin_ToCelsius(ByVal TempKelvin As Double) As Double
+    TempKelvin_ToCelsius = TempKelvin - 273.15
+End Function
+Public Function TempKelvin_ToFahrenheit(ByVal TempKelvin As Double) As Double
+    TempKelvin_ToFahrenheit = (TempKelvin - 273.15) * 1.8 + 32
+End Function
+' ^ ############################## ^ ' Celsius, Fahrenheit, Kelvin ' ^ ############################## ^ '
+
