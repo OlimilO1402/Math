@@ -1,7 +1,7 @@
 VERSION 5.00
 Begin VB.Form FMain 
    Caption         =   "Form1"
-   ClientHeight    =   6255
+   ClientHeight    =   9600
    ClientLeft      =   120
    ClientTop       =   465
    ClientWidth     =   14655
@@ -16,7 +16,7 @@ Begin VB.Form FMain
    EndProperty
    Icon            =   "FMain.frx":0000
    LinkTopic       =   "Form1"
-   ScaleHeight     =   6255
+   ScaleHeight     =   9600
    ScaleWidth      =   14655
    StartUpPosition =   3  'Windows-Standard
    Begin VB.TextBox Text1 
@@ -126,17 +126,17 @@ Private Sub BtnTestPrimes_Click()
     Dim t As Single: t = Timer
     Dim i As Long, b As Boolean
     Dim p As Long
-    Dim C As Long
+    Dim c As Long
     For i = 0 To n
         b = IsPrime(i)
         If b Then
             p = i
-            C = C + 1
+            c = c + 1
         End If
     Next
     t = Timer - t
     MsgBox "Testing numbers from 0 to " & Format(n, "#,##0") & " whether it's a prime." & vbCrLf & _
-           "Found " & C & " primes. This took about " & t & " seconds." & vbCrLf & "The last prime was " & Format(p, "#,##0")
+           "Found " & c & " primes. This took about " & t & " seconds." & vbCrLf & "The last prime was " & Format(p, "#,##0")
 End Sub
 
 Private Sub BtnTestPrimes2_Click()
@@ -225,39 +225,32 @@ End Sub
 
 Sub TestTempConvs()
     
-    Dim C As Double, F As Double, K As Double
+    AddItem "Test Temperature Conversions:"
+    AddItem "============================="
     
-    C = 40:   F = TempCelsius_ToFahrenheit(C)
-    AddItem C & " °C == " & F & " °F"        ''  40 °C ==  104 °F
-    C = -40:  F = TempCelsius_ToFahrenheit(C)
-    AddItem C & " °C == " & F & " °F"        '' -40 °C ==  -40 °F
+    Dim c As Double, F As Double, k As Double
     
-    C = 40:   K = TempCelsius_ToKelvin(C)
-    AddItem C & " °C == " & K & " °K"        ''  40 °C ==  313,15 °K
-    C = -40:  K = TempCelsius_ToKelvin(C)
-    AddItem C & " °C == " & K & " °K"        '' -40 °C ==  233,15 °K
+    c = 40:   F = TempCelsius_ToFahrenheit(c):     AddItem c & " °C = " & F & " °F"        ''  40 °C ==  104 °F
+    c = -40:  F = TempCelsius_ToFahrenheit(c):     AddItem c & " °C = " & F & " °F"        '' -40 °C ==  -40 °F
     
-    
-    F = 104:  C = TempFahrenheit_ToCelsius(F)
-    AddItem F & " °F == " & C & " °C"        '' 104 °F ==   40 °C
-    F = -104: C = TempFahrenheit_ToCelsius(F)
-    AddItem F & " °F == " & C & " °C"        ''-104 °F ==  -75,556 °C
-    
-    F = 104:  K = TempFahrenheit_ToKelvin(F)
-    AddItem F & " °F == " & K & " °K"        '' 104 °F ==  313,15 °K
-    F = -104: K = TempFahrenheit_ToKelvin(F)
-    AddItem F & " °F == " & K & " °K"        ''-104 °F ==  197,59 °K
+    c = 40:   k = TempCelsius_ToKelvin(c):         AddItem c & " °C = " & k & " °K"        ''  40 °C ==  313,15 °K
+    c = -40:  k = TempCelsius_ToKelvin(c):         AddItem c & " °C = " & k & " °K"        '' -40 °C ==  233,15 °K
     
     
-    K = 104:  C = TempKelvin_ToCelsius(K)
-    AddItem K & " °K == " & C & " °C"        '' 104 °K == -169,15 °C
-    K = 40:   C = TempKelvin_ToCelsius(K)
-    AddItem K & " °K == " & C & " °C"        ''  40 °K == -233,15 °C
+    F = 104:  c = TempFahrenheit_ToCelsius(F):     AddItem F & " °F = " & c & " °C"        '' 104 °F ==   40 °C
+    F = -104: c = TempFahrenheit_ToCelsius(F):     AddItem F & " °F = " & c & " °C"        ''-104 °F ==  -75,556 °C
     
-    K = 104:  F = TempKelvin_ToFahrenheit(K)
-    AddItem K & " °K == " & F & " °F"        '' 104 °K == -272,47 °F
-    K = 40:   F = TempKelvin_ToFahrenheit(K)
-    AddItem K & " °K == " & F & " °F"        ''  40 °K == -387,67 °F
+    F = 104:  k = TempFahrenheit_ToKelvin(F):      AddItem F & " °F = " & k & " °K"        '' 104 °F ==  313,15 °K
+    F = -104: k = TempFahrenheit_ToKelvin(F):      AddItem F & " °F = " & k & " °K"        ''-104 °F ==  197,59 °K
+    
+    
+    k = 104:  c = TempKelvin_ToCelsius(k):         AddItem k & " °K = " & c & " °C"        '' 104 °K == -169,15 °C
+    k = 40:   c = TempKelvin_ToCelsius(k):         AddItem k & " °K = " & c & " °C"        ''  40 °K == -233,15 °C
+    
+    k = 104:  F = TempKelvin_ToFahrenheit(k):      AddItem k & " °K = " & F & " °F"        '' 104 °K == -272,47 °F
+    k = 40:   F = TempKelvin_ToFahrenheit(k):      AddItem k & " °K = " & F & " °F"        ''  40 °K == -387,67 °F
+    
+    AddItem ""
     
 End Sub
 
@@ -318,7 +311,7 @@ End Sub
 Sub TestQuadraticCubic()
     AddItem "TestQuadraticCubic"
     AddItem "=================="
-    Dim a As Double, b As Double, C As Double, d As Double
+    Dim A As Double, b As Double, c As Double, d As Double
     Dim x1 As Double
     Dim x2 As Double, i2 As Double
     Dim x3 As Double, i3 As Double
@@ -327,29 +320,29 @@ Sub TestQuadraticCubic()
     'c = -2 '6 '-4
     'd = -4 '21 '4
     
-    a = 1: b = 8: C = -20
+    A = 1: b = 8: c = -20
     x1 = 0: x2 = 0: x3 = 0
     
-    AddItem Quadratic_ToStr(a, b, C)
-    If Quadratic(a, b, C, x1, x2) Then
+    AddItem Quadratic_ToStr(A, b, c)
+    If Quadratic(A, b, c, x1, x2) Then
         'x1 = 2; x2 = -10
         AddItem "x1 = " & x1 & "; x2 = " & x2
     End If
     
-    a = 2: b = -6: C = -4: d = -4
-    AddItem Quadratic_ToStr(a, b, C)
-    If Quadratic(a, b, C, x1, x2) Then
+    A = 2: b = -6: c = -4: d = -4
+    AddItem Quadratic_ToStr(A, b, c)
+    If Quadratic(A, b, c, x1, x2) Then
         'x1 = -1; x2 = -2
         AddItem "x1 = " & x1 & "; x2 = " & x2
     End If
     
     'a = 0.25: b = 0.75: c = -1.5: d = -2
-    a = 2: b = 6: C = -4: d = -24
+    A = 2: b = 6: c = -4: d = -24
     x1 = 0: x2 = 0: i2 = 0: x3 = 0: i3 = 0
     
-    AddItem Cubic_ToStr(a, b, C, d)
+    AddItem Cubic_ToStr(A, b, c, d)
     
-    If MMath.Cubic(a, b, C, d, x1, x2, i2, x3, i3) Then
+    If MMath.Cubic(A, b, c, d, x1, x2, i2, x3, i3) Then
         
         AddItem "x1 = " & x1
         
@@ -569,29 +562,56 @@ Private Sub TestTrigono()
     
     Dim ad As Double: ad = 60
     Dim ar As Double: ar = MMath.DegToRad(ad)
+    Dim fmt As String: fmt = "0.0####"
     Dim s As String
-    Dim res As Double
+    Dim inn As Double, res As Double
     
-    res = MMath.Sin(ar): s = "Sin(" & ad & "°) = " & res:    AddItem s
-    res = MMath.Cos(ar): s = "Cos(" & ad & "°) = " & res:    AddItem s
-    res = MMath.Tan(ar): s = "Tan(" & ad & "°) = " & res:    AddItem s
+    inn = ar:    res = MMath.Sin(inn): s = "Sin(" & ad & "°) = " & Format(res, fmt):     AddItem s
+    inn = ar:    res = MMath.Cos(inn): s = "Cos(" & ad & "°) = " & Format(res, fmt):     AddItem s
+    inn = ar:    res = MMath.Tan(inn): s = "Tan(" & ad & "°) = " & Format(res, fmt):     AddItem s
     AddItem ""
     
-    res = MMath.ASin(MMath.Sin(ar)): s = "ArcSin(" & MMath.Sin(ar) & ") = " & MMath.RadToDeg(res):    AddItem s
-    res = MMath.ACos(MMath.Cos(ar)): s = "ArcCos(" & MMath.Cos(ar) & ") = " & MMath.RadToDeg(res):    AddItem s
-    res = MMath.ATan(MMath.Tan(ar)): s = "ArcTan(" & MMath.Tan(ar) & ") = " & MMath.RadToDeg(res):    AddItem s
+    inn = ar:    res = MMath.Csc(inn): s = "Csc(" & ad & "°) = " & Format(res, fmt):     AddItem s
+    inn = ar:    res = MMath.Sec(inn): s = "Sec(" & ad & "°) = " & Format(res, fmt):     AddItem s
+    inn = ar:    res = MMath.Cot(inn): s = "Cot(" & ad & "°) = " & Format(res, fmt):     AddItem s
+    AddItem ""
     AddItem ""
     
-    res = MMath.Sinh(ar): s = "SinHyp(" & ad & "°) = " & res:    AddItem s
-    res = MMath.Cosh(ar): s = "CosHyp(" & ad & "°) = " & res:    AddItem s
-    res = MMath.Tanh(ar): s = "TanHyp(" & ad & "°) = " & res:    AddItem s
+    
+    inn = Sin(ar): res = MMath.ASin(inn): s = "ASin(" & Format(inn, fmt) & ") = " & Format(MMath.RadToDeg(res), fmt) & "°":   AddItem s
+    inn = Cos(ar): res = MMath.ACos(inn): s = "ACos(" & Format(inn, fmt) & ") = " & Format(MMath.RadToDeg(res), fmt) & "°":   AddItem s
+    inn = Tan(ar): res = MMath.ATan(inn): s = "ATan(" & Format(inn, fmt) & ") = " & Format(MMath.RadToDeg(res), fmt) & "°":   AddItem s
+    AddItem ""
+    'ar = ar - 0.5
+    inn = Csc(ar): res = MMath.ACsc(inn): s = "ACsc(" & Format(inn, fmt) & ") = " & Format(MMath.RadToDeg(res), fmt) & "°":   AddItem s
+    inn = Sec(ar): res = MMath.ASec(inn): s = "ASec(" & Format(inn, fmt) & ") = " & Format(MMath.RadToDeg(res), fmt) & "°":   AddItem s
+    inn = Cot(ar): res = MMath.ACot(inn): s = "ACot(" & Format(inn, fmt) & ") = " & Format(MMath.RadToDeg(res), fmt) & "°":   AddItem s
+    AddItem ""
     AddItem ""
     
-    res = MMath.ArSinH(ar): s = "SinHyp(" & ad & "°) = " & res:    AddItem s
-    res = MMath.ArCosH(ar): s = "CosHyp(" & ad & "°) = " & res:    AddItem s
-    res = MMath.ArTanH(ar): s = "TanHyp(" & ad & "°) = " & res:    AddItem s
+    
+    inn = ar: res = MMath.Sinh(inn): s = "SinH(" & ad & ") = " & Format(res, fmt):       AddItem s
+    inn = ar: res = MMath.Cosh(inn): s = "CosH(" & ad & ") = " & Format(res, fmt):       AddItem s
+    inn = ar: res = MMath.Tanh(inn): s = "TanH(" & ad & ") = " & Format(res, fmt):       AddItem s
     AddItem ""
-
+    
+    inn = ar: res = MMath.CscH(inn): s = "CscH(" & ad & ") = " & Format(res, fmt):       AddItem s
+    inn = ar: res = MMath.SecH(inn): s = "SecH(" & ad & ") = " & Format(res, fmt):       AddItem s
+    inn = ar: res = MMath.CotH(inn): s = "CotH(" & ad & ") = " & Format(res, fmt):       AddItem s
+    AddItem ""
+    AddItem ""
+    
+    
+    inn = Sinh(ar): res = MMath.ArSinH(inn): s = "ArSinH(" & Format(inn, fmt) & ") = " & Format(MMath.RadToDeg(res), fmt):    AddItem s
+    inn = Cosh(ar): res = MMath.ArCosH(inn): s = "ArCosH(" & Format(inn, fmt) & ") = " & Format(MMath.RadToDeg(res), fmt):    AddItem s
+    inn = Tanh(ar): res = MMath.ArTanH(inn): s = "ArTanH(" & Format(inn, fmt) & ") = " & Format(MMath.RadToDeg(res), fmt):    AddItem s
+    AddItem ""
+    
+    inn = CscH(ar): res = MMath.ArCscH(inn): s = "ArCscH(" & Format(inn, fmt) & ") = " & Format(MMath.RadToDeg(res), fmt):    AddItem s
+    inn = SecH(ar): res = MMath.ArSecH(inn): s = "ArSecH(" & Format(inn, fmt) & ") = " & Format(MMath.RadToDeg(res), fmt):    AddItem s
+    inn = CotH(ar): res = MMath.ArCotH(inn): s = "ArCotH(" & Format(inn, fmt) & ") = " & Format(MMath.RadToDeg(res), fmt):    AddItem s
+    AddItem ""
+    
 End Sub
 
 Sub AddItem(s As String)

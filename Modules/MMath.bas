@@ -49,17 +49,17 @@ End Type
 
 'this types just for conversions
 Private Type TLong
-    value As Long
+    Value As Long
 End Type
 Private Type TSingle
-    value As Single
+    Value As Single
 End Type
 Private Type TLong2
     Value0 As Long
     Value1 As Long
 End Type
 Private Type TDouble
-    value As Double
+    Value As Double
 End Type
 
 'value range Byte (unsigned int8)
@@ -541,7 +541,7 @@ End Function
 '    IsPrimeN = True
 'End Function
 
-Function IsPrime(ByVal value As Long) As Boolean
+Function IsPrime(ByVal Value As Long) As Boolean
 '    If Value < 200 Then
 '        Select Case Value
 '        Case 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, _
@@ -549,15 +549,15 @@ Function IsPrime(ByVal value As Long) As Boolean
 '            IsPrime = True:        Exit Function
 '        End Select
 '    End If
-    If (value And 1) = 0 Then Exit Function
+    If (Value And 1) = 0 Then Exit Function
     Dim div As Long: div = 3
     Dim squ As Long: squ = 9
-    Do While squ < value
-        If value Mod div = 0 Then Exit Function
+    Do While squ < Value
+        If Value Mod div = 0 Then Exit Function
         div = div + 2
         squ = div * div
     Loop
-    If squ <> value Then
+    If squ <> Value Then
         IsPrime = True
     End If
     InitPrimeX
@@ -777,28 +777,28 @@ End Function
 'Einen Wert in Schranken zwingen, obere Werte auf Max reduzieren, untere Werte auf Min heben
 'MinMax, Clamp,
 'its like a sound compressor: lower sounds gets louder, louder sounds must not oversteer over a maxvalue
-Public Function Clamp(value, MinVal, MaxVal)
-    Clamp = Max(MinVal, Min(MaxVal, value))
+Public Function Clamp(Value, MinVal, MaxVal)
+    Clamp = Max(MinVal, Min(MaxVal, Value))
 End Function
 
-Public Function ClampByt(ByVal value As Byte, ByVal MinVal As Byte, ByVal MaxVal As Byte) As Byte
-    ClampByt = MaxByt(MinVal, MinByt(MaxVal, value))
+Public Function ClampByt(ByVal Value As Byte, ByVal MinVal As Byte, ByVal MaxVal As Byte) As Byte
+    ClampByt = MaxByt(MinVal, MinByt(MaxVal, Value))
 End Function
 
-Public Function ClampInt(ByVal value As Integer, ByVal MinVal As Integer, ByVal MaxVal As Integer) As Integer
-    ClampInt = MaxInt(MinVal, MinInt(MaxVal, value))
+Public Function ClampInt(ByVal Value As Integer, ByVal MinVal As Integer, ByVal MaxVal As Integer) As Integer
+    ClampInt = MaxInt(MinVal, MinInt(MaxVal, Value))
 End Function
 
-Public Function ClampLng(ByVal value As Long, ByVal MinVal As Long, ByVal MaxVal As Long) As Long
-    ClampLng = MaxLng(MinVal, MinLng(MaxVal, value))
+Public Function ClampLng(ByVal Value As Long, ByVal MinVal As Long, ByVal MaxVal As Long) As Long
+    ClampLng = MaxLng(MinVal, MinLng(MaxVal, Value))
 End Function
 
-Public Function ClampSng(ByVal value As Single, ByVal MinVal As Single, ByVal MaxVal As Single) As Single
-    ClampSng = MaxSng(MinVal, MinSng(MaxVal, value))
+Public Function ClampSng(ByVal Value As Single, ByVal MinVal As Single, ByVal MaxVal As Single) As Single
+    ClampSng = MaxSng(MinVal, MinSng(MaxVal, Value))
 End Function
 
-Public Function ClampDbl(ByVal value As Double, ByVal MinVal As Double, ByVal MaxVal As Double) As Double
-    ClampDbl = MaxDbl(MinVal, MinDbl(MaxVal, value))
+Public Function ClampDbl(ByVal Value As Double, ByVal MinVal As Double, ByVal MaxVal As Double) As Double
+    ClampDbl = MaxDbl(MinVal, MinDbl(MaxVal, Value))
 End Function
 
 ' ^ ############################## ^ '    Min-Max-functions    ' ^ ############################## ^ '
@@ -905,23 +905,23 @@ Public Function Ceiling(ByVal A As Double) As Double
     'If a <> 0 Then If Abs(Ceiling / a) <> 1 Then Ceiling = Ceiling + 1
 End Function
 
-Public Function RoundUp(ByVal value As Double, Optional ByVal NumDigitsAfterDecimal As Byte = 0) As Double
-    If value < 0 Then
-        RoundUp = Math.Round(value, NumDigitsAfterDecimal)
-        If value < RoundUp Then RoundUp = RoundUp - 10 ^ -NumDigitsAfterDecimal
+Public Function RoundUp(ByVal Value As Double, Optional ByVal NumDigitsAfterDecimal As Byte = 0) As Double
+    If Value < 0 Then
+        RoundUp = Math.Round(Value, NumDigitsAfterDecimal)
+        If Value < RoundUp Then RoundUp = RoundUp - 10 ^ -NumDigitsAfterDecimal
     Else
-        RoundUp = Math.Round(value, NumDigitsAfterDecimal)
-        If RoundUp < value Then RoundUp = RoundUp + 10 ^ -NumDigitsAfterDecimal
+        RoundUp = Math.Round(Value, NumDigitsAfterDecimal)
+        If RoundUp < Value Then RoundUp = RoundUp + 10 ^ -NumDigitsAfterDecimal
     End If
 End Function
 
-Public Function RoundDown(ByVal value As Double, Optional ByVal NumDigitsAfterDecimal As Byte = 0) As Double
-    If value < 0 Then
-        RoundDown = Math.Round(value, NumDigitsAfterDecimal)
-        If RoundDown < value Then RoundDown = RoundDown + 10 ^ -NumDigitsAfterDecimal
+Public Function RoundDown(ByVal Value As Double, Optional ByVal NumDigitsAfterDecimal As Byte = 0) As Double
+    If Value < 0 Then
+        RoundDown = Math.Round(Value, NumDigitsAfterDecimal)
+        If RoundDown < Value Then RoundDown = RoundDown + 10 ^ -NumDigitsAfterDecimal
     Else
-        RoundDown = Math.Round(value, NumDigitsAfterDecimal)
-        If value < RoundDown Then RoundDown = RoundDown - 10 ^ -NumDigitsAfterDecimal
+        RoundDown = Math.Round(Value, NumDigitsAfterDecimal)
+        If Value < RoundDown Then RoundDown = RoundDown - 10 ^ -NumDigitsAfterDecimal
     End If
 End Function
 ' ^ ############################## ^ '    Rounding functions     ' ^ ############################## ^ '
@@ -946,32 +946,32 @@ Public Function GetINF(Optional ByVal Sign As Long = 1) As Double
     Call RtlMoveMemory(GetINF, l(1), 8)
 End Function
 
-Public Sub GetNaN(ByRef value As Double)
+Public Sub GetNaN(ByRef Value As Double)
     Dim l(1 To 2) As Long
     l(1) = 1
     l(2) = &H7FF00000
-    Call RtlMoveMemory(value, l(1), 8)
+    Call RtlMoveMemory(Value, l(1), 8)
 End Sub
 
-Public Sub GetINDef(ByRef value As Double)
+Public Sub GetINDef(ByRef Value As Double)
 Try: On Error Resume Next
-    value = 0# / 0#
+    Value = 0# / 0#
 Catch: On Error GoTo 0
 End Sub
 ' ^ ############################## ^ '     Create functions     ' ^ ############################## ^ '
 
 ' v ############################## v '      Bool functions      ' v ############################## v '
-Public Function IsINDef(ByRef value As Double) As Boolean
+Public Function IsINDef(ByRef Value As Double) As Boolean
 Try: On Error Resume Next
-    IsINDef = (CStr(value) = CStr(INDef))
+    IsINDef = (CStr(Value) = CStr(INDef))
 Catch: On Error GoTo 0
 End Function
 
-Public Function IsNaN(ByRef value As Double) As Boolean
+Public Function IsNaN(ByRef Value As Double) As Boolean
     Dim b(0 To 7) As Byte
     Dim i As Long
     
-    RtlMoveMemory b(0), value, 8
+    RtlMoveMemory b(0), Value, 8
     
     If (b(7) = &H7F) Or (b(7) = &HFF) Then
         If (b(6) >= &HF0) Then
@@ -985,29 +985,29 @@ Public Function IsNaN(ByRef value As Double) As Boolean
     End If
 End Function
 
-Public Function IsPosINF(ByVal value As Double) As Boolean
-    IsPosINF = (value = posINF)
+Public Function IsPosINF(ByVal Value As Double) As Boolean
+    IsPosINF = (Value = posINF)
 End Function
 
-Public Function IsNegINF(ByVal value As Double) As Boolean
-    IsNegINF = (value = negINF)
+Public Function IsNegINF(ByVal Value As Double) As Boolean
+    IsNegINF = (Value = negINF)
 End Function
 
-Public Function IsZero(value) As Boolean
-    Select Case VarType(value)
-    Case VbVarType.vbSingle:  IsZero = Abs(value) <= EpsilonSng
-    Case VbVarType.vbDouble:  IsZero = Abs(value) <= EpsilonDbl
-    Case VbVarType.vbDecimal: IsZero = Abs(value) <= EpsilonDec
-    Case Else:                IsZero = Abs(value) <= Epsilon
+Public Function IsZero(Value) As Boolean
+    Select Case VarType(Value)
+    Case VbVarType.vbSingle:  IsZero = Abs(Value) <= EpsilonSng
+    Case VbVarType.vbDouble:  IsZero = Abs(Value) <= EpsilonDbl
+    Case VbVarType.vbDecimal: IsZero = Abs(Value) <= EpsilonDec
+    Case Else:                IsZero = Abs(Value) <= Epsilon
     End Select
 End Function
 
-Public Function IsZeroDbl(ByVal value As Double) As Boolean
-    IsZeroDbl = Abs(value) <= EpsilonDbl
+Public Function IsZeroDbl(ByVal Value As Double) As Boolean
+    IsZeroDbl = Abs(Value) <= EpsilonDbl
 End Function
 
-Public Function IsZeroSng(ByVal value As Single) As Boolean
-    IsZeroSng = Abs(value) <= EpsilonSng
+Public Function IsZeroSng(ByVal Value As Single) As Boolean
+    IsZeroSng = Abs(Value) <= EpsilonSng
 End Function
 
 Public Function IsEqual(V1, V2) As Boolean
@@ -1022,12 +1022,12 @@ Public Function IsEqualSng(ByVal V1 As Single, ByVal V2 As Single) As Boolean
     IsEqualSng = Abs(V1 - V2) <= EpsilonSng
 End Function
 
-Public Function IsOdd(ByVal value As Long) As Boolean
-    IsOdd = value And 1& ' Mod 2 <> 0
+Public Function IsOdd(ByVal Value As Long) As Boolean
+    IsOdd = Value And 1& ' Mod 2 <> 0
 End Function
 
-Public Function IsEven(ByVal value As Long) As Boolean
-    IsEven = Not value And 1& ' Mod 2 = 0
+Public Function IsEven(ByVal Value As Long) As Boolean
+    IsEven = Not Value And 1& ' Mod 2 = 0
 End Function
 
 ' ^ ############################## ^ '      Bool functions      ' ^ ############################## ^ '
@@ -1061,7 +1061,7 @@ Private Sub SubstituteCode(StoreHere() As Byte, CodeString As String, ByVal Addr
 End Sub
 
 ' Leave these placeholder functions, and their code
-Public Function ShiftLeft(ByVal value As Long, ByVal ShiftCount As Long) As Long
+Public Function ShiftLeft(ByVal Value As Long, ByVal ShiftCount As Long) As Long
     ' by Donald, donald@xbeat.net, 20001215
     Dim mask As Long
     
@@ -1069,43 +1069,43 @@ Public Function ShiftLeft(ByVal value As Long, ByVal ShiftCount As Long) As Long
     Case 1 To 31
         ' mask out bits that are pushed over the edge anyway
         mask = Pow2(31 - ShiftCount)
-        ShiftLeft = value And (mask - 1)
+        ShiftLeft = Value And (mask - 1)
         ' shift
         ShiftLeft = ShiftLeft * Pow2(ShiftCount)
         ' set sign bit
-        If value And mask Then
+        If Value And mask Then
           ShiftLeft = ShiftLeft Or &H80000000
         End If
     Case 0
         ' ret unchanged
-        ShiftLeft = value
+        ShiftLeft = Value
     End Select
 End Function
 
-Public Function ShiftRightZ(ByVal value As Long, ByVal ShiftCount As Long) As Long
+Public Function ShiftRightZ(ByVal Value As Long, ByVal ShiftCount As Long) As Long
     ' by Donald, donald@xbeat.net, 20001215
     Select Case ShiftCount
     Case 1 To 31
-        If value And &H80000000 Then
-            ShiftRightZ = (value And Not &H80000000) \ 2
+        If Value And &H80000000 Then
+            ShiftRightZ = (Value And Not &H80000000) \ 2
             ShiftRightZ = ShiftRightZ Or &H40000000
             ShiftRightZ = ShiftRightZ \ Pow2(ShiftCount - 1)
         Else
-            ShiftRightZ = value \ Pow2(ShiftCount)
+            ShiftRightZ = Value \ Pow2(ShiftCount)
         End If
     Case 0
         ' ret unchanged
-        ShiftRightZ = value
+        ShiftRightZ = Value
     End Select
 End Function
 
-Public Static Function ShiftRight(ByVal value As Long, ByVal ShiftCount As Long) As Long
+Public Static Function ShiftRight(ByVal Value As Long, ByVal ShiftCount As Long) As Long
     ' by Donald, donald@xbeat.net, 20011009
     Dim lPow2(0 To 30) As Long
     Dim i As Long
     
     Select Case ShiftCount
-    Case 0:      ShiftRight = value
+    Case 0:      ShiftRight = Value
     Case 1 To 30
         If i = 0 Then
             lPow2(0) = 1
@@ -1113,16 +1113,16 @@ Public Static Function ShiftRight(ByVal value As Long, ByVal ShiftCount As Long)
                 lPow2(i) = 2 * lPow2(i - 1)
             Next
         End If
-        If value And &H80000000 Then
-            ShiftRight = value \ lPow2(ShiftCount)
-            If ShiftRight * lPow2(ShiftCount) <> value Then
+        If Value And &H80000000 Then
+            ShiftRight = Value \ lPow2(ShiftCount)
+            If ShiftRight * lPow2(ShiftCount) <> Value Then
                 ShiftRight = ShiftRight - 1
             End If
         Else
-            ShiftRight = value \ lPow2(ShiftCount)
+            ShiftRight = Value \ lPow2(ShiftCount)
         End If
     Case 31
-        If value And &H80000000 Then
+        If Value And &H80000000 Then
             ShiftRight = -1
         Else
             ShiftRight = 0
@@ -1190,85 +1190,85 @@ Public Function RadToDeg(ByVal angleInRadians As Double) As Double
 End Function
 
 
-Public Static Function Sin(ByVal A As Double) As Double
+Public Static Function Sin(ByVal A As Double) As Double      'aka Sinus
     Sin = VBA.Math.Sin(A)
 End Function
-Public Static Function Cos(ByVal A As Double) As Double
+Public Static Function Cos(ByVal A As Double) As Double      'aka Cosinus
     Cos = VBA.Math.Cos(A)
 End Function
-Public Static Function Tan(ByVal A As Double) As Double
+Public Static Function Tan(ByVal A As Double) As Double      'aka Tangens
     Tan = VBA.Math.Tan(A)
 End Function
 
-Public Static Function Csc(ByVal A As Double) As Double
+Public Static Function Csc(ByVal A As Double) As Double      'aka Cosecans
     Csc = 1 / VBA.Math.Sin(A)
 End Function
-Public Static Function Sec(ByVal A As Double) As Double
+Public Static Function Sec(ByVal A As Double) As Double      'aka Secans
     Sec = 1 / VBA.Math.Cos(A)
 End Function
-Public Static Function Cot(ByVal A As Double) As Double
+Public Static Function Cot(ByVal A As Double) As Double      'aka Cotangens
     Cot = 1 / VBA.Math.Tan(A)
 End Function
 
 
-Public Static Function ASin(ByVal d As Double) As Double
+Public Static Function ASin(ByVal d As Double) As Double     'aka ArcusSinus
     ASin = Atn(d / (Sqr(1 - d ^ 2)))
 End Function
-Public Static Function ACos(ByVal d As Double) As Double
+Public Static Function ACos(ByVal d As Double) As Double     'aka ArcusCosinus
     ACos = (3.14159265358979 / 2) - Atn(d / (Sqr(1 - d ^ 2)))
 End Function
-Public Static Function ATan(ByVal d As Double) As Double
+Public Static Function ATan(ByVal d As Double) As Double     'aka ArcusTangens
     ATan = VBA.Math.Atn(d)
 End Function
 
-Public Static Function ArcCsc(ByVal y As Double) As Double
-    ArcCsc = ASin(1 / y)
+Public Static Function ACsc(ByVal y As Double) As Double     'aka ArcusCosecans
+    ACsc = ASin(1 / y)
 End Function
-Public Static Function ArcSec(ByVal x As Double) As Double
-    ArcSec = ACos(1 / x)
+Public Static Function ASec(ByVal x As Double) As Double     'aka ArcusSecans
+    ASec = ACos(1 / x)
 End Function
-Public Static Function ArcCot(ByVal t As Double) As Double
-    ArcCot = Pi * 0.5 - VBA.Math.Atn(t)
-End Function
-
-
-Public Static Function Sinh(ByVal value As Double) As Double
-    Sinh = (VBA.Math.Exp(value) - VBA.Math.Exp(-value)) / 2
-End Function
-Public Static Function Cosh(ByVal value As Double) As Double
-    Cosh = (VBA.Math.Exp(value) + VBA.Math.Exp(-value)) / 2
-End Function
-Public Static Function Tanh(ByVal A As Double) As Double
-    Tanh = (VBA.Math.Exp(A) - VBA.Math.Exp(-A)) / (VBA.Math.Exp(A) + VBA.Math.Exp(-A))
+Public Static Function ACot(ByVal t As Double) As Double   'aka ArcusCotangens
+    ACot = Pi * 0.5 - VBA.Math.Atn(t)
 End Function
 
-Public Static Function CscH(ByVal y As Double) As Double
+
+Public Static Function Sinh(ByVal Value As Double) As Double 'aka SinusHyperbolicus
+    Sinh = (VBA.Math.Exp(Value) - VBA.Math.Exp(-Value)) / 2
+End Function
+Public Static Function Cosh(ByVal Value As Double) As Double 'aka CosinusHyperbolicus
+    Cosh = (VBA.Math.Exp(Value) + VBA.Math.Exp(-Value)) / 2
+End Function
+Public Static Function Tanh(ByVal Value As Double) As Double 'aka TangensHyperbolicus
+    Tanh = (VBA.Math.Exp(Value) - VBA.Math.Exp(-Value)) / (VBA.Math.Exp(Value) + VBA.Math.Exp(-Value))
+End Function
+
+Public Static Function CscH(ByVal y As Double) As Double     'aka CosecansHyperbolicus
     CscH = 2 / (VBA.Math.Exp(y) - VBA.Math.Exp(-y))
 End Function
-Public Static Function SecH(ByVal x As Double) As Double
+Public Static Function SecH(ByVal x As Double) As Double     'aka SecansHyperbolicus
     SecH = 2 / (Exp(x) + Exp(-x))
 End Function
-Public Static Function CotH(ByVal t As Double) As Double
+Public Static Function CotH(ByVal t As Double) As Double     'aka CotangensHyperbolicus
     CotH = (VBA.Math.Exp(t) + VBA.Math.Exp(-t)) / (VBA.Math.Exp(t) - VBA.Math.Exp(-t))
 End Function
 
-Public Static Function ArSinH(ByVal y As Double) As Double
+Public Static Function ArSinH(ByVal y As Double) As Double   'aka AreaSinusHyperbolicus
     ArSinH = VBA.Math.Log(y + Sqr(y * y + 1))
 End Function
-Public Static Function ArCosH(ByVal x As Double) As Double
+Public Static Function ArCosH(ByVal x As Double) As Double   'aka AreaCosinusHyperbolicus
     ArCosH = VBA.Math.Log(x + Sqr(x * x - 1))
 End Function
-Public Static Function ArTanH(ByVal t As Double) As Double
+Public Static Function ArTanH(ByVal t As Double) As Double   'aka AreaTangensHyperbolicus
     ArTanH = VBA.Math.Log((1 + t) / (1 - t)) / 2
 End Function
 
-Public Static Function ArCscH(ByVal x As Double) As Double
+Public Static Function ArCscH(ByVal x As Double) As Double   'aka AreaCosecansHyperbolicus
     ArCscH = VBA.Math.Log((Sgn(x) * Sqr(x * x + 1) + 1) / x)
 End Function
-Public Static Function ArSecH(ByVal x As Double) As Double
+Public Static Function ArSecH(ByVal x As Double) As Double   'aka AreaSecansHyperbolicus
     ArSecH = VBA.Math.Log((Sqr(-x * x + 1) + 1) / x)
 End Function
-Public Static Function ArCotH(ByVal x As Double) As Double
+Public Static Function ArCotH(ByVal x As Double) As Double   'aka AreaCotangensHyperbolicus
     ArCotH = VBA.Math.Log((x + 1) / (x - 1)) / 2
 End Function
 
@@ -1341,29 +1341,11 @@ Public Static Function Sign(ByVal varValue As Variant) As Variant
 End Function
 
 
-
-
-
 'Public Shared Function Sqrt(ByVal d As Double) As Double
 Public Static Function Sqrt(ByVal d As Double) As Double
     Sqrt = VBA.Math.Sqr(d)
 End Function
 
-'Und was ist mit Cot??? =Cos(a)/Sin(a)
-
-
-
-'Public Shared Const E As Double = 2.7182818284590451
-Public Static Property Get E() As Double 'cDouble
-    'Set E = New cDouble
-    E = 2.71828182845905
-End Property
-'
-''Public Shared Const PI As Double = 3.1415926535897931
-'Public Static Property Get Pi() As Double 'cDouble
-'    'Set Pi = New cDouble
-'    Pi = 3.14159265358979
-'End Property
 ' ^ ############################## ^ '      Trigonometric functions      ' ^ ############################## ^ '
 
 '#######  for Bit Shifting ##########
@@ -1389,7 +1371,7 @@ End Sub
 
 
 ' v ############################## v '     solving quadratic & cubic formula     ' v ############################## v '
-Public Function Quadratic(ByVal A As Double, ByVal b As Double, ByVal C As Double, ByRef x1_out As Double, ByRef x2_out As Double) As Boolean
+Public Function Quadratic(ByVal A As Double, ByVal b As Double, ByVal c As Double, ByRef x1_out As Double, ByRef x2_out As Double) As Boolean
 Try: On Error GoTo Catch
     
     'maybe the midnight-formula:
@@ -1399,7 +1381,7 @@ Try: On Error GoTo Catch
     
     'or maybe the pq-formula
     Dim p    As Double:   p = b / A
-    Dim q    As Double:   q = C / A
+    Dim q    As Double:   q = c / A
     Dim p_2  As Double: p_2 = p / 2
     Dim p2_4 As Double: p2_4 = p_2 * p_2
     Dim W As Double: W = VBA.Sqr(p2_4 - q)
@@ -1412,11 +1394,11 @@ Try: On Error GoTo Catch
 Catch:
 End Function
 
-Public Function Quadratic_ToStr(ByVal A As Double, ByVal b As Double, ByVal C As Double) As String
-    Quadratic_ToStr = A & "x²" & GetOp(b) & "x" & GetOp(C) & " = 0"
+Public Function Quadratic_ToStr(ByVal A As Double, ByVal b As Double, ByVal c As Double) As String
+    Quadratic_ToStr = A & "x²" & GetOp(b) & "x" & GetOp(c) & " = 0"
 End Function
-Public Function Cubic_ToStr(ByVal A As Double, ByVal b As Double, ByVal C As Double, ByVal d As Double) As String
-    Cubic_ToStr = A & "x³" & GetOp(b) & "x²" & GetOp(C) & "x" & GetOp(d) & " = 0"
+Public Function Cubic_ToStr(ByVal A As Double, ByVal b As Double, ByVal c As Double, ByVal d As Double) As String
+    Cubic_ToStr = A & "x³" & GetOp(b) & "x²" & GetOp(c) & "x" & GetOp(d) & " = 0"
 End Function
 Private Function GetOp(ByVal v As Double) As String
     Select Case v
@@ -1430,12 +1412,12 @@ End Function
 'https://www.youtube.com/watch?v=xhjNRQxqJTM '&t=116s
 'https://www.youtube.com/watch?v=q14F6fZf5kc '&t=1658s
 'https://www.youtube.com/watch?v=N-KXStupwsc '&t=4s
-Public Function Cubic(ByVal A As Double, ByVal b As Double, ByVal C As Double, ByVal d As Double, ByRef x1_out As Double, ByRef x2_out As Double, ByRef i2_out As Double, ByRef x3_out As Double, ByRef i3_out As Double) As Boolean
+Public Function Cubic(ByVal A As Double, ByVal b As Double, ByVal c As Double, ByVal d As Double, ByRef x1_out As Double, ByRef x2_out As Double, ByRef i2_out As Double, ByRef x3_out As Double, ByRef i3_out As Double) As Boolean
 Try: On Error GoTo Catch
     'Scipione del Ferro (1465-1526), Nicolo Tartaglia (1500-1557), Gerolamo Cardano (1501-1576)
     'Rafael Bombelli (1526-1572)
     If A = 0 Then
-        Cubic = Quadratic(b, C, d, x1_out, x2_out)
+        Cubic = Quadratic(b, c, d, x1_out, x2_out)
         Exit Function
     End If
     Dim a2 As Double: a2 = A * A
@@ -1445,12 +1427,12 @@ Try: On Error GoTo Catch
     'Dim bc As Double: bc = b * c
     Dim b3_27a3 As Double: b3_27a3 = b3 / (27 * a3)
     'Dim bc_6a2  As Double:  bc_6a2 = bc / (6 * a2)
-    Dim cb_3a2  As Double:  cb_3a2 = C * b / (3 * a2)
+    Dim cb_3a2  As Double:  cb_3a2 = c * b / (3 * a2)
     Dim b2_3a2  As Double:  b2_3a2 = b2 / (3 * a2)
     'Dim b2_9a2  As Double:  b2_9a2 = b2 / (9 * a2)
     Dim d_a  As Double: d_a = d / A
     'Dim d_2a As Double: d_2a = d / (2 * a)
-    Dim c_a  As Double: c_a = C / A
+    Dim c_a  As Double: c_a = c / A
     'Dim c_3a As Double: c_3a = c / (3 * a)
     Dim b_3a As Double: b_3a = b / (3 * A)
     
@@ -1516,9 +1498,9 @@ End Function
 Public Function CubeRoot(ByVal d As Double) As Double
     'CubeRoot due to Halley
     Dim a3 As Double
-    Dim t As TDouble: t.value = d
+    Dim t As TDouble: t.Value = d
     Dim p As TLong2:   LSet p = t: p.Value1 = p.Value1 \ 3 + 715094163
-    Dim A As Double:   LSet t = p: A = t.value
+    Dim A As Double:   LSet t = p: A = t.Value
     a3 = A * A * A
     A = A * (a3 + d + d) / (a3 + a3 + d)
     a3 = A * A * A
@@ -1704,10 +1686,10 @@ Public Function Complex_Abs2(z As Complex) As Double
     With z: Complex_Abs2 = .Re * .Re + .Im * .Im:    End With
 End Function
 
-Public Function Complex_ToComplexP(C As Complex) As ComplexP
+Public Function Complex_ToComplexP(c As Complex) As ComplexP
     With Complex_ToComplexP
-        .r = VBA.Math.Sqr(Abs(C.Re * C.Re + C.Im * C.Im))
-        .phi = ATan2(C.Im, C.Re)
+        .r = VBA.Math.Sqr(Abs(c.Re * c.Re + c.Im * c.Im))
+        .phi = ATan2(c.Im, c.Re)
         'oder:
         '.phi = Sgn(c.Im) * Arccos(c.Re / .r)
     End With
@@ -1833,8 +1815,8 @@ End Function
 ' ^ ############################## ^ '    Complex numbers    ' ^ ############################## ^ '
 
 ' v ############################## v '  Modulo op on floats  ' v ############################## v '
-Public Function ModF(ByVal value As Double, ByVal div As Double) As Double
-   ModF = value - (Int(value / div) * div)
+Public Function ModF(ByVal Value As Double, ByVal div As Double) As Double
+   ModF = Value - (Int(Value / div) * div)
 End Function
 
 Public Function ModDbl(v As Double, d As Double) As Double
@@ -1863,16 +1845,16 @@ End Function
 
 ' v ############################## v '  unsigned arithmetic  ' v ############################## v '
 
-Public Function UnsignedAdd(ByVal value As Long, ByVal Incr As Long) As Long
+Public Function UnsignedAdd(ByVal Value As Long, ByVal Incr As Long) As Long
 ' This function is useful when doing pointer arithmetic,
 ' but note it only works for positive values of Incr
 
-   If value And &H80000000 Then  'Start < 0
-       UnsignedAdd = value + Incr
-   ElseIf (value Or &H80000000) < -Incr Then
-       UnsignedAdd = value + Incr
+   If Value And &H80000000 Then  'Start < 0
+       UnsignedAdd = Value + Incr
+   ElseIf (Value Or &H80000000) < -Incr Then
+       UnsignedAdd = Value + Incr
    Else
-       UnsignedAdd = (value + &H80000000) + (Incr + &H80000000)
+       UnsignedAdd = (Value + &H80000000) + (Incr + &H80000000)
    End If
    
 End Function
