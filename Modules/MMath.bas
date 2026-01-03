@@ -1848,7 +1848,7 @@ End Function
 Public Function UnsignedAdd(ByVal Value As Long, ByVal Incr As Long) As Long
 ' This function is useful when doing pointer arithmetic,
 ' but note it only works for positive values of Incr
-
+' all credits for this function are going to the incredible Steve McMahon aka vbAccelerator
    If Value And &H80000000 Then  'Start < 0
        UnsignedAdd = Value + Incr
    ElseIf (Value Or &H80000000) < -Incr Then
