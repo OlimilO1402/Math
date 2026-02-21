@@ -197,18 +197,35 @@ Sub TestMinMaxValues()
     Dim n As Long: n = 21
     AddItem "TestNumericMinMaxValues:"
     AddItem "========================"
-    AddItem "Min. Byte     = " & MString.PadCentered(MMath.MinByte, n)
-    AddItem "Max. Byte     = " & MString.PadCentered(MMath.MaxByte, n)
-    AddItem "Min. Integer  = " & MString.PadCentered(MMath.MinInteger, n)
-    AddItem "Max. Integer  = " & MString.PadCentered(MMath.MaxInteger, n)
-    AddItem "Min. Long     = " & MString.PadCentered(MMath.MinLong, n)
-    AddItem "Max. Long     = " & MString.PadCentered(MMath.MaxLong, n)
-    AddItem "Min. Currency = " & MString.PadCentered(MMath.MinCurrency, n)
-    AddItem "Max. Currency = " & MString.PadCentered(MMath.MaxCurrency, n)
-    AddItem "Min. Decimal  = " & MString.PadCentered(MMath.MinDecimal, n)
-    AddItem "Max. Decimal  = " & MString.PadCentered(MMath.MaxDecimal, n)
-    AddItem "Min.Dec.Fract+= " & MString.PadCentered(MMath.MinDecimalFractionPositive, n)
-    AddItem "Max.Dec.Fract-= " & MString.PadCentered(MMath.MinDecimalFractionNegative, n)
+    Dim i As Long
+    ReDim sa(0 To 12) As String
+    sa(i) = MMath.MinByte:     i = i + 1
+    sa(i) = MMath.MaxByte:     i = i + 1
+    sa(i) = MMath.MinInteger:  i = i + 1
+    sa(i) = MMath.MaxInteger:  i = i + 1
+    sa(i) = MMath.MinLong:     i = i + 1
+    sa(i) = MMath.MaxLong:     i = i + 1
+    sa(i) = MMath.MinCurrency: i = i + 1
+    sa(i) = MMath.MaxCurrency: i = i + 1
+    sa(i) = MMath.MinDecimal:  i = i + 1
+    sa(i) = MMath.MaxDecimal:  i = i + 1
+    sa(i) = MMath.MinDecimalFractionPositive: i = i + 1
+    sa(i) = MMath.MinDecimalFractionNegative: i = i + 1
+    Dim maxLen1 As Long, maxLen2 As Long
+    MString.GetMaxLenLeftRight sa, maxLen1, maxLen2
+    i = 0
+    AddItem "Min. Byte     = " & MString.PadLeftRightDecSep(sa(i), maxLen1, maxLen2): i = i + 1
+    AddItem "Max. Byte     = " & MString.PadLeftRightDecSep(sa(i), maxLen1, maxLen2): i = i + 1
+    AddItem "Min. Integer  = " & MString.PadLeftRightDecSep(sa(i), maxLen1, maxLen2): i = i + 1
+    AddItem "Max. Integer  = " & MString.PadLeftRightDecSep(sa(i), maxLen1, maxLen2): i = i + 1
+    AddItem "Min. Long     = " & MString.PadLeftRightDecSep(sa(i), maxLen1, maxLen2): i = i + 1
+    AddItem "Max. Long     = " & MString.PadLeftRightDecSep(sa(i), maxLen1, maxLen2): i = i + 1
+    AddItem "Min. Currency = " & MString.PadLeftRightDecSep(sa(i), maxLen1, maxLen2): i = i + 1
+    AddItem "Max. Currency = " & MString.PadLeftRightDecSep(sa(i), maxLen1, maxLen2): i = i + 1
+    AddItem "Min. Decimal  = " & MString.PadLeftRightDecSep(sa(i), maxLen1, maxLen2): i = i + 1
+    AddItem "Max. Decimal  = " & MString.PadLeftRightDecSep(sa(i), maxLen1, maxLen2): i = i + 1
+    AddItem "Min.Dec.Fract+= " & MString.PadLeftRightDecSep(sa(i), maxLen1, maxLen2): i = i + 1
+    AddItem "Max.Dec.Fract-= " & MString.PadLeftRightDecSep(sa(i), maxLen1, maxLen2): i = i + 1
     AddItem ""
     
 End Sub
