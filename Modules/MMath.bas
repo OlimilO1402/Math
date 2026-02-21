@@ -92,6 +92,11 @@ Public Const MaxCurrency As Currency = 922337203685477.5807@
 '    Dim Cur2: bigDec2 = CDec("9223372036854775808")   ' No overflow.
 '    Dim Cur3: bigDec3 = CDec("9223372036854775809")   ' No overflow.
 
+Private mMinDecimal 'As Decimal = CDec("-79228162514264337593543950335")
+Private mMaxDecimal 'As Decimal = CDec("79228162514264337593543950335")
+Private mMinDecFrcp 'As Decimal = CDec("0,0000000000000000000000000001")
+Private mMinDecFrcn 'As Decimal = CDec("-0,0000000000000000000000000001")
+
 'value range Decimal
 '    Dim bigDec1: bigDec1 = CDec("79228162514264337593543950335")
 '    Dim bigDec2: bigDec2 = CDec("-79228162514264337593543950335")
@@ -153,6 +158,10 @@ Private Sub InitFunctionsShift() ' call this in your Sub Main or Form_Load
 End Sub
 
 Public Sub Init()
+    mMaxDecimal = CDec("79228162514264337593543950335")
+    mMinDecimal = CDec("-79228162514264337593543950335")
+    mMinDecFrcp = CDec("0,0000000000000000000000000001")
+    mMinDecFrcn = CDec("-0,0000000000000000000000000001")
         'Pi = CDec("3,1415926535897932384626433832795") '0288419716939937510582097494459230781640628620899862803482534211706798214")
                   ' 3,1415926535897932384626433833
      'Euler = CDec("2,7182818284590452353602874713526") '6249775724709369995957496696762772407663035354759457138217852516642742746")
@@ -245,6 +254,20 @@ QuantumAlpha = CDec(CDec(1) / CDec(137))
     InitINF
     InitFunctionsShift
 End Sub
+
+Public Property Get MinDecimal()
+    MinDecimal = mMinDecimal
+End Property
+Public Property Get MaxDecimal()
+    MaxDecimal = mMaxDecimal
+End Property
+
+Public Property Get MinDecimalFractionPositive()
+    MinDecimalFractionPositive = mMinDecFrcp
+End Property
+Public Property Get MinDecimalFractionNegative()
+    MinDecimalFractionNegative = mMinDecFrcn
+End Property
 
 Public Sub InitINF()
     GetINDef INDef
@@ -590,11 +613,11 @@ Public Sub InitPrimeX()
    &H34FA1B, &H3F928F, &H4C4987, &H5B8B6F, &H6DDA89)
 End Sub
 
-Private Sub FillArray(ByRef arr() As Long, ParamArray params())
-    ReDim arr(0 To UBound(params))
+Private Sub FillArray(ByRef Arr() As Long, ParamArray params())
+    ReDim Arr(0 To UBound(params))
     Dim i As Long
     For i = 0 To UBound(params)
-        arr(i) = CLng(params(i))
+        Arr(i) = CLng(params(i))
     Next
 End Sub
 

@@ -176,6 +176,7 @@ Private Sub BtnTestPrimes2_Click()
 End Sub
 
 Sub Tests()
+    TestMinMaxValues
     TestConstants
     TestTempConvs
     TestGgT_KgV_PFZ_FraC
@@ -190,6 +191,26 @@ Sub Tests()
     TestRounding
     TestRandom
     TestTrigono
+End Sub
+
+Sub TestMinMaxValues()
+    Dim n As Long: n = 21
+    AddItem "TestNumericMinMaxValues:"
+    AddItem "========================"
+    AddItem "Min. Byte     = " & MString.PadCentered(MMath.MinByte, n)
+    AddItem "Max. Byte     = " & MString.PadCentered(MMath.MaxByte, n)
+    AddItem "Min. Integer  = " & MString.PadCentered(MMath.MinInteger, n)
+    AddItem "Max. Integer  = " & MString.PadCentered(MMath.MaxInteger, n)
+    AddItem "Min. Long     = " & MString.PadCentered(MMath.MinLong, n)
+    AddItem "Max. Long     = " & MString.PadCentered(MMath.MaxLong, n)
+    AddItem "Min. Currency = " & MString.PadCentered(MMath.MinCurrency, n)
+    AddItem "Max. Currency = " & MString.PadCentered(MMath.MaxCurrency, n)
+    AddItem "Min. Decimal  = " & MString.PadCentered(MMath.MinDecimal, n)
+    AddItem "Max. Decimal  = " & MString.PadCentered(MMath.MaxDecimal, n)
+    AddItem "Min.Dec.Fract+= " & MString.PadCentered(MMath.MinDecimalFractionPositive, n)
+    AddItem "Max.Dec.Fract-= " & MString.PadCentered(MMath.MinDecimalFractionNegative, n)
+    AddItem ""
+    
 End Sub
 
 Sub TestConstants()
@@ -615,6 +636,6 @@ Private Sub TestTrigono()
 End Sub
 
 Sub AddItem(s As String)
-    Text1.Text = Text1.Text & s & vbCrLf
+    Text1.text = Text1.text & s & vbCrLf
 End Sub
 
