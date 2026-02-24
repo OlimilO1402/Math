@@ -176,6 +176,7 @@ Private Sub BtnTestPrimes2_Click()
 End Sub
 
 Sub Tests()
+    TestIEEE754
     TestMinMaxValues
     TestConstants
     TestTempConvs
@@ -191,6 +192,27 @@ Sub Tests()
     TestRounding
     TestRandom
     TestTrigono
+End Sub
+
+Sub TestIEEE754()
+    AddItem "TestIEEE754:"
+    AddItem "============"
+    Dim d As Double
+    
+    d = 0:     AddItem d & " = " & Bin_ToStr(d)
+    d = 1:     AddItem d & " = " & Bin_ToStr(d)
+    d = 2:     AddItem d & " = " & Bin_ToStr(d)
+    d = 3:     AddItem d & " = " & Bin_ToStr(d)
+    d = 10:    AddItem d & " = " & Bin_ToStr(d)
+    d = 11:    AddItem d & " = " & Bin_ToStr(d)
+    d = 12:    AddItem d & " = " & Bin_ToStr(d)
+    d = 13:    AddItem d & " = " & Bin_ToStr(d)
+    d = 100:    AddItem d & " = " & Bin_ToStr(d)
+    d = 101:    AddItem d & " = " & Bin_ToStr(d)
+    d = 102:    AddItem d & " = " & Bin_ToStr(d)
+    d = 103:    AddItem d & " = " & Bin_ToStr(d)
+    
+    AddItem ""
 End Sub
 
 Sub TestMinMaxValues()
