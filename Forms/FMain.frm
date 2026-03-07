@@ -198,19 +198,19 @@ Sub TestIEEE754()
     AddItem "TestIEEE754:"
     AddItem "============"
     Dim d As Double
-    
-    d = 0:     AddItem d & " = " & Bin_ToStr(d)
-    d = 1:     AddItem d & " = " & Bin_ToStr(d)
-    d = 2:     AddItem d & " = " & Bin_ToStr(d)
-    d = 3:     AddItem d & " = " & Bin_ToStr(d)
-    d = 10:    AddItem d & " = " & Bin_ToStr(d)
-    d = 11:    AddItem d & " = " & Bin_ToStr(d)
-    d = 12:    AddItem d & " = " & Bin_ToStr(d)
-    d = 13:    AddItem d & " = " & Bin_ToStr(d)
-    d = 100:    AddItem d & " = " & Bin_ToStr(d)
-    d = 101:    AddItem d & " = " & Bin_ToStr(d)
-    d = 102:    AddItem d & " = " & Bin_ToStr(d)
-    d = 103:    AddItem d & " = " & Bin_ToStr(d)
+    Dim ll As Long: ll = 4
+    d = 0:      AddItem PadLeft(d, ll) & " = " & Bin_ToStr(d)
+    d = 1:      AddItem PadLeft(d, ll) & " = " & Bin_ToStr(d)
+    d = 2:      AddItem PadLeft(d, ll) & " = " & Bin_ToStr(d)
+    d = -3:     AddItem PadLeft(d, ll) & " = " & Bin_ToStr(d)
+    d = 10:     AddItem PadLeft(d, ll) & " = " & Bin_ToStr(d)
+    d = 11:     AddItem PadLeft(d, ll) & " = " & Bin_ToStr(d)
+    d = -12:    AddItem PadLeft(d, ll) & " = " & Bin_ToStr(d)
+    d = 13:     AddItem PadLeft(d, ll) & " = " & Bin_ToStr(d)
+    d = 100:    AddItem PadLeft(d, ll) & " = " & Bin_ToStr(d)
+    d = -101:   AddItem PadLeft(d, ll) & " = " & Bin_ToStr(d)
+    d = 102:    AddItem PadLeft(d, ll) & " = " & Bin_ToStr(d)
+    d = 103:    AddItem PadLeft(d, ll) & " = " & Bin_ToStr(d)
     
     AddItem ""
 End Sub
