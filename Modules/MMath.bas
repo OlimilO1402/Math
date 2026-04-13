@@ -24,11 +24,30 @@ Dim bHoldSAR() As Byte
 Dim lCompiled As Long
 '#####################  ^  for Bit Shifting ^   ####################
 
+'siehe auch Tipp VB5/6-Tippupload Nr 0407:
+'http://www.activevb.de/cgi-bin/tippupload/show/407/Unendlich_Jetzt_mit_Kommentaren
+'bzw Tipp 0747: Positiv und negativ Unendlich darstellen
+'http://www.activevb.de/tipps/vb6tipps/tipp0747.html
 
-Public INDef  As Double 'not defined, undefined like 0 / 0
-Public posINF As Double 'positive infinity like 1 / 0
-Public negINF As Double 'negative infinity like -1 / 0
-Public NaN    As Double 'Not a Number
+Public INDef    As Double 'not defined, undefined like 0 / 0
+Public posINF   As Double 'positive infinity like 1 / 0
+Public negINF   As Double 'negative infinity like -1 / 0
+Public NaN      As Double 'Not a Number
+
+Public INDefs   As Single 'not defined, undefined like 0 / 0
+Public posINFs  As Single ' positiv Unendlich
+Public negINFs  As Single ' negativ Unendlich '-8388608
+Public NaNs     As Single ' "Not A Number", "keine Zahl"
+Public Denormal As Single
+Private Const LngPosInf   As Long = &H7F800000
+Private Const LngNegInf   As Long = &HFF800000
+Private Const LngNaN      As Long = &H7FF00000
+
+
+'Private Const LngDenormal As Long = &H81000000
+'#define undenormalise(sample) if(((*(unsigned int*)&sample)&0x7f800000)==0) sample=0.0f
+'Private Const LngDenormal As Long = &H80800000 nö
+Private Const LngDenormalMask As Long = &H7F800000
 
 Public Const Epsilon = 0.0000001
 Public Const EpsilonDec As Variant = 1E-16               ' 1E-16
@@ -61,6 +80,11 @@ End Type
 Private Type TDouble
     Value As Double
 End Type
+
+Public Enum Bit
+    b0 = 0
+    b1 = 1
+End Enum
 
 'value range Byte (unsigned int8)
 '0 .. 255
@@ -274,6 +298,10 @@ Public Sub InitINF()
     posINF = GetINF
     negINF = GetINF(-1)
     GetNaN NaN
+    
+    posINFs = GetINFs.Value
+    negINFs = GetINFs(-1).Value
+    Call GetNaNs(NaNs)
 End Sub
 
 Private Sub InitFibonacci()
@@ -498,6 +526,20 @@ End Function
 
 
 ' ^ ############################## ^ '    Linear interpolation    ' ^ ############################## ^ '
+
+' v ############################## v '    Stochastic functions    ' v ############################## v '
+
+Public Function Binomial(ByVal n As Long, ByVal k As Long) As Long
+    'thanks to BAGZZlash
+    'e.g. Lotto 6 aus 49 oder 49 über 6 = Binomial(49, 6) = (49*48*47*46*45*44) / (6*5*4*3*2*1) = 13.983.816
+    Dim p As Long: p = 1
+    Dim i As Long
+    For i = 1 To k
+        p = p * n / i
+        n = n - 1
+    Next
+    Binomial = p
+End Function
 
 ' v ############################## v '    prime-functions    ' v ############################## v '
 
@@ -754,12 +796,40 @@ End Function
 Public Function MaxInt(ByVal V1 As Integer, ByVal V2 As Integer) As Integer
     If V1 > V2 Then MaxInt = V1 Else MaxInt = V2
 End Function
+Public Function MinInt3(ByVal V1 As Integer, ByVal V2 As Integer, ByVal V3 As Integer) As Integer
+    If V1 < V2 Then
+        If V1 < V3 Then MinInt3 = V1 Else MinInt3 = V3
+    Else
+        If V2 < V3 Then MinInt3 = V2 Else MinInt3 = V3
+    End If
+End Function
+Public Function MaxInt3(ByVal V1 As Integer, ByVal V2 As Integer, ByVal V3 As Integer) As Integer
+    If V1 > V2 Then
+        If V1 > V3 Then MaxInt3 = V1 Else MaxInt3 = V3
+    Else
+        If V2 > V3 Then MaxInt3 = V2 Else MaxInt3 = V3
+    End If
+End Function
 
 Public Function MinLng(ByVal V1 As Long, ByVal V2 As Long) As Long
     If V1 < V2 Then MinLng = V1 Else MinLng = V2
 End Function
 Public Function MaxLng(ByVal V1 As Long, ByVal V2 As Long) As Long
     If V1 > V2 Then MaxLng = V1 Else MaxLng = V2
+End Function
+Public Function MinLng3(ByVal V1 As Long, ByVal V2 As Long, ByVal V3 As Long) As Long
+    If V1 < V2 Then
+        If V1 < V3 Then MinLng3 = V1 Else MinLng3 = V3
+    Else
+        If V2 < V3 Then MinLng3 = V2 Else MinLng3 = V3
+    End If
+End Function
+Public Function MaxLng3(ByVal V1 As Long, ByVal V2 As Long, ByVal V3 As Long) As Long
+    If V1 > V2 Then
+        If V1 > V3 Then MaxLng3 = V1 Else MaxLng3 = V3
+    Else
+        If V2 > V3 Then MaxLng3 = V2 Else MaxLng3 = V3
+    End If
 End Function
 
 Public Function MinSng(ByVal V1 As Single, ByVal V2 As Single) As Single
@@ -789,12 +859,40 @@ End Function
 Public Function MaxDbl(ByVal V1 As Double, ByVal V2 As Double) As Double
     If V1 > V2 Then MaxDbl = V1 Else MaxDbl = V2
 End Function
+Public Function MinDbl3(ByVal V1 As Double, ByVal V2 As Double, ByVal V3 As Double) As Double
+    If V1 < V2 Then
+        If V1 < V3 Then MinDbl3 = V1 Else MinDbl3 = V3
+    Else
+        If V2 < V3 Then MinDbl3 = V2 Else MinDbl3 = V3
+    End If
+End Function
+Public Function MaxDbl3(ByVal V1 As Double, ByVal V2 As Double, ByVal V3 As Double) As Double
+    If V1 > V2 Then
+        If V1 > V3 Then MaxDbl3 = V1 Else MaxDbl3 = V3
+    Else
+        If V2 > V3 Then MaxDbl3 = V2 Else MaxDbl3 = V3
+    End If
+End Function
 
 Public Function MinCur(ByVal V1 As Currency, ByVal V2 As Currency) As Currency
     If V1 < V2 Then MinCur = V1 Else MinCur = V2
 End Function
 Public Function MaxCur(ByVal V1 As Currency, ByVal V2 As Currency) As Currency
     If V1 > V2 Then MaxCur = V1 Else MaxCur = V2
+End Function
+Public Function MinCur3(ByVal V1 As Currency, ByVal V2 As Currency, ByVal V3 As Currency) As Currency
+    If V1 < V2 Then
+        If V1 < V3 Then MinCur3 = V1 Else MinCur3 = V3
+    Else
+        If V2 < V3 Then MinCur3 = V2 Else MinCur3 = V3
+    End If
+End Function
+Public Function MaxCur3(ByVal V1 As Currency, ByVal V2 As Currency, ByVal V3 As Currency) As Currency
+    If V1 > V2 Then
+        If V1 > V3 Then MaxCur3 = V1 Else MaxCur3 = V3
+    Else
+        If V2 > V3 Then MaxCur3 = V2 Else MaxCur3 = V3
+    End If
 End Function
 
 'Einen Wert in Schranken zwingen, obere Werte auf Max reduzieren, untere Werte auf Min heben
@@ -930,20 +1028,20 @@ End Function
 
 Public Function RoundUp(ByVal Value As Double, Optional ByVal NumDigitsAfterDecimal As Byte = 0) As Double
     If Value < 0 Then
-        RoundUp = Math.Round(Value, NumDigitsAfterDecimal)
+        RoundUp = VBA.Math.Round(Value, NumDigitsAfterDecimal)
         If Value < RoundUp Then RoundUp = RoundUp - 10 ^ -NumDigitsAfterDecimal
     Else
-        RoundUp = Math.Round(Value, NumDigitsAfterDecimal)
+        RoundUp = VBA.Math.Round(Value, NumDigitsAfterDecimal)
         If RoundUp < Value Then RoundUp = RoundUp + 10 ^ -NumDigitsAfterDecimal
     End If
 End Function
 
 Public Function RoundDown(ByVal Value As Double, Optional ByVal NumDigitsAfterDecimal As Byte = 0) As Double
     If Value < 0 Then
-        RoundDown = Math.Round(Value, NumDigitsAfterDecimal)
+        RoundDown = VBA.Math.Round(Value, NumDigitsAfterDecimal)
         If RoundDown < Value Then RoundDown = RoundDown + 10 ^ -NumDigitsAfterDecimal
     Else
-        RoundDown = Math.Round(Value, NumDigitsAfterDecimal)
+        RoundDown = VBA.Math.Round(Value, NumDigitsAfterDecimal)
         If Value < RoundDown Then RoundDown = RoundDown - 10 ^ -NumDigitsAfterDecimal
     End If
 End Function
@@ -952,18 +1050,18 @@ End Function
 ' v ############################## v ' IEEE754-INFINITY functions ' v ############################## v '
 ' v ############################## v '      Create functions      ' v ############################## v '
 'either with error handling:
-Public Function GetINFE(Optional ByVal Sign As Long = 1) As Double
+Public Function GetINFE(Optional ByVal sign As Long = 1) As Double
 Try: On Error Resume Next
-    GetINFE = Sgn(Sign) / 0
+    GetINFE = Sgn(sign) / 0
 Catch: On Error GoTo 0
 End Function
 
 ' or without error handling:
-Public Function GetINF(Optional ByVal Sign As Long = 1) As Double
+Public Function GetINF(Optional ByVal sign As Long = 1) As Double
     Dim l(1 To 2) As Long
-    If Sgn(Sign) > 0 Then
+    If Sgn(sign) > 0 Then
         l(2) = &H7FF00000
-    ElseIf Sgn(Sign) < 0 Then
+    ElseIf Sgn(sign) < 0 Then
         l(2) = &HFFF00000
     End If
     Call RtlMoveMemory(GetINF, l(1), 8)
@@ -1008,12 +1106,41 @@ Public Function IsNaN(ByRef Value As Double) As Boolean
     End If
 End Function
 
-Public Function IsPosINF(ByVal Value As Double) As Boolean
-    IsPosINF = (Value = posINF)
+Public Function IsNaNs(ByRef Value As Single) As Boolean
+    ' checks wether the single value contains the bits for "not a number"
+    Dim b(0 To 3) As Byte
+    Call RtlMoveMemory(b(0), Value, 4)
+    If (b(3) = &H7F) Or (b(3) = &HFF) Then
+        If (b(2) >= &HF0) Then
+            If b(1) <> 0 Then
+                IsNaNs = True
+                Exit Function
+            End If
+            If b(0) <> 0 Then
+                IsNaNs = True
+                Exit Function
+            End If
+        End If
+    End If
 End Function
 
+Public Function IsPosINF(ByVal Value As Double) As Boolean
+    ' checks whether the double value contains the bits for positiv infinity
+    IsPosINF = (Value = posINF)
+End Function
+Public Function IsPosINFs(ByVal Value As Single) As Boolean
+    ' checks whether the single value contains the bits for positiv infinity
+    IsPosINFs = (Value = posINFs)
+End Function
+
+
 Public Function IsNegINF(ByVal Value As Double) As Boolean
+    ' checks whether the double value contains the bits for negativ infinity
     IsNegINF = (Value = negINF)
+End Function
+Public Function IsNegINFs(ByVal Value As Single) As Boolean
+    ' checks whether the single value contains the bits for negativ infinity
+    IsNegINFs = (Value = negINFs)
 End Function
 
 Public Function IsZero(Value) As Boolean
@@ -1054,6 +1181,96 @@ Public Function IsEven(ByVal Value As Long) As Boolean
 End Function
 
 ' ^ ############################## ^ '      Bool functions      ' ^ ############################## ^ '
+
+'Bit-functions also look MString
+
+Public Function Bits(b00 As Bit, b01 As Bit, b02 As Bit, b03 As Bit, b04 As Bit, b05 As Bit, b06 As Bit, b07 As Bit, b08 As Bit, b09 As Bit, _
+                     b10 As Bit, b11 As Bit, b12 As Bit, b13 As Bit, b14 As Bit, b15 As Bit, b16 As Bit, b17 As Bit, b18 As Bit, b19 As Bit, _
+                     b20 As Bit, b21 As Bit, b22 As Bit, b23 As Bit, b24 As Bit, b25 As Bit, b26 As Bit, b27 As Bit, b28 As Bit, b29 As Bit, _
+                     b30 As Bit, b31 As Bit) As Long
+    'Bits = 0
+    Bits = Bits Or b00 * 2 ^ 0 Or b01 * 2 ^ 1 Or b02 * 2 ^ 2 Or b03 * 2 ^ 3 Or b04 * 2 ^ 4 Or b05 * 2 ^ 5 Or b06 * 2 ^ 6 Or b07 * 2 ^ 7
+    Bits = Bits Or b08 * 2 ^ 8 Or b09 * 2 ^ 9 Or b10 * 2 ^ 10 Or b11 * 2 ^ 11 Or b12 * 2 ^ 12 Or b13 * 2 ^ 13 Or b14 * 2 ^ 14 Or b15 * 2 ^ 15
+    Bits = Bits Or b16 * 2 ^ 16 Or b17 * 2 ^ 17 Or b18 * 2 ^ 18 Or b19 * 2 ^ 19 Or b20 * 2 ^ 20 Or b21 * 2 ^ 21 Or b22 * 2 ^ 22 Or b23 * 2 ^ 23
+    Bits = Bits Or b24 * 2 ^ 24 Or b25 * 2 ^ 25 Or b26 * 2 ^ 26 Or b27 * 2 ^ 27 Or b28 * 2 ^ 28 Or b29 * 2 ^ 29 Or b30 * 2 ^ 30
+    'Bits = Bits Or b31 * 2 ^ 31
+    If b31 = b1 Then Bits = -Bits
+End Function
+Public Sub CheckBits(ByVal l As Long)
+    'e.g.
+    'check Bits(0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+    On Error Resume Next
+    Dim s As Single: s = LongToSingle(l)
+    Debug.Print l & " = &H" & Hex(l) & " = " & s & " ?isdenorm: " & IsDenormalisedSng(s)
+    '170 = &HAA = 2,382207E-43 ?isdenorm: Wahr
+End Sub
+
+' entweder mit Fehlerbehandlung:
+Public Function GetINFEs(Optional ByVal sign As Long = 1) As Single
+
+    ' Erzeugt die Bitfolge für + oder - Unendlich
+    On Error Resume Next
+    GetINFEs = Sgn(sign) / 0
+    On Error GoTo 0
+
+End Function
+
+' oder  ohne Fehlerbehandlung :
+Public Function GetINFs(Optional ByVal sign As Long = 1) As TSingle
+
+    ' Erzeugt die Bitfolge für + oder - Unendlich
+    Dim tl As TLong
+    
+    If Sgn(sign) > 0 Then 'positiv
+        tl.Value = LngPosInf
+    ElseIf Sgn(sign) < 0 Then 'negativ
+        tl.Value = LngNegInf
+    End If
+    LSet GetINFs = tl
+End Function
+
+Public Sub GetNaNs(ByRef SngVal As Single)
+
+    ' Erzeugt die Bitfolge für "Not a Number".
+    ' Funktioniert nur als ByRef-Parameter.
+    ' Funktioniert nicht als Rückgabewert der Funktion,
+    ' da VB sonst einen Fehler auslöst.
+    
+    Call RtlMoveMemory(SngVal, LngNaN, 4)
+
+End Sub
+
+Public Function IsDenormalisedSng(ByVal Value As Single) As Boolean
+    'Dim ts As TSingle: ts.Value = SngVal
+    'Dim tl As TLong:    LSet tl = ts
+    Dim l As Long
+    RtlMoveMemory l, Value, 4
+    IsDenormalisedSng = ((l And &H7F800000) = 0)
+End Function
+
+Public Sub UndenormaliseSng(ByRef value_inout As Single)
+    Dim ts As TSingle: ts.Value = value_inout
+    Dim tl As TLong:    LSet tl = ts
+    Debug.Print tl.Value
+    'pos inf: 2139095040
+    If tl.Value = &H7F800000 Then value_inout = 0
+    'neg inf: -8388608
+    If tl.Value = &HFF800000 Then value_inout = 0
+    '
+End Sub
+
+Public Function LongToSingle(ByVal Value As Long) As Single
+    Dim tl As TLong:  tl.Value = Value
+    Dim ts As TSingle: LSet ts = tl
+    LongToSingle = ts.Value
+End Function
+
+Public Function SingleToLong(ByVal Value As Single) As Long
+    Dim ts As TSingle: ts.Value = Value
+    Dim tl As TLong:    LSet tl = ts
+    SingleToLong = tl.Value
+End Function
+
 
 ' v ############################## v '    Bit-Shifting functions    ' v ############################## v '
 
@@ -1359,8 +1576,8 @@ End Function
 'Public Shared Function Sign(ByVal value As Short) As Integer
 'Public Shared Function Sign(ByVal value As Single) As Integer
 'Public Shared Function Sign(ByVal value As System.SByte) As Integer
-Public Static Function Sign(ByVal varValue As Variant) As Variant
-    Sign = Sgn(varValue)
+Public Static Function sign(ByVal varValue As Variant) As Variant
+    sign = Sgn(varValue)
 End Function
 
 
