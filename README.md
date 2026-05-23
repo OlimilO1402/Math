@@ -3,7 +3,7 @@
 
 [![GitHub](https://img.shields.io/github/license/OlimilO1402/Math?style=plastic)](https://github.com/OlimilO1402/Math/blob/master/LICENSE) 
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/OlimilO1402/Math?style=plastic)](https://github.com/OlimilO1402/Math/releases/latest)
-[![Github All Releases](https://img.shields.io/github/downloads/OlimilO1402/Math/total.svg)](https://github.com/OlimilO1402/Math/releases/download/v2024.08.01/Math_v2024.08.01.zip)
+[![Github All Releases](https://img.shields.io/github/downloads/OlimilO1402/Math/total.svg)](https://github.com/OlimilO1402/Math/releases/download/v2026.05.23/Math_v2026.05.23.zip)
 ![GitHub followers](https://img.shields.io/github/followers/OlimilO1402?style=social)
 
 Important constants and basic math functions.  
@@ -45,5 +45,8 @@ Contains the following basic math functions:
 * pascal-triangle
 * modulo function for floating-points
 * calculation of Pi
+* Pyhtagoras and primitive pythagorean triples til 300 
+* generating primitive pythagorean triples using Euclid(mn) and all pythagorean triples using kmn
+* testing if two numbers are coprime
   
 ![Math Image](Resources/Math.png "Math Image")

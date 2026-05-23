@@ -192,6 +192,7 @@ Sub Tests()
     TestRounding
     TestRandom
     TestTrigono
+    TestPythagoreanTriples
 End Sub
 
 Sub TestIEEE754()
@@ -318,7 +319,7 @@ Sub TestGgT_KgV_PFZ_FraC()
     
     'MsgBox PFZ(6442450938@)
     
-    AddItem "TestGgT_KgV_PFZ_FraC"
+    AddItem "Test GgT KgV PFZ FraC"
     AddItem "===================="
     Dim n As Long: n = 2147483644
     AddItem "The prime factors of " & Format(n, "#,##0") & " are " & PFZ(n)
@@ -327,6 +328,7 @@ Sub TestGgT_KgV_PFZ_FraC()
     Dim n2 As Long: n2 = 56
     AddItem "Primefactors(" & n1 & ") = " & PFZ(n1)
     AddItem "GreatestCommonDivisor(" & n1 & ", " & n2 & ") = " & MMath.GreatestCommonDivisor(n1, n2)
+    AddItem "GCD_Euclid(" & n1 & ", " & n2 & ") = " & MMath.GCD_Euclid(n1, n2)
     AddItem "LeastCommonMultiple(" & n1 & ", " & n2 & ") = " & MMath.LeastCommonMultiple(n1, n2)
     n2 = 3456
     Dim nn As Long: nn = n1
@@ -338,8 +340,8 @@ Sub TestGgT_KgV_PFZ_FraC()
 End Sub
 
 Sub TestFactorials()
-    AddItem "TestFactorials"
-    AddItem "=============="
+    AddItem "Test Factorials"
+    AddItem "==============="
     
     Dim i As Long, s As String
     For i = 0 To 5
@@ -358,8 +360,8 @@ Sub TestFactorials()
 End Sub
 
 Sub TestPrimes()
-    AddItem "TestPrimes"
-    AddItem "=========="
+    AddItem "Test Primes"
+    AddItem "==========="
     'Dim n As Long: n = 5
     'Dim n As Long: n = 96211
     'Dim n As Long: n = 99991
@@ -369,9 +371,9 @@ Sub TestPrimes()
 End Sub
 
 Sub TestQuadraticCubic()
-    AddItem "TestQuadraticCubic"
-    AddItem "=================="
-    Dim A As Double, b As Double, c As Double, d As Double
+    AddItem "Test Quadratic Cubic"
+    AddItem "===================="
+    Dim a As Double, b As Double, c As Double, d As Double
     Dim x1 As Double
     Dim x2 As Double, i2 As Double
     Dim x3 As Double, i3 As Double
@@ -380,29 +382,29 @@ Sub TestQuadraticCubic()
     'c = -2 '6 '-4
     'd = -4 '21 '4
     
-    A = 1: b = 8: c = -20
+    a = 1: b = 8: c = -20
     x1 = 0: x2 = 0: x3 = 0
     
-    AddItem Quadratic_ToStr(A, b, c)
-    If Quadratic(A, b, c, x1, x2) Then
+    AddItem Quadratic_ToStr(a, b, c)
+    If Quadratic(a, b, c, x1, x2) Then
         'x1 = 2; x2 = -10
         AddItem "x1 = " & x1 & "; x2 = " & x2
     End If
     
-    A = 2: b = -6: c = -4: d = -4
-    AddItem Quadratic_ToStr(A, b, c)
-    If Quadratic(A, b, c, x1, x2) Then
+    a = 2: b = -6: c = -4: d = -4
+    AddItem Quadratic_ToStr(a, b, c)
+    If Quadratic(a, b, c, x1, x2) Then
         'x1 = -1; x2 = -2
         AddItem "x1 = " & x1 & "; x2 = " & x2
     End If
     
     'a = 0.25: b = 0.75: c = -1.5: d = -2
-    A = 2: b = 6: c = -4: d = -24
+    a = 2: b = 6: c = -4: d = -24
     x1 = 0: x2 = 0: i2 = 0: x3 = 0: i3 = 0
     
-    AddItem Cubic_ToStr(A, b, c, d)
+    AddItem Cubic_ToStr(a, b, c, d)
     
-    If MMath.Cubic(A, b, c, d, x1, x2, i2, x3, i3) Then
+    If MMath.Cubic(a, b, c, d, x1, x2, i2, x3, i3) Then
         
         AddItem "x1 = " & x1
         
@@ -411,8 +413,8 @@ Sub TestQuadraticCubic()
 End Sub
 
 Sub TestPascalTriangle()
-    AddItem "TestPascalTriangle"
-    AddItem "=================="
+    AddItem "Test Pascal Triangle"
+    AddItem "===================="
     Dim pt(): pt = MMath.PascalTriangle(14) 'max 1030 rows
     AddItem MMath.PascalTriangle_ToStr(pt)
     AddItem ""
@@ -420,8 +422,8 @@ End Sub
 
 Sub TestComplex()
     
-    AddItem "TestComplexNumbers"
-    AddItem "=================="
+    AddItem "Test Complex Numbers"
+    AddItem "===================="
     Dim z1 As Complex
     z1 = MMath.Real_ToComplex(8)
     AddItem "v=" & 8
@@ -495,16 +497,16 @@ Private Sub TestMinMax()
 End Sub
 
 Private Sub TestFibonacci()
-    AddItem "TestFibonacci"
-    AddItem "============="
+    AddItem "Test Fibonacci"
+    AddItem "=============="
     AddItem "Fibonacci(15) = " & MMath.Fibonacci(15)
     
     AddItem ""
 End Sub
 
 Private Sub TestFloorCeiling()
-    AddItem "TestFloorCeiling"
-    AddItem "================"
+    AddItem "Test Floor Ceiling"
+    AddItem "=================="
     'https://learn.microsoft.com/en-us/office/vba/language/reference/user-interface-help/int-fix-functions
     Dim MyNumber As Double
     MyNumber = Int(99.8)     ' Returns 99.   'Floor
@@ -527,8 +529,8 @@ End Sub
 
 Private Sub TestRounding()
     
-    AddItem "TestRounding"
-    AddItem "============"
+    AddItem "Test Rounding"
+    AddItem "============="
     
     Dim d As Double
     Dim r As Double
@@ -595,8 +597,8 @@ End Sub
 
 Private Sub TestRandom()
     
-    AddItem "TestRandom"
-    AddItem "=========="
+    AddItem "Test Random"
+    AddItem "==========="
     
     Dim s As String
     Dim b As Byte
@@ -672,6 +674,21 @@ Private Sub TestTrigono()
     inn = CotH(ar): res = MMath.ArCotH(inn): s = "ArCotH(" & Format(inn, fmt) & ") = " & Format(MMath.RadToDeg(res), fmt):    AddItem s
     AddItem ""
     
+End Sub
+
+Sub TestPythagoreanTriples()
+    AddItem "Test Pythagorean Triples"
+    AddItem "========================"
+    Dim i As Long, pt, pts: pts = MMath.PythagoreanTriples
+    Dim s As String, a As Double, b As Double, c As Double, p As Double
+    For i = LBound(pts) To UBound(pts)
+        pt = pts(i): a = CDbl(pt(0)): b = CDbl(pt(1)): c = CDbl(pt(2))
+        p = MMath.Pythagoras(a, b)
+        If c = p Then
+            s = "Sqr(" & a & "² + " & b & "²) = " & c
+        End If
+        AddItem s
+    Next
 End Sub
 
 Sub AddItem(s As String)

@@ -163,6 +163,7 @@ Public PrimesX() As Long ' a distinct selection of primes
 
 Public Fibonacci() As Long
 
+Private m_PythaX() 'as array of 3 longs 'PythagoreanTriples
 
 
 'NTSYSAPI SIZE_T RtlCompareMemory(
@@ -277,6 +278,7 @@ QuantumAlpha = CDec(CDec(1) / CDec(137))
     InitFibonacci
     InitINF
     InitFunctionsShift
+    InitPythagoreanTriples
 End Sub
 
 Public Property Get MinDecimal()
@@ -324,6 +326,52 @@ Private Sub InitFactorials()
     Next
     m_Factorials(171) = GetINFE
 End Sub
+
+Private Sub InitPythagoreanTriples()
+    'Array(6, 8, 10), is not primitive
+    m_PythaX = Array(Array(3, 4, 5), Array(5, 12, 13), Array(7, 24, 25), Array(8, 15, 17), Array(9, 40, 41), Array(11, 60, 61), Array(12, 35, 37), Array(13, 84, 85), Array(15, 112, 113), Array(16, 63, 65), Array(17, 144, 145), _
+                     Array(19, 180, 181), Array(20, 21, 29), Array(20, 99, 101), Array(21, 220, 221), Array(23, 264, 265), Array(24, 143, 145), Array(28, 45, 53), Array(28, 195, 197), Array(32, 255, 257), Array(33, 56, 65), _
+                     Array(36, 77, 85), Array(39, 80, 89), Array(44, 117, 125), Array(48, 55, 73), Array(51, 140, 149), Array(52, 165, 173), Array(57, 176, 185), Array(60, 91, 109), Array(60, 221, 229), Array(65, 72, 97), _
+                     Array(68, 285, 293), Array(69, 260, 269), Array(84, 187, 205), Array(85, 132, 157), Array(88, 105, 137), Array(95, 168, 193), Array(96, 247, 265), Array(104, 153, 185), Array(105, 208, 233), _
+                     Array(115, 252, 277), Array(119, 120, 169), Array(120, 209, 241), Array(133, 156, 205), Array(140, 171, 221), Array(160, 231, 281), Array(161, 240, 289))
+End Sub
+
+Public Function Pythagoras(ByVal a As Double, ByVal b As Double) As Double
+    'calculates the length of the longest side of a rectangular triangle
+    Pythagoras = VBA.Math.Sqr(a * a + b * b)
+End Function
+
+Public Function PythagoreanTripleEuclid(ByVal m As Long, ByVal n As Long)
+    If m <= 0 Or n <= 0 Or m < n Then Exit Function
+    Dim a As Double: a = m * m - n * n
+    Dim b As Double: b = 2 * m * n
+    Dim c As Double: c = m * m + n * n
+    PythagoreanTripleEuclid = Array(a, b, c)
+End Function
+
+Public Function PythagoreanTripleKMN(ByVal m As Long, ByVal n As Long, ByVal k As Long)
+    If m <= 0 Or n <= 0 Or k <= 0 Or m < n Then Exit Function
+    If IsOdd(m) And IsOdd(n) Then Exit Function
+    If Not Prime_IsCoprime(m, n) Then Exit Function
+    Dim a As Double: a = k * (m * m - n * n)
+    Dim b As Double: b = k * 2 * m * n
+    Dim c As Double: c = k * (m * m + n * n)
+    PythagoreanTripleKMN = Array(a, b, c)
+End Function
+
+Public Property Get PythagoreanTriple(ByVal Index As Long)
+    Dim u As Long: u = UBound(m_PythaX)
+    If Index < 0 Or u < Index Then Exit Property
+    PythagoreanTriple = m_PythaX(Index)
+End Property
+
+Public Property Get PythagoreanTriples()
+    PythagoreanTriples = m_PythaX
+End Property
+
+'Public Property Get PythagoreanTriple_IsPrimitive(pt) As Boolean
+'
+'End Property
 
 Public Function Fact(ByVal n As Long) As Variant 'As Decimal
     If n > 170 Then n = 171
@@ -375,7 +423,7 @@ End Function
 '    until c=0;
 '    result:=a
 'end;
-Function ggT(ByVal x As Long, ByVal y As Long) As Long
+Public Function ggT(ByVal x As Long, ByVal y As Long) As Long
     'ggT = größter gemeinsamer Teiler
    Do While x <> y
       If x > y Then
@@ -385,6 +433,18 @@ Function ggT(ByVal x As Long, ByVal y As Long) As Long
       End If
    Loop 'Wend
    ggT = x
+End Function
+
+Public Function GCD_Euclid(ByVal x As Long, ByVal y As Long) As Long
+    Dim rl As Long, r As Long
+    If x < y Then r = x: x = y: y = r
+    Do
+        rl = r
+        r = x Mod y
+        x = y
+        y = r
+    Loop Until r = 0
+    GCD_Euclid = rl
 End Function
 
 Public Function GreatestCommonDivisor(ByVal x As Long, ByVal y As Long) As Long
@@ -519,9 +579,9 @@ Public Function BilIPol(ByVal x1 As Double, ByVal x As Double, ByVal x2 As Doubl
     Dim x2Minx1 As Double: x2Minx1 = x2 - x1
     Dim x2MinxDivx2Minx1 As Double: x2MinxDivx2Minx1 = (x2 - x) / x2Minx1
     Dim xMinx1Divx2Minx1 As Double: xMinx1Divx2Minx1 = (x - x1) / x2Minx1
-    Dim R1 As Double: R1 = x2MinxDivx2Minx1 * f11 + xMinx1Divx2Minx1 * f21
+    Dim r1 As Double: r1 = x2MinxDivx2Minx1 * f11 + xMinx1Divx2Minx1 * f21
     Dim R2 As Double: R2 = x2MinxDivx2Minx1 * f12 + xMinx1Divx2Minx1 * f22
-    BilIPol = (y2 - y) / (y2 - y1) * R1 + (y - y1) / (y2 - y1) * R2
+    BilIPol = (y2 - y) / (y2 - y1) * r1 + (y - y1) / (y2 - y1) * R2
 End Function
 
 
@@ -694,6 +754,15 @@ End Function
 
 Public Property Get Prime(ByVal Index As Long) As Long
     Prime = Primes(Index)
+End Property
+
+Public Property Get Prime_IsCoprime(ByVal p2 As Long, ByVal p1 As Long) As Boolean
+    'Dim t As Long
+    'If p2 < p1 Then t = p2: p2 = p1: p1 = t
+    Prime_IsCoprime = ggT(p1, p2) = 1
+    'Euclid:
+    'Dim r As Long: r = p2 Mod p1
+    'If r > 1 Then
 End Property
 
 Sub ReadPrimesBin()
@@ -965,8 +1034,8 @@ Public Function SinusCardinalis(ByVal x As Double) As Double ' aka sinc
     End If
 End Function
 
-Public Function BigMul(ByVal A As Long, ByVal b As Long) As Variant
-    BigMul = CDec(A) * CDec(b)
+Public Function BigMul(ByVal a As Long, ByVal b As Long) As Variant
+    BigMul = CDec(a) * CDec(b)
 End Function
 ' ^ ############################## ^ '    additional functions    ' ^ ############################## ^ '
 
@@ -1015,13 +1084,13 @@ End Function
 ' ^ ############################## ^ '    Logarithm functions    ' ^ ############################## ^ '
 
 ' v ############################## v '    Rounding functions     ' v ############################## v '
-Public Function Floor(ByVal A As Double) As Double
-    Floor = VBA.Conversion.Int(A)
+Public Function Floor(ByVal a As Double) As Double
+    Floor = VBA.Conversion.Int(a)
 End Function
 
-Public Function Ceiling(ByVal A As Double) As Double
-    Ceiling = VBA.Conversion.Fix(A)
-    If A > 0 Then Ceiling = Ceiling + 1
+Public Function Ceiling(ByVal a As Double) As Double
+    Ceiling = VBA.Conversion.Fix(a)
+    If a > 0 Then Ceiling = Ceiling + 1
     'If a > 0 Then Ceiling = CDbl(Int(a) + 1#) Else Ceiling = CDbl(Fix(a))
     'If a <> 0 Then If Abs(Ceiling / a) <> 1 Then Ceiling = Ceiling + 1
 End Function
@@ -1430,24 +1499,24 @@ Public Function RadToDeg(ByVal angleInRadians As Double) As Double
 End Function
 
 
-Public Static Function Sin(ByVal A As Double) As Double      'aka Sinus
-    Sin = VBA.Math.Sin(A)
+Public Static Function Sin(ByVal a As Double) As Double      'aka Sinus
+    Sin = VBA.Math.Sin(a)
 End Function
-Public Static Function Cos(ByVal A As Double) As Double      'aka Cosinus
-    Cos = VBA.Math.Cos(A)
+Public Static Function Cos(ByVal a As Double) As Double      'aka Cosinus
+    Cos = VBA.Math.Cos(a)
 End Function
-Public Static Function Tan(ByVal A As Double) As Double      'aka Tangens
-    Tan = VBA.Math.Tan(A)
+Public Static Function Tan(ByVal a As Double) As Double      'aka Tangens
+    Tan = VBA.Math.Tan(a)
 End Function
 
-Public Static Function Csc(ByVal A As Double) As Double      'aka Cosecans
-    Csc = 1 / VBA.Math.Sin(A)
+Public Static Function Csc(ByVal a As Double) As Double      'aka Cosecans
+    Csc = 1 / VBA.Math.Sin(a)
 End Function
-Public Static Function Sec(ByVal A As Double) As Double      'aka Secans
-    Sec = 1 / VBA.Math.Cos(A)
+Public Static Function Sec(ByVal a As Double) As Double      'aka Secans
+    Sec = 1 / VBA.Math.Cos(a)
 End Function
-Public Static Function Cot(ByVal A As Double) As Double      'aka Cotangens
-    Cot = 1 / VBA.Math.Tan(A)
+Public Static Function Cot(ByVal a As Double) As Double      'aka Cotangens
+    Cot = 1 / VBA.Math.Tan(a)
 End Function
 
 
@@ -1548,7 +1617,7 @@ End Function
 
 'Public Shared Function DivRem(ByVal a As Integer, ByVal b As Integer, ByRef result As Integer) As Integer
 'Public Shared Function DivRem(ByVal a As Long, ByVal b As Long, ByRef result As Long) As Long
-Public Static Function DivRem(ByVal A As Long, ByVal b As Long, ByRef Result As Long) As Long 'cInteger 'Long
+Public Static Function DivRem(ByVal a As Long, ByVal b As Long, ByRef Result As Long) As Long 'cInteger 'Long
     'Set DivRem = New cInteger
 End Function
 
@@ -1611,7 +1680,7 @@ End Sub
 
 
 ' v ############################## v '     solving quadratic & cubic formula     ' v ############################## v '
-Public Function Quadratic(ByVal A As Double, ByVal b As Double, ByVal c As Double, ByRef x1_out As Double, ByRef x2_out As Double) As Boolean
+Public Function Quadratic(ByVal a As Double, ByVal b As Double, ByVal c As Double, ByRef x1_out As Double, ByRef x2_out As Double) As Boolean
 Try: On Error GoTo Catch
     
     'maybe the midnight-formula:
@@ -1620,8 +1689,8 @@ Try: On Error GoTo Catch
     'x2_out = (-b - w) / (2 * a)
     
     'or maybe the pq-formula
-    Dim p    As Double:   p = b / A
-    Dim q    As Double:   q = c / A
+    Dim p    As Double:   p = b / a
+    Dim q    As Double:   q = c / a
     Dim p_2  As Double: p_2 = p / 2
     Dim p2_4 As Double: p2_4 = p_2 * p_2
     Dim W As Double: W = VBA.Sqr(p2_4 - q)
@@ -1634,11 +1703,11 @@ Try: On Error GoTo Catch
 Catch:
 End Function
 
-Public Function Quadratic_ToStr(ByVal A As Double, ByVal b As Double, ByVal c As Double) As String
-    Quadratic_ToStr = A & "x²" & GetOp(b) & "x" & GetOp(c) & " = 0"
+Public Function Quadratic_ToStr(ByVal a As Double, ByVal b As Double, ByVal c As Double) As String
+    Quadratic_ToStr = a & "x²" & GetOp(b) & "x" & GetOp(c) & " = 0"
 End Function
-Public Function Cubic_ToStr(ByVal A As Double, ByVal b As Double, ByVal c As Double, ByVal d As Double) As String
-    Cubic_ToStr = A & "x³" & GetOp(b) & "x²" & GetOp(c) & "x" & GetOp(d) & " = 0"
+Public Function Cubic_ToStr(ByVal a As Double, ByVal b As Double, ByVal c As Double, ByVal d As Double) As String
+    Cubic_ToStr = a & "x³" & GetOp(b) & "x²" & GetOp(c) & "x" & GetOp(d) & " = 0"
 End Function
 Private Function GetOp(ByVal v As Double) As String
     Select Case v
@@ -1652,16 +1721,16 @@ End Function
 'https://www.youtube.com/watch?v=xhjNRQxqJTM '&t=116s
 'https://www.youtube.com/watch?v=q14F6fZf5kc '&t=1658s
 'https://www.youtube.com/watch?v=N-KXStupwsc '&t=4s
-Public Function Cubic(ByVal A As Double, ByVal b As Double, ByVal c As Double, ByVal d As Double, ByRef x1_out As Double, ByRef x2_out As Double, ByRef i2_out As Double, ByRef x3_out As Double, ByRef i3_out As Double) As Boolean
+Public Function Cubic(ByVal a As Double, ByVal b As Double, ByVal c As Double, ByVal d As Double, ByRef x1_out As Double, ByRef x2_out As Double, ByRef i2_out As Double, ByRef x3_out As Double, ByRef i3_out As Double) As Boolean
 Try: On Error GoTo Catch
     'Scipione del Ferro (1465-1526), Nicolo Tartaglia (1500-1557), Gerolamo Cardano (1501-1576)
     'Rafael Bombelli (1526-1572)
-    If A = 0 Then
+    If a = 0 Then
         Cubic = Quadratic(b, c, d, x1_out, x2_out)
         Exit Function
     End If
-    Dim a2 As Double: a2 = A * A
-    Dim a3 As Double: a3 = A * a2
+    Dim a2 As Double: a2 = a * a
+    Dim a3 As Double: a3 = a * a2
     Dim b2 As Double: b2 = b * b
     Dim b3 As Double: b3 = b * b2
     'Dim bc As Double: bc = b * c
@@ -1670,11 +1739,11 @@ Try: On Error GoTo Catch
     Dim cb_3a2  As Double:  cb_3a2 = c * b / (3 * a2)
     Dim b2_3a2  As Double:  b2_3a2 = b2 / (3 * a2)
     'Dim b2_9a2  As Double:  b2_9a2 = b2 / (9 * a2)
-    Dim d_a  As Double: d_a = d / A
+    Dim d_a  As Double: d_a = d / a
     'Dim d_2a As Double: d_2a = d / (2 * a)
-    Dim c_a  As Double: c_a = c / A
+    Dim c_a  As Double: c_a = c / a
     'Dim c_3a As Double: c_3a = c / (3 * a)
-    Dim b_3a As Double: b_3a = b / (3 * A)
+    Dim b_3a As Double: b_3a = b / (3 * a)
     
     'Dim w As Double: w = VBA.Sqr((-b3_27a3 + bc_6a2 - d_2a) ^ 2 + (-b2_9a2 + c_3a) ^ 3)
 
@@ -1740,13 +1809,13 @@ Public Function CubeRoot(ByVal d As Double) As Double
     Dim a3 As Double
     Dim t As TDouble: t.Value = d
     Dim p As TLong2:   LSet p = t: p.Value1 = p.Value1 \ 3 + 715094163
-    Dim A As Double:   LSet t = p: A = t.Value
-    a3 = A * A * A
-    A = A * (a3 + d + d) / (a3 + a3 + d)
-    a3 = A * A * A
-    A = A * (a3 + d + d) / (a3 + a3 + d)
-    a3 = A * A * A
-    CubeRoot = A * (a3 + d + d) / (a3 + a3 + d)
+    Dim a As Double:   LSet t = p: a = t.Value
+    a3 = a * a * a
+    a = a * (a3 + d + d) / (a3 + a3 + d)
+    a3 = a * a * a
+    a = a * (a3 + d + d) / (a3 + a3 + d)
+    a3 = a * a * a
+    CubeRoot = a * (a3 + d + d) / (a3 + a3 + d)
     
 End Function
 
@@ -1954,18 +2023,18 @@ Public Function ComplexP_ToStrE(p As ComplexP) As String
     End With
 End Function
 
-Public Function ComplexP_Add(P1 As ComplexP, P2 As ComplexP) As ComplexP
+Public Function ComplexP_Add(p1 As ComplexP, p2 As ComplexP) As ComplexP
     'Dim z1 As Complex: z1 = ComplexP_ToComplex(p1)
     'Dim z2 As Complex: z2 = ComplexP_ToComplex(p2)
     'Dim z3 As Complex: z2 = Complex_Add(z1, z2)
     'ComplexP_Add = Complex_ToComplexP(z3)
-    ComplexP_Add = Complex_ToComplexP(Complex_Add(ComplexP_ToComplex(P1), ComplexP_ToComplex(P2)))
+    ComplexP_Add = Complex_ToComplexP(Complex_Add(ComplexP_ToComplex(p1), ComplexP_ToComplex(p2)))
 End Function
 
-Public Function ComplexP_Mul(P1 As ComplexP, P2 As ComplexP) As ComplexP
+Public Function ComplexP_Mul(p1 As ComplexP, p2 As ComplexP) As ComplexP
     With ComplexP_Mul
-        .r = P1.r * P2.r
-        .phi = P1.phi + P2.phi
+        .r = p1.r * p2.r
+        .phi = p1.phi + p2.phi
     End With
 End Function
 
