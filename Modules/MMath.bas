@@ -9,9 +9,13 @@ Option Explicit ' OM: 2024-11-30 lines 1478
 ' they're 25% faster than these.
 
 ' NOTE: YOU *MUST* CALL InitFunctionsShift() BEFORE USING THESE FUNCTIONS
-
-Private Declare Function VirtualProtect Lib "kernel32" (lpAddress As Any, ByVal dwSize As Long, ByVal flNewProtect As Long, lpflOldProtect As Long) As Long
-Private Declare Sub RtlMoveMemory Lib "kernel32" (Destination As Any, Source As Any, ByVal Length As Long)
+#If VBA7 Then
+    Private Declare PtrSafe Function VirtualProtect Lib "kernel32" (lpAddress As Any, ByVal dwSize As Long, ByVal flNewProtect As Long, lpflOldProtect As Long) As Long
+    Private Declare PtrSafe Sub RtlMoveMemory Lib "kernel32" (Destination As Any, Source As Any, ByVal Length As Long)
+#Else
+    Private Declare Function VirtualProtect Lib "kernel32" (lpAddress As Any, ByVal dwSize As Long, ByVal flNewProtect As Long, lpflOldProtect As Long) As Long
+    Private Declare Sub RtlMoveMemory Lib "kernel32" (Destination As Any, Source As Any, ByVal Length As Long)
+#End If
 
 Private Const SHLCode As String = "8A4C240833C0F6C1E075068B442404D3E0C20800"  ' shl eax, cl = D3 E0
 Private Const SHRCode As String = "8A4C240833C0F6C1E075068B442404D3E8C20800"  ' shr eax, cl = D3 E8
@@ -1127,20 +1131,20 @@ End Function
 
 ' or without error handling:
 Public Function GetINF(Optional ByVal sign As Long = 1) As Double
-    Dim l(1 To 2) As Long
+    Dim L(1 To 2) As Long
     If Sgn(sign) > 0 Then
-        l(2) = &H7FF00000
+        L(2) = &H7FF00000
     ElseIf Sgn(sign) < 0 Then
-        l(2) = &HFFF00000
+        L(2) = &HFFF00000
     End If
-    Call RtlMoveMemory(GetINF, l(1), 8)
+    Call RtlMoveMemory(GetINF, L(1), 8)
 End Function
 
 Public Sub GetNaN(ByRef Value As Double)
-    Dim l(1 To 2) As Long
-    l(1) = 1
-    l(2) = &H7FF00000
-    Call RtlMoveMemory(Value, l(1), 8)
+    Dim L(1 To 2) As Long
+    L(1) = 1
+    L(2) = &H7FF00000
+    Call RtlMoveMemory(Value, L(1), 8)
 End Sub
 
 Public Sub GetINDef(ByRef Value As Double)
@@ -1265,12 +1269,12 @@ Public Function Bits(b00 As Bit, b01 As Bit, b02 As Bit, b03 As Bit, b04 As Bit,
     'Bits = Bits Or b31 * 2 ^ 31
     If b31 = b1 Then Bits = -Bits
 End Function
-Public Sub CheckBits(ByVal l As Long)
+Public Sub CheckBits(ByVal L As Long)
     'e.g.
     'check Bits(0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
     On Error Resume Next
-    Dim s As Single: s = LongToSingle(l)
-    Debug.Print l & " = &H" & Hex(l) & " = " & s & " ?isdenorm: " & IsDenormalisedSng(s)
+    Dim s As Single: s = LongToSingle(L)
+    Debug.Print L & " = &H" & Hex(L) & " = " & s & " ?isdenorm: " & IsDenormalisedSng(s)
     '170 = &HAA = 2,382207E-43 ?isdenorm: Wahr
 End Sub
 
@@ -1312,9 +1316,9 @@ End Sub
 Public Function IsDenormalisedSng(ByVal Value As Single) As Boolean
     'Dim ts As TSingle: ts.Value = SngVal
     'Dim tl As TLong:    LSet tl = ts
-    Dim l As Long
-    RtlMoveMemory l, Value, 4
-    IsDenormalisedSng = ((l And &H7F800000) = 0)
+    Dim L As Long
+    RtlMoveMemory L, Value, 4
+    IsDenormalisedSng = ((L And &H7F800000) = 0)
 End Function
 
 Public Sub UndenormaliseSng(ByRef value_inout As Single)
