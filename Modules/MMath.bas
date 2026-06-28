@@ -562,14 +562,14 @@ Public Function LinIPol(ByVal y1 As Double, _
                         ByVal x1 As Double, _
                         ByVal x2 As Double, _
                         ByVal x3 As Double) As Double
-
+    
     ' errechnet einen Wert y2 zu dem Wert x2 durch lineare Interpolation
     If (x3 - x1) = 0 Then
         LinIPol = y1
     Else
         LinIPol = y1 + (y3 - y1) / (x3 - x1) * (x2 - x1)
     End If
-
+    
 End Function
 
 '     |  x1  |  x   |  x2
@@ -1131,20 +1131,20 @@ End Function
 
 ' or without error handling:
 Public Function GetINF(Optional ByVal sign As Long = 1) As Double
-    Dim L(1 To 2) As Long
+    Dim l(1 To 2) As Long
     If Sgn(sign) > 0 Then
-        L(2) = &H7FF00000
+        l(2) = &H7FF00000
     ElseIf Sgn(sign) < 0 Then
-        L(2) = &HFFF00000
+        l(2) = &HFFF00000
     End If
-    Call RtlMoveMemory(GetINF, L(1), 8)
+    Call RtlMoveMemory(GetINF, l(1), 8)
 End Function
 
 Public Sub GetNaN(ByRef Value As Double)
-    Dim L(1 To 2) As Long
-    L(1) = 1
-    L(2) = &H7FF00000
-    Call RtlMoveMemory(Value, L(1), 8)
+    Dim l(1 To 2) As Long
+    l(1) = 1
+    l(2) = &H7FF00000
+    Call RtlMoveMemory(Value, l(1), 8)
 End Sub
 
 Public Sub GetINDef(ByRef Value As Double)
@@ -1269,12 +1269,12 @@ Public Function Bits(b00 As Bit, b01 As Bit, b02 As Bit, b03 As Bit, b04 As Bit,
     'Bits = Bits Or b31 * 2 ^ 31
     If b31 = b1 Then Bits = -Bits
 End Function
-Public Sub CheckBits(ByVal L As Long)
+Public Sub CheckBits(ByVal l As Long)
     'e.g.
     'check Bits(0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
     On Error Resume Next
-    Dim s As Single: s = LongToSingle(L)
-    Debug.Print L & " = &H" & Hex(L) & " = " & s & " ?isdenorm: " & IsDenormalisedSng(s)
+    Dim s As Single: s = LongToSingle(l)
+    Debug.Print l & " = &H" & Hex(l) & " = " & s & " ?isdenorm: " & IsDenormalisedSng(s)
     '170 = &HAA = 2,382207E-43 ?isdenorm: Wahr
 End Sub
 
@@ -1316,9 +1316,9 @@ End Sub
 Public Function IsDenormalisedSng(ByVal Value As Single) As Boolean
     'Dim ts As TSingle: ts.Value = SngVal
     'Dim tl As TLong:    LSet tl = ts
-    Dim L As Long
-    RtlMoveMemory L, Value, 4
-    IsDenormalisedSng = ((L And &H7F800000) = 0)
+    Dim l As Long
+    RtlMoveMemory l, Value, 4
+    IsDenormalisedSng = ((l And &H7F800000) = 0)
 End Function
 
 Public Sub UndenormaliseSng(ByRef value_inout As Single)
